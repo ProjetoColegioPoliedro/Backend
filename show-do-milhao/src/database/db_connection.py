@@ -1,0 +1,1 @@
+# Para conectar o jogo com o banco de dados
