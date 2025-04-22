@@ -1,0 +1,1 @@
+// Classe que representa uma pergunta(alternativas, respostas corretas, etc)

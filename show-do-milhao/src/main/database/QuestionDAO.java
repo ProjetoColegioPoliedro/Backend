@@ -1,0 +1,1 @@
+//Acesso às perguntas no banco
