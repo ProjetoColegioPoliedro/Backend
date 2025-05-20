@@ -39,7 +39,7 @@ public class TelaLogin {
         logo.setBounds((500 - novaLargura) / 2, 60, novaLargura, novaAltura);
         painelMenor.add(logo);
 
-        JLabel titulo = new JLabel("Faça o seu login");
+        JLabel titulo = new JLabel("Login");
         titulo.setFont(fonteTitulo);
         titulo.setBounds(50, 160, 400, 35);
         painelMenor.add(titulo);
@@ -88,14 +88,7 @@ public class TelaLogin {
         btnEntrar.setBounds(150, 410, 200, 50);
         btnEntrar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         painelMenor.add(btnEntrar);
-
-        JLabel esqueceuSenha = new JLabel("Esqueceu a senha?");
-        esqueceuSenha.setFont(new Font("Arial", Font.PLAIN, 14));
-        esqueceuSenha.setForeground(new Color(60, 120, 200));
-        esqueceuSenha.setBounds((500 - 140) / 2, 470, 140, 20);
-        esqueceuSenha.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        painelMenor.add(esqueceuSenha);
-
+        
         // Autenticação
         btnEntrar.addActionListener(new ActionListener() {
             @Override
@@ -115,6 +108,13 @@ public class TelaLogin {
                 }
             }
         });
+
+        JLabel esqueceuSenha = new JLabel("Esqueceu a senha?");
+        esqueceuSenha.setFont(new Font("Arial", Font.PLAIN, 14));
+        esqueceuSenha.setForeground(new Color(60, 120, 200));
+        esqueceuSenha.setBounds((500 - 140) / 2, 470, 140, 20);
+        esqueceuSenha.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        painelMenor.add(esqueceuSenha);
 
         // esqueceuSenha.addMouseListener(new MouseAdapter() {
         //     @Override
