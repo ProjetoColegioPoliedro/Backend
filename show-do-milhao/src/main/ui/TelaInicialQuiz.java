@@ -4,8 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class TelaInicialQuiz {
-    public static void main(String[] args) {
-        
+    public TelaInicialQuiz() {
         // Cor de fundo 
         Color roxoEscuro = new Color(20, 20, 50);
         Color rosa = new Color(255, 64, 96);
@@ -69,6 +68,7 @@ public class TelaInicialQuiz {
         login.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                tela.dispose();
                 new TelaLogin();
             }
         });
@@ -77,6 +77,14 @@ public class TelaInicialQuiz {
         cadastro.setBounds(100, 330, 300, 60);
         painelMenor.add(cadastro);
         cadastro.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        cadastro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tela.dispose();
+                new TelaCadastro();
+            }
+        });
 
         // Botão de engrenagem
         int margemSuperior = 20;
@@ -112,6 +120,10 @@ public class TelaInicialQuiz {
         });
 
         tela.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        new TelaInicialQuiz();
     }
 }
 
