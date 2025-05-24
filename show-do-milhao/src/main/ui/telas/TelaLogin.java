@@ -9,7 +9,6 @@ class TelaLogin extends JFrame{
         setLocationRelativeTo(null);
         setExtendedState(Frame.MAXIMIZED_BOTH);
         
-        
         var cinza = new Color(217, 217, 217);
         var rosa = new Color(238, 33, 82);
         var roxo = new Color(20, 14, 40);
