@@ -11,7 +11,6 @@ respostas inspirado no formato do "Show do Milhão" para o Colégio Poliedro.
 | Isabella Passarelli                 | 24.00038-8   | @IsabellaPassarelli | Desenvolvedor |
 | Luana Ferreira Silva                | 25.01656-9   | @luafxrreira        | Desenvolvedor |
 | Thiago Santos Machado               | 25.01702-1   | @Thiago-stosm       | Desenvolvedor |
-| Victor Baldassarri Gouveia da Silva | 24.01860-0   | @a-sigle-beamon     | Desenvolvedor |
 
 ## Estrutura do projeto
 
