@@ -1,4 +1,4 @@
-config.properties
+config.properties.java
 db.host=show-do-milhao-show-do-milhao.l.aivencloud.com
 db.port=15138
 db.name=quiz_fortuna
