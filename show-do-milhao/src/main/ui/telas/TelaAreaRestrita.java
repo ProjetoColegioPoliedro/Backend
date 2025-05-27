@@ -31,19 +31,19 @@ public class TelaAreaRestrita extends JFrame {
         painelBranco.add(imagemPoliedro);
         imagemPoliedro.setBounds(170, 21, 150, 80);
         
-        var iconeConfig = new ImageIcon("settings.png");
-        var image = iconeConfig.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
-        var config = new JLabel(new ImageIcon(image));
-        corFundo.add(config);
-        config.setBounds(1460, 20, 60, 60);
-        config.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e){
-                var tC = new TelaConfiguracoes();
-                tC.setVisible(true);
-                dispose();
-            }
-        });
+        // var iconeConfig = new ImageIcon("settings.png");
+        // var image = iconeConfig.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+        // var config = new JLabel(new ImageIcon(image));
+        // corFundo.add(config);
+        // config.setBounds(1460, 20, 60, 60);
+        // config.addMouseListener(new MouseAdapter() {
+        //     @Override
+        //     public void mouseClicked(MouseEvent e){
+        //         var tC = new TelaConfiguracoes();
+        //         tC.setVisible(true);
+        //         dispose();
+        //     }
+        // });
         
         // Ajuste nas dimensões
         addComponentListener(new ComponentAdapter() {
@@ -57,12 +57,12 @@ public class TelaAreaRestrita extends JFrame {
                 int y = (frameHeight - painelBrancoHeight) / 2;
                 painelBranco.setLocation(x, y);
 
-                int margemDireita = 30;
-                int margemSuperior = 20;
-                config.setBounds(
-                frameWidth - 60 - margemDireita,
-                margemSuperior,
-                60, 60);
+                // int margemDireita = 30;
+                // int margemSuperior = 20;
+                // config.setBounds(
+                // frameWidth - 60 - margemDireita,
+                // margemSuperior,
+                // 60, 60);
             }
         });
 
@@ -84,7 +84,7 @@ public class TelaAreaRestrita extends JFrame {
 
         var edPergunta = new JButton("Editar pergunta");
         painelBranco.add(edPergunta);
-        edPergunta.setBounds(125, 240, 250, 70);
+        edPergunta.setBounds(125, 210, 250, 70);
         edPergunta.setFont(new Font("Montserrat", Font.BOLD, 18));
         edPergunta.setBackground(rosa);
         edPergunta.setForeground(Color.WHITE);
@@ -99,7 +99,7 @@ public class TelaAreaRestrita extends JFrame {
         var conRank = new JButton("Consultar ranking");
         painelBranco.add(conRank);
         conRank.setFont(new Font("Montserrat", Font.BOLD, 18));
-        conRank.setBounds(125, 360, 250, 70);
+        conRank.setBounds(125, 300, 250, 70);
         conRank.setBackground(rosa);
         conRank.setForeground(Color.WHITE);
         conRank.addActionListener(new ActionListener() {
@@ -110,17 +110,24 @@ public class TelaAreaRestrita extends JFrame {
             }
         });
         
-        // var ativAlunos = new JButton("Cadastrar aluno");
-        // painelBranco.add(ativAlunos);
-        // ativAlunos.setFont(new Font("Montserrat", Font.BOLD, 18));
-        // ativAlunos.setBounds(125, 390, 250, 70);
-        // ativAlunos.setBackground(rosa);
-        // ativAlunos.setForeground(Color.WHITE);
+        var cadAluno = new JButton("Cadastrar aluno");
+        painelBranco.add(cadAluno);
+        cadAluno.setFont(new Font("Montserrat", Font.BOLD, 18));
+        cadAluno.setBounds(125, 390, 250, 70);
+        cadAluno.setBackground(rosa);
+        cadAluno.setForeground(Color.WHITE);
+        cadAluno.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent voltarTela) {
+                var tC = new TelaCadastro();
+                tC.setVisible(true);
+                dispose();
+            }
+        });
 
         var voltar = new JButton("Voltar");
         painelBranco.add(voltar);
         voltar.setFont(new Font("Montserrat", Font.PLAIN, 18));
-        voltar.setBounds(190, 470, 110, 30);
+        voltar.setBounds(190, 490, 110, 30);
         voltar.setBackground(Color.BLACK);
         voltar.setForeground(Color.WHITE);
         voltar.addActionListener(new ActionListener() {

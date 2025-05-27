@@ -86,19 +86,19 @@ public class TelaRecuperacaoSenha extends JFrame{
         painelMenor.add(imagemPoliedro);
         imagemPoliedro.setBounds(160, 50, 170, 70);
         
-        var icone = new ImageIcon("settings.png");
-        var image = icone.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
-        var config = new JLabel(new ImageIcon(image));
-        painelInicial.add(config);
-        config.setBounds(1460, 20, 60, 60);
-        config.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e){
-                var tC = new TelaConfiguracoes();
-                tC.setVisible(true);
-                dispose();
-            }
-        });
+        // var icone = new ImageIcon("settings.png");
+        // var image = icone.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+        // var config = new JLabel(new ImageIcon(image));
+        // painelInicial.add(config);
+        // config.setBounds(1460, 20, 60, 60);
+        // config.addMouseListener(new MouseAdapter() {
+        //     @Override
+        //     public void mouseClicked(MouseEvent e){
+        //         var tC = new TelaConfiguracoes();
+        //         tC.setVisible(true);
+        //         dispose();
+        //     }
+        // });
 
         
         // Dimensionamento
@@ -113,12 +113,12 @@ public class TelaRecuperacaoSenha extends JFrame{
                 int y = (frameHeight - painelMenorHeight) / 2;
                 painelMenor.setLocation(x, y);
         
-                int margemDireita = 30;
-                int margemSuperior = 20;
-                config.setBounds(
-                frameWidth - 60 - margemDireita,
-                margemSuperior,
-                60, 60);
+                // int margemDireita = 30;
+                // int margemSuperior = 20;
+                // config.setBounds(
+                // frameWidth - 60 - margemDireita,
+                // margemSuperior,
+                // 60, 60);
             }
         });
         

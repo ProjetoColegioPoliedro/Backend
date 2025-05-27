@@ -27,6 +27,7 @@ public class TelaCadastro extends JFrame{
         var digiteUsuario = new JTextField();
         digiteUsuario.setColumns(30);
         digiteUsuario.setBackground(cinza);
+        digiteUsuario.setForeground(rosa);
         digiteUsuario.setBounds(90, 200, 320, 40);
         painelMenor.add(digiteUsuario);
         digiteUsuario.setFont(new Font("New Cordial", Font.ITALIC, 10));
@@ -39,6 +40,7 @@ public class TelaCadastro extends JFrame{
         var digiteEmail = new JTextField();
         digiteEmail.setColumns(30);
         digiteEmail.setBackground(cinza);
+        digiteEmail.setForeground(rosa);
         digiteEmail.setBounds(90, 270, 320, 40);
         painelMenor.add(digiteEmail);
         digiteEmail.setFont(new Font("New Cordial", Font.ITALIC, 10));
@@ -51,6 +53,7 @@ public class TelaCadastro extends JFrame{
         var digiteSenha = new JPasswordField();
         digiteSenha.setColumns(30);
         digiteSenha.setBackground(cinza);
+        digiteSenha.setForeground(rosa);
         digiteSenha.setBounds(90, 340, 320, 40);
         painelMenor.add(digiteSenha);
         digiteSenha.setFont(new Font("Roboto", Font.ITALIC, 10));
@@ -70,8 +73,8 @@ public class TelaCadastro extends JFrame{
         cancelar.setForeground(Color.WHITE);
         cancelar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                var tI = new TelaInicial();
-                tI.setVisible(true);
+                var tAR = new TelaAreaRestrita();
+                tAR.setVisible(true);
                 dispose();
             }
         });
@@ -109,19 +112,19 @@ public class TelaCadastro extends JFrame{
         painelMenor.add(imagemPoliedro);
         imagemPoliedro.setBounds(170, 40, 150, 80);
 
-        var icon = new ImageIcon("settings.png");
-        var image = icon.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
-        var config = new JLabel(new ImageIcon(image));
-        painelInicial.add(config);
-        config.setBounds(1460, 20, 60, 60);
-        config.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e){
-                var tC = new TelaConfiguracoes();
-                tC.setVisible(true);
-                dispose();
-            }
-        });
+        // var icon = new ImageIcon("settings.png");
+        // var image = icon.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+        // var config = new JLabel(new ImageIcon(image));
+        // painelInicial.add(config);
+        // config.setBounds(1460, 20, 60, 60);
+        // config.addMouseListener(new MouseAdapter() {
+        //     @Override
+        //     public void mouseClicked(MouseEvent e){
+        //         var tC = new TelaConfiguracoes();
+        //         tC.setVisible(true);
+        //         dispose();
+        //     }
+        // });
 
 
         // Dimensionamento de tela
@@ -138,14 +141,21 @@ public class TelaCadastro extends JFrame{
                 int y = (frameHeight - painelMenorHeight) / 2;
                 painelMenor.setLocation(x, y);
 
-                int margemDireita = 30;
-                int margemSuperior = 20;
-                config.setBounds(
-                frameWidth - 60 - margemDireita,
-                margemSuperior,
-                60, 60);
+                // int margemDireita = 30;
+                // int margemSuperior = 20;
+                // config.setBounds(
+                // frameWidth - 60 - margemDireita,
+                // margemSuperior,
+                // 60, 60);
             }
         });
+
+        // Mensagem
+        var msgm = new JLabel("*Apenas o professor pode realizar o cadastro");
+        painelMenor.add(msgm);
+        msgm.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 12));
+        msgm.setForeground(rosa);
+        msgm.setBounds(90, 350, 300, 100);
         
         setVisible(true);
         

@@ -29,19 +29,19 @@ public class TelaInicial extends JFrame {
         showMilhao.setBounds(-60, -40, 600, 600);
         painelMenor.add(showMilhao);
 
-        var icon = new ImageIcon("settings.png");
-        var image = icon.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
-        var config = new JLabel(new ImageIcon(image));
-        corFundo.add(config);
-        config.setBounds(1460, 20, 60, 60);
-        config.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e){
-                var tC = new TelaConfiguracoes();
-                tC.setVisible(true);
-                dispose();
-            }
-        });
+        // var icon = new ImageIcon("settings.png");
+        // var image = icon.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+        // var config = new JLabel(new ImageIcon(image));
+        // corFundo.add(config);
+        // config.setBounds(1460, 20, 60, 60);
+        // config.addMouseListener(new MouseAdapter() {
+        //     @Override
+        //     public void mouseClicked(MouseEvent e){
+        //         var tC = new TelaConfiguracoes();
+        //         tC.setVisible(true);
+        //         dispose();
+        //     }
+        // });
 
         // botões
         var login = new JButton("Login");
@@ -58,19 +58,19 @@ public class TelaInicial extends JFrame {
             }
         }); 
         
-        var cadastro = new JButton("Cadastre-se");
-        painelMenor.add(cadastro);
-        cadastro.setFont(new Font("Montserrat", Font.BOLD, 40));
-        cadastro.setBounds(50, 620, 400, 80); 
-        cadastro.setBackground(rosa);
-        cadastro.setForeground(Color.WHITE);
-        cadastro.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                var tc = new TelaCadastro();
-                tc.setVisible(true);
-                dispose();
-            }
-        });
+        // var cadastro = new JButton("Cadastre-se");
+        // painelMenor.add(cadastro);
+        // cadastro.setFont(new Font("Montserrat", Font.BOLD, 40));
+        // cadastro.setBounds(50, 620, 400, 80); 
+        // cadastro.setBackground(rosa);
+        // cadastro.setForeground(Color.WHITE);
+        // cadastro.addActionListener(new ActionListener() {
+        //     public void actionPerformed(ActionEvent e){
+        //         var tc = new TelaCadastro();
+        //         tc.setVisible(true);
+        //         dispose();
+        //     }
+        // });
 
         addComponentListener(new ComponentAdapter() {
             @Override
@@ -83,12 +83,12 @@ public class TelaInicial extends JFrame {
                 int y = (frameHeight - painelMenorHeight) / 2;
                 painelMenor.setLocation(x, y);
 
-                int margemDireita = 30;
-                int margemSuperior = 20;
-                config.setBounds(
-                frameWidth - 60 - margemDireita,
-                margemSuperior,
-                60, 60);
+                // int margemDireita = 30;
+                // int margemSuperior = 20;
+                // config.setBounds(
+                // frameWidth - 60 - margemDireita,
+                // margemSuperior,
+                // 60, 60);
 
             }
         });

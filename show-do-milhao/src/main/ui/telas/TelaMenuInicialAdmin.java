@@ -76,8 +76,8 @@ public class TelaMenuInicialAdmin extends JFrame{
         histJogo.setForeground(Color.WHITE);
         histJogo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                var tH = new TelaHistorico();
-                tH.setVisible(true);
+                var tHP = new TelaHistoricoProf();
+                tHP.setVisible(true);
                 dispose();
             }
         });

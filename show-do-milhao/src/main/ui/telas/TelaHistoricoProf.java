@@ -2,9 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class TelaHistorico extends JFrame{
-    TelaHistorico(){
-        // var rosa = new Color(238, 33, 82);
+public class TelaHistoricoProf extends JFrame{
+    TelaHistoricoProf(){
         var roxo = new Color(20, 14, 40);
 
         // Tela
@@ -37,7 +36,7 @@ public class TelaHistorico extends JFrame{
         seta.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e){
-                var tMI = new TelaMenuInicial();
+                var tMI = new TelaMenuInicialAdmin();
                 tMI.setVisible(true);
                 dispose();
             }

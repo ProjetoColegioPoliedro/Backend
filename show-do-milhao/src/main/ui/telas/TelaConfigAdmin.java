@@ -2,8 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class TelaConfiguracoes extends JFrame{
-    TelaConfiguracoes(){
+public class TelaConfigAdmin extends JFrame{
+    TelaConfigAdmin(){
         var rosa = new Color(238, 33, 82);
         var roxo = new Color(20, 14, 40);
 
@@ -122,8 +122,8 @@ public class TelaConfiguracoes extends JFrame{
         voltar.setBounds(170, 680, 200, 60);
         voltar.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent voltarTela) {
-                    var tMI = new TelaMenuInicial();
-                    tMI.setVisible(true);
+                    var tMIA = new TelaMenuInicialAdmin();
+                    tMIA.setVisible(true);
                     dispose();
                     }
                 });

@@ -6,7 +6,7 @@ public class TelaTemaPeguntas extends JFrame{
     TelaTemaPeguntas(){
         var rosa = new Color(238, 33, 82);
         var roxo = new Color(20, 14, 40); 
-        var check = new ImageIcon("Check.png");
+        var check = new ImageIcon("check.png");
         var xIcon = new ImageIcon("x.png");
         
         // Criação da tela
@@ -131,7 +131,7 @@ public class TelaTemaPeguntas extends JFrame{
             }
         });
 
-
+        
 
         setVisible(true);
         }
