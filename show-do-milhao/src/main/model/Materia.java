@@ -1,5 +1,3 @@
-package main.classes;
-
 public class Materia {
     private int idMateria; // Corresponde a id_materia (PK)
     private String nome; // Corresponde a nome

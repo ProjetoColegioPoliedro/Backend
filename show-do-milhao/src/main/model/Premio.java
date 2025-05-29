@@ -1,9 +1,7 @@
-package main.classes;
-
 public class Premio {
     private int idPremio; // Corresponde a id_premio (PK)
     private String descricao; // Corresponde a descricao
-    private String faixasAcertos; // Corresponde a faixas_acertos (se for um texto, ou ajuste para tipo numérico se for um range)
+    private String faixasAcertos; // Corresponde a faixas_acertos 
     private double valorSimbolico; // Corresponde a valor_simbolico
 
     public Premio() {

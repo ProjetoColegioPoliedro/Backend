@@ -1,14 +1,10 @@
-package main.classes;
-
-import java.time.LocalDateTime; // Ou java.sql.Timestamp se preferir
+import java.time.LocalDateTime;
 
 public class Ranking {
     private int idRanking; // Corresponde a id_ranking (PK)
     private int idAluno; // Corresponde a id_aluno (FK)
     private int pontuacao; // Corresponde a pontuacao
     private LocalDateTime ultimaAtualizacao; // Corresponde a ultima_atualizacao (TIMESTAMP)
-
-    // Opcional: private Aluno aluno; // Para ter o objeto Aluno completo
 
     public Ranking() {
     }

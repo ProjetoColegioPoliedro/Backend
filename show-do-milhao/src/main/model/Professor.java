@@ -1,5 +1,3 @@
-package main.classes;
-
 public class Professor { // Ou Administrador
     private int idProfessor; // Corresponde a id_professor (PK)
     private String nome; // Corresponde a nome
@@ -25,7 +23,7 @@ public class Professor { // Ou Administrador
         this.senha = senha;
     }
 
-    // --- Getters e Setters ---
+    // Getters e Setters 
     public int getIdProfessor() {
         return idProfessor;
     }

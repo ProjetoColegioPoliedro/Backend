@@ -1,6 +1,4 @@
-package main.classes;
-
-import java.time.LocalDateTime; // Ou java.sql.Timestamp
+import java.time.LocalDateTime; 
 
 public class SessaoJogo {
     private int idSessao; // Corresponde a id_sessao (PK)

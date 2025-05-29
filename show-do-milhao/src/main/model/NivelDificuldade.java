@@ -1,5 +1,3 @@
-package main.classes;
-
 public class NivelDificuldade {
     private int idNivel; // Corresponde a id_nivel (PK)
     private String descricao; // Corresponde a descricao

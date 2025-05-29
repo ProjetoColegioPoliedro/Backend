@@ -1,5 +1,3 @@
-package main.classes;
-
 public class Aluno {
     private int idAluno; // Corresponde a id_aluno (PK)
     private String nome; // Corresponde a nome
@@ -11,7 +9,7 @@ public class Aluno {
     public Aluno() {
     }
 
-    // Construtor completo (pode ser útil para criar objetos rapidamente)
+    // Construtor completo
     public Aluno(int idAluno, String nome, String loginAluno, String senha, int anoLetivo) {
         this.idAluno = idAluno;
         this.nome = nome;
@@ -20,7 +18,6 @@ public class Aluno {
         this.anoLetivo = anoLetivo;
     }
 
-    // Construtor sem ID (para novos cadastros onde o ID é gerado pelo banco)
     public Aluno(String nome, String loginAluno, String senha, int anoLetivo) {
         this.nome = nome;
         this.loginAluno = loginAluno;
@@ -28,7 +25,7 @@ public class Aluno {
         this.anoLetivo = anoLetivo;
     }
 
-    // --- Getters e Setters ---
+    // Getters e Setters 
     public int getIdAluno() {
         return idAluno;
     }

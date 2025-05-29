@@ -1,8 +1,6 @@
-package main.classes;
-
 public class Alternativa {
     private int idAlternativa; // Corresponde a id_alternativa (PK)
-    private String texto; // Corresponde a texto
+    private String texto;
 
     public Alternativa() {
     }

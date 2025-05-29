@@ -1,6 +1,4 @@
-package main.classes;
-
-import java.time.LocalDate; // Ou java.sql.Date
+import java.time.LocalDate; 
 
 public class HistoricoJogo {
     private int idHistorico; // Corresponde a id_historico (PK)
@@ -10,8 +8,6 @@ public class HistoricoJogo {
     private String checkpointAlcancado; // Corresponde a checkpoint_alcancado
     private int pontuacaoTotal; // Corresponde a pontuacao_total
     private int idAluno; // Corresponde a id_aluno (FK)
-
-    // Opcional: private Aluno aluno;
 
     public HistoricoJogo() {
     }

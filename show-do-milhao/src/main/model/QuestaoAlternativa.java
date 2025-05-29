@@ -1,14 +1,8 @@
-package main.classes;
-
 public class QuestaoAlternativa {
     private int idQa; // Corresponde a id_qa (PK)
     private int idQuestao; // Corresponde a id_questao (FK)
     private int idAlternativa; // Corresponde a id_alternativa (FK)
     private boolean correta; // Corresponde a correta
-
-    // Opcional: Você pode adicionar os objetos Questao e Alternativa aqui para facilitar
-    // private Questao questao;
-    // private Alternativa alternativa;
 
     public QuestaoAlternativa() {
     }
