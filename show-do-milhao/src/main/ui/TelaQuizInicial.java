@@ -1,7 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
 public class TelaQuizInicial {
+    private static final int LARGURA_ESQUERDA = 800;
 
     public TelaQuizInicial() {
         JFrame tela = new JFrame("Quiz da Fortuna");
@@ -9,81 +11,79 @@ public class TelaQuizInicial {
         tela.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         JPanel painelPrincipal = new JPanel(null);
+        tela.setContentPane(painelPrincipal);
 
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int largura = screenSize.width;
-        int altura = screenSize.height;
-        int larguraEsquerda = 750;
-
-        // Painel amarelo
-        JPanel painelEsquerdo = new JPanel(null);
-        painelEsquerdo.setBackground(new Color(255, 221, 0));
-        painelEsquerdo.setBounds(0, 0, larguraEsquerda, altura);
-        painelPrincipal.add(painelEsquerdo);
-
-        // Painel roxo escuro
-        JPanel painelDireito = new JPanel(null);
-        painelDireito.setBackground(new Color(20, 20, 50));
-        painelDireito.setBounds(larguraEsquerda, 0, largura - larguraEsquerda, altura);
-        painelPrincipal.add(painelDireito);
-
-        // Logo
-        ImageIcon logoIcon = new ImageIcon("../assets/logo.png");
-        JLabel logoLabel = new JLabel(logoIcon);
-        logoLabel.setBounds(50, 50, logoIcon.getIconWidth(), logoIcon.getIconHeight());
-        painelEsquerdo.add(logoLabel);
-
-        // Logo Poliedro
-        ImageIcon poliedroIcon = new ImageIcon("../assets/logo-poliedro-2.png");
-        JLabel poliedroLabel = new JLabel(poliedroIcon);
-        poliedroLabel.setBounds(580, altura - 200, poliedroIcon.getIconWidth(), poliedroIcon.getIconHeight());
-        painelEsquerdo.add(poliedroLabel);
-
-        // Botões centralizados no painel roxo
+        Color amarelo = new Color(255, 221, 0);
+        Color roxoEscuro = new Color(20, 20, 50);
         Color rosa = new Color(255, 64, 96);
         Color branco = Color.WHITE;
 
-        int larguraBotao = 300;
-        int alturaBotao = 60;
-        int xCentral = ((largura - larguraEsquerda) - larguraBotao) / 2;
-        
+        JPanel painelEsquerdo = new JPanel(null);
+        painelEsquerdo.setBackground(amarelo);
+        painelPrincipal.add(painelEsquerdo);
+
+        JPanel painelDireito = new JPanel(null);
+        painelDireito.setBackground(roxoEscuro);
+        painelPrincipal.add(painelDireito);
+
+        ImageIcon logoIcon = new ImageIcon("../assets/logo.png");
+        JLabel logoLabel = new JLabel(logoIcon);
+        painelEsquerdo.add(logoLabel);
+
+        // ↓↓↓ Imagem Poliedro REDUZIDA ↓↓↓
+        ImageIcon poliedroIconOriginal = new ImageIcon("../assets/logo-poliedro-2.png");
+        Image imagemPoliedroOriginal = poliedroIconOriginal.getImage();
+        int novaLarguraPoliedro = 70; // Reduzido
+        int novaAlturaPoliedro = (novaLarguraPoliedro * poliedroIconOriginal.getIconHeight()) / poliedroIconOriginal.getIconWidth();
+        Image imagemPoliedroRedimensionada = imagemPoliedroOriginal.getScaledInstance(novaLarguraPoliedro, novaAlturaPoliedro, Image.SCALE_SMOOTH);
+        ImageIcon poliedroIcon = new ImageIcon(imagemPoliedroRedimensionada);
+        JLabel poliedroLabel = new JLabel(poliedroIcon);
+        painelEsquerdo.add(poliedroLabel);
+
         BotaoArredondado jogar = new BotaoArredondado("Jogar", rosa, branco);
-        jogar.setBounds(xCentral, 380, larguraBotao, alturaBotao);
         painelDireito.add(jogar);
         jogar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        // jogar.addActionListener(new ActionListener()) {
-        //     @Override
-        //     public void actionPerformed(ActionEvent e) {
-        //         tela.dispose();
-        //         new TelaJogar();
-        //     }
-        // }
-
         BotaoArredondado historico = new BotaoArredondado("Histórico de jogo", rosa, branco);
-        historico.setBounds(xCentral, 460, larguraBotao, alturaBotao);
         painelDireito.add(historico);
         historico.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        // historico.addActionListener(new ActionListener()) {
-        //     @Override
-        //     public void actionPerformed(ActionEvent e) {
-        //         tela.dispose();
-        //         new TelaHistorico();
-        //     }
-        // }
-
-        // Engrenagem
         ImageIcon engrenagemIcon = new ImageIcon("../assets/icon-engrenagem.png");
         Image engrenagemImg = engrenagemIcon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
         JButton btnEngrenagem = new JButton(new ImageIcon(engrenagemImg));
-        btnEngrenagem.setBounds((largura - larguraEsquerda) - 60, 20, 40, 40);
         btnEngrenagem.setContentAreaFilled(false);
         btnEngrenagem.setBorderPainted(false);
         btnEngrenagem.setFocusPainted(false);
         painelDireito.add(btnEngrenagem);
+        btnEngrenagem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        tela.setContentPane(painelPrincipal);
+        tela.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                int largura = tela.getWidth();
+                int altura = tela.getHeight();
+
+                painelEsquerdo.setBounds(0, 0, LARGURA_ESQUERDA, altura);
+                painelDireito.setBounds(LARGURA_ESQUERDA, 0, largura - LARGURA_ESQUERDA, altura);
+
+                int logoX = (LARGURA_ESQUERDA - logoIcon.getIconWidth()) / 2;
+                logoLabel.setBounds(logoX, 50, logoIcon.getIconWidth(), logoIcon.getIconHeight());
+
+                int poliedroX = LARGURA_ESQUERDA - poliedroIcon.getIconWidth() - 20;
+                int poliedroY = altura - poliedroIcon.getIconHeight() - 55;
+                poliedroLabel.setBounds(poliedroX, poliedroY, poliedroIcon.getIconWidth(), poliedroIcon.getIconHeight());
+
+                int larguraBotao = 300;
+                int alturaBotao = 60;
+                int xCentral = (largura - LARGURA_ESQUERDA - larguraBotao) / 2;
+                int painelDireitoOffsetY = altura / 2 - 70;
+
+                jogar.setBounds(xCentral, painelDireitoOffsetY, larguraBotao, alturaBotao);
+                historico.setBounds(xCentral, painelDireitoOffsetY + 80, larguraBotao, alturaBotao);
+                btnEngrenagem.setBounds((largura - LARGURA_ESQUERDA) - 60, 20, 40, 40);
+            }
+        });
+
         tela.setVisible(true);
     }
 
