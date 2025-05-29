@@ -6,10 +6,6 @@ public class QuestaoAlternativa {
     private int idAlternativa; // Corresponde a id_alternativa (FK)
     private boolean correta; // Corresponde a correta
 
-    // Opcional: Você pode adicionar os objetos Questao e Alternativa aqui para facilitar
-    // private Questao questao;
-    // private Alternativa alternativa;
-
     public QuestaoAlternativa() {
     }
 
