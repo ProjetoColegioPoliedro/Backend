@@ -3,7 +3,6 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class TelaCadastro {
-
     public TelaCadastro() {
         criarTelaCadastro();
     }
@@ -30,7 +29,6 @@ public class TelaCadastro {
         painelMenor.setBounds(0, 0, 500, 530);
         corFundo.add(painelMenor);
 
-        // Logo
         ImageIcon logoIcon = new ImageIcon("../assets/logo-poliedro.png");
         Image imagemOriginal = logoIcon.getImage();
         int novaLargura = 180;
@@ -45,7 +43,6 @@ public class TelaCadastro {
         titulo.setBounds(50, 135, 400, 35);
         painelMenor.add(titulo);
 
-        // Usuário
         JLabel usuarioLabel = new JLabel("Usuário");
         usuarioLabel.setBounds(50, 185, 300, 20);
         painelMenor.add(usuarioLabel);
@@ -58,7 +55,6 @@ public class TelaCadastro {
         campoUsuario.setMargin(new Insets(0, 10, 0, 0));
         painelMenor.add(campoUsuario);
 
-        // E-mail
         JLabel emailLabel = new JLabel("E-mail");
         emailLabel.setBounds(50, 270, 300, 20);
         painelMenor.add(emailLabel);
@@ -71,7 +67,6 @@ public class TelaCadastro {
         campoEmail.setMargin(new Insets(0, 10, 0, 0));
         painelMenor.add(campoEmail);
 
-        // Senha
         JLabel senhaLabel = new JLabel("Senha");
         senhaLabel.setBounds(50, 350, 300, 20);
         painelMenor.add(senhaLabel);
@@ -84,7 +79,6 @@ public class TelaCadastro {
         campoSenha.setMargin(new Insets(0, 10, 0, 0));
         painelMenor.add(campoSenha);
 
-        // Botão Cancelar
         BotaoArredondado btnCancelar = new BotaoArredondado("Cancelar", rosa, branco);
         btnCancelar.setBounds(50, 445, 170, 50);
         btnCancelar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -98,7 +92,6 @@ public class TelaCadastro {
             }
         });
 
-        // Botão Cadastrar
         BotaoArredondado btnCadastrar = new BotaoArredondado("Cadastrar", rosa, branco);
         btnCadastrar.setBounds(280, 445, 170, 50);
         btnCadastrar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -110,41 +103,8 @@ public class TelaCadastro {
                 String nome = campoUsuario.getText().trim();
                 String email = campoEmail.getText().trim();
                 String senha = new String(campoSenha.getPassword()).trim();
-
-                // Verifica se algum campo está vazio
-                if (nome.isEmpty() || email.isEmpty() || senha.isEmpty()) {
-                    JOptionPane.showMessageDialog(tela, "Por favor, preencha todos os campos.", "Campos obrigatórios", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-
-                // Verifica se o e-mail é do domínio correto
-                if (!email.endsWith("@sistemapoliedro.com.br")) {
-                    JOptionPane.showMessageDialog(tela, "Apenas professores podem se cadastrar.\nUse um e-mail @sistemapoliedro.com.br", "Cadastro restrito", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                // Aqui você pode seguir com o processo de cadastro, como salvar no banco ou exibir sucesso
-                JOptionPane.showMessageDialog(tela, "Cadastro realizado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-
-                // Fecha a tela e volta para a tela inicial
-                tela.dispose();
-                new TelaInicialQuiz();
             }
         });
-
-        // Centralização do painel e funcionalidade da engrenagem (opcional)
-        // tela.addComponentListener(new ComponentAdapter() {
-        //     @Override
-        //     public void componentResized(ComponentEvent evento) {
-        //         int frameWidth = tela.getWidth();
-        //         int frameHeight = tela.getHeight();
-        //         int painelWidth = painelMenor.getWidth();
-        //         int painelHeight = painelMenor.getHeight();
-        //         int x = (frameWidth - painelWidth) / 2;
-        //         int y = (frameHeight - painelHeight) / 2;
-        //         painelMenor.setLocation(x, y);
-        //     }
-        // });
 
         int margemSuperior = 20;
         int margemDireita = 30;

@@ -30,7 +30,6 @@ public class TelaRecuperarSenha {
         painelMenor.setBounds(0, 0, 500, 530);
         corFundo.add(painelMenor);
 
-        // Logo
         ImageIcon logoIcon = new ImageIcon("../assets/logo-poliedro.png");
         Image imagemOriginal = logoIcon.getImage();
         int novaLargura = 180;
@@ -40,19 +39,16 @@ public class TelaRecuperarSenha {
         logo.setBounds((500 - novaLargura) / 2, 60, novaLargura, novaAltura);
         painelMenor.add(logo);
 
-        // Título
         JLabel titulo = new JLabel("Redefinir senha");
         titulo.setFont(fonteTitulo);
         titulo.setBounds(50, 160, 330, 30);
         painelMenor.add(titulo);
 
-        // Texto campo
         JLabel emailLabel = new JLabel("E-mail");
         emailLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         emailLabel.setBounds(50, 210, 300, 20);
         painelMenor.add(emailLabel);
 
-        // Campo email
         RoundedTextField campoEmail = new RoundedTextField(30);
         campoEmail.setBounds(50, 235, 400, 45);
         campoEmail.setFont(fonteTexto);
@@ -76,7 +72,6 @@ public class TelaRecuperarSenha {
         });
         painelMenor.add(campoEmail);
 
-        // Botão enviar
         BotaoArredondado btnEnviar = new BotaoArredondado("Enviar", rosa, branco);
         btnEnviar.setBounds(150, 295, 200, 50);
         btnEnviar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -108,7 +103,6 @@ public class TelaRecuperarSenha {
             }
         });
 
-        // engrenagem
         int larguraBotao = 40;
         int alturaBotao = 40;
         int margemSuperior = 20;
@@ -124,7 +118,6 @@ public class TelaRecuperarSenha {
         btnEngrenagem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         corFundo.add(btnEngrenagem);
 
-        // Centraliza o painel menor
         tela.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent evento) {

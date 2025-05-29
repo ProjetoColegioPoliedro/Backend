@@ -25,7 +25,6 @@ public class TelaInicialQuiz {
         painelMenor.setOpaque(false);
         corFundo.add(painelMenor);
         
-        // Logo do jogo
         ImageIcon logo = new ImageIcon("../assets/logo.png");
         Image imagemOriginal = logo.getImage();
 

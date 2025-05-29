@@ -88,26 +88,6 @@ public class TelaLogin {
         btnEntrar.setBounds(150, 410, 200, 50);
         btnEntrar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         painelMenor.add(btnEntrar);
-        
-        // Autenticação
-        btnEntrar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String email = campoEmail.getText();
-                String senha = new String(campoSenha.getPassword());
-
-                if (email.isEmpty() || senha.isEmpty()) {
-                    JOptionPane.showMessageDialog(tela, "Por favor, preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                if (email.equals("teste@p4ed.com") && senha.equals("123456")) {
-                    JOptionPane.showMessageDialog(tela, "Login realizado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(tela, "E-mail ou senha incorretos.", "Erro de autenticação", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
 
         JLabel esqueceuSenha = new JLabel("Esqueceu a senha?");
         esqueceuSenha.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -116,14 +96,6 @@ public class TelaLogin {
         esqueceuSenha.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         painelMenor.add(esqueceuSenha);
 
-        // esqueceuSenha.addMouseListener(new MouseAdapter() {
-        //     @Override
-        //     public void mouseClicked(MouseEvent e) {
-        //         JOptionPane.showMessageDialog(tela, "Função de recuperação de senha ainda não implementada.", "Recuperar senha", JOptionPane.INFORMATION_MESSAGE);
-        //     }
-        // });
-
-        // Engrenagem
         int margemSuperior = 20;
         int margemDireita = 30;
         int larguraBotao = 40;
