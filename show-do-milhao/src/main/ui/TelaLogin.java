@@ -95,13 +95,12 @@ public class TelaLogin {
                 String email = campoEmail.getText().trim().toLowerCase();
                 
                 if (email.endsWith("@p4ed.com")) {
-                    tela.dispose(); // fecha tela atual
-                    new TelaQuizInicial(); // abre tela quiz inicial para p4ed.com
+                    tela.dispose();
+                    new TelaQuizInicial();
                 } else if (email.endsWith("@sistemapoliedro.com.br")) {
-                    tela.dispose(); // fecha tela atual
-                    new TelaQuizInicialProf(); // abre tela quiz inicial para sistemapoliedro.com.br
+                    tela.dispose();
+                    new TelaQuizInicialProf();
                 } else {
-                    // Opcional: exibir uma mensagem de erro para email inválido ou domínio não suportado
                     JOptionPane.showMessageDialog(tela, "E-mail inválido ou domínio não reconhecido.", "Erro", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -114,12 +113,11 @@ public class TelaLogin {
         esqueceuSenha.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         painelMenor.add(esqueceuSenha);
 
-        // Adiciona o clique para abrir TelaRecuperarSenha
         esqueceuSenha.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                tela.dispose(); // fecha tela atual
-                new TelaRecuperarSenha(); // abre tela de recuperação de senha
+                tela.dispose();
+                new TelaRecuperarSenha();
             }
         });
 
