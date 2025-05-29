@@ -103,6 +103,12 @@ public class TelaCadastro {
                 String nome = campoUsuario.getText().trim();
                 String email = campoEmail.getText().trim();
                 String senha = new String(campoSenha.getPassword()).trim();
+
+                // Fecha a tela atual
+                tela.dispose();
+
+                // Abre a tela TelaQuizInicialProf
+                new TelaQuizInicialProf();
             }
         });
 
@@ -239,7 +245,7 @@ public class TelaCadastro {
                 public void focusGained(java.awt.event.FocusEvent e) {
                     if (new String(getPassword()).equals(text)) {
                         setText("");
-                        setEchoChar('•');
+                        setEchoChar('\u2022');
                         setForeground(Color.BLACK);
                     }
                 }

@@ -30,10 +30,9 @@ public class TelaQuizInicial {
         JLabel logoLabel = new JLabel(logoIcon);
         painelEsquerdo.add(logoLabel);
 
-        // ↓↓↓ Imagem Poliedro REDUZIDA ↓↓↓
         ImageIcon poliedroIconOriginal = new ImageIcon("../assets/logo-poliedro-2.png");
         Image imagemPoliedroOriginal = poliedroIconOriginal.getImage();
-        int novaLarguraPoliedro = 70; // Reduzido
+        int novaLarguraPoliedro = 70;
         int novaAlturaPoliedro = (novaLarguraPoliedro * poliedroIconOriginal.getIconHeight()) / poliedroIconOriginal.getIconWidth();
         Image imagemPoliedroRedimensionada = imagemPoliedroOriginal.getScaledInstance(novaLarguraPoliedro, novaAlturaPoliedro, Image.SCALE_SMOOTH);
         ImageIcon poliedroIcon = new ImageIcon(imagemPoliedroRedimensionada);
@@ -89,39 +88,5 @@ public class TelaQuizInicial {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new TelaQuizInicial());
-    }
-}
-
-class BotaoArredondado extends JButton {
-    private int arcWidth = 45;
-    private int arcHeight = 45;
-    private Color corFundo;
-    private Color corTexto;
-
-    public BotaoArredondado(String texto, Color corFundo, Color corTexto) {
-        super(texto);
-        this.corFundo = corFundo;
-        this.corTexto = corTexto;
-        setContentAreaFilled(false);
-        setFocusPainted(false);
-        setBorderPainted(false);
-        setForeground(corTexto);
-        setFont(new Font("Arial", Font.BOLD, 24));
-        setHorizontalAlignment(SwingConstants.CENTER);
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g.create();
-        g2.setColor(corFundo);
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.fillRoundRect(0, 0, getWidth(), getHeight(), arcWidth, arcHeight);
-        super.paintComponent(g);
-        g2.dispose();
-    }
-
-    @Override
-    public boolean isOpaque() {
-        return false;
     }
 }

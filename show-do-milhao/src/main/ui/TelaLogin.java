@@ -89,12 +89,39 @@ public class TelaLogin {
         btnEntrar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         painelMenor.add(btnEntrar);
 
+        btnEntrar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String email = campoEmail.getText().trim().toLowerCase();
+                
+                if (email.endsWith("@p4ed.com")) {
+                    tela.dispose(); // fecha tela atual
+                    new TelaQuizInicial(); // abre tela quiz inicial para p4ed.com
+                } else if (email.endsWith("@sistemapoliedro.com.br")) {
+                    tela.dispose(); // fecha tela atual
+                    new TelaQuizInicialProf(); // abre tela quiz inicial para sistemapoliedro.com.br
+                } else {
+                    // Opcional: exibir uma mensagem de erro para email inválido ou domínio não suportado
+                    JOptionPane.showMessageDialog(tela, "E-mail inválido ou domínio não reconhecido.", "Erro", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
         JLabel esqueceuSenha = new JLabel("Esqueceu a senha?");
         esqueceuSenha.setFont(new Font("Arial", Font.PLAIN, 14));
         esqueceuSenha.setForeground(new Color(60, 120, 200));
         esqueceuSenha.setBounds((500 - 140) / 2, 470, 140, 20);
         esqueceuSenha.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         painelMenor.add(esqueceuSenha);
+
+        // Adiciona o clique para abrir TelaRecuperarSenha
+        esqueceuSenha.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                tela.dispose(); // fecha tela atual
+                new TelaRecuperarSenha(); // abre tela de recuperação de senha
+            }
+        });
 
         int margemSuperior = 20;
         int margemDireita = 30;
@@ -229,7 +256,7 @@ public class TelaLogin {
                 public void focusGained(java.awt.event.FocusEvent e) {
                     if (new String(getPassword()).equals(text)) {
                         setText("");
-                        setEchoChar('•');
+                        setEchoChar('\u2022');
                         setForeground(Color.BLACK);
                     }
                 }

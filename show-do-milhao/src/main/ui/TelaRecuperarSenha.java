@@ -225,7 +225,7 @@ public class TelaRecuperarSenha {
                 public void focusGained(java.awt.event.FocusEvent e) {
                     if (new String(getPassword()).equals(text)) {
                         setText("");
-                        setEchoChar('•');
+                        setEchoChar('\u2022');
                         setForeground(Color.BLACK);
                     }
                 }
