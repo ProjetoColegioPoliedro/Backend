@@ -1,3 +1,5 @@
+package model;
+
 public class Alternativa {
     private int idAlternativa; // Corresponde a id_alternativa (PK)
     private String texto;

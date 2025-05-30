@@ -1,3 +1,5 @@
+package model;
+
 public class QuestaoAlternativa {
     private int idQa; // Corresponde a id_qa (PK)
     private int idQuestao; // Corresponde a id_questao (FK)

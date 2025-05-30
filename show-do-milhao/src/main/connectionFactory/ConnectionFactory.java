@@ -1,3 +1,5 @@
+package connectionFactory;
+
 // Conexão com MySQL
 
 import java.sql.Connection;
@@ -78,5 +80,10 @@ public class ConnectionFactory {
         } else {
             System.out.println("Não Conectou");
         }
+    }
+
+    public static Connection getConnection() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getConnection'");
     }
 }

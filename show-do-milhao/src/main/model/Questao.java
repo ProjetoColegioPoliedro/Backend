@@ -1,3 +1,5 @@
+package model;
+
 public class Questao {
 
     private int idQuestao;          // Corresponde a id_questao (PK no banco)

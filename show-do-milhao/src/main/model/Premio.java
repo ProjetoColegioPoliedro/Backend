@@ -1,3 +1,5 @@
+package model;
+
 public class Premio {
     private int idPremio; // Corresponde a id_premio (PK)
     private String descricao; // Corresponde a descricao
