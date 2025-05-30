@@ -1,3 +1,5 @@
+package model;
+
 public class Aluno {
     private int idAluno; // Corresponde a id_aluno (PK)
     private String nome; // Corresponde a nome

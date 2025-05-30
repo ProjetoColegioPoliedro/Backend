@@ -1,3 +1,5 @@
+package model;
+
 public class Professor { // Ou Administrador
     private int idProfessor; // Corresponde a id_professor (PK)
     private String nome; // Corresponde a nome
