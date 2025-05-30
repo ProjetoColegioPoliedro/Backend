@@ -1,8 +1,10 @@
+package main.view;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 public class TelaCadastro extends JFrame{
-    TelaCadastro(){
+    public TelaCadastro(Runnable telaAreaRes){
         // Cores adicionais
         var cinza = new Color(217, 217, 217);
         var rosa = new Color(238, 33, 82);
@@ -12,7 +14,7 @@ public class TelaCadastro extends JFrame{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(710, 800);
         setLocationRelativeTo(null);
-        
+
         var painelInicial = new JPanel(null, true);
         painelInicial.setSize(800, 800);
         painelInicial.setBackground(roxo);
@@ -44,7 +46,7 @@ public class TelaCadastro extends JFrame{
         digiteEmail.setBounds(90, 270, 320, 40);
         painelMenor.add(digiteEmail);
         digiteEmail.setFont(new Font("New Cordial", Font.ITALIC, 10));
-        
+
         var email = new JLabel("E-mail");
         email.setFont(new Font("Roboto", Font.BOLD, 12));
         email.setBounds(90, 250, 200, 20); // ajuste a altura
@@ -60,7 +62,7 @@ public class TelaCadastro extends JFrame{
 
         var senha = new JLabel("Senha");
         senha.setFont(new Font("Roboto Thin", Font.BOLD, 12));
-        senha.setBounds(90, 320, 200, 20); 
+        senha.setBounds(90, 320, 200, 20);
         painelMenor.add(senha);
 
 
@@ -73,8 +75,7 @@ public class TelaCadastro extends JFrame{
         cancelar.setForeground(Color.WHITE);
         cancelar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                var tAR = new TelaAreaRestrita();
-                tAR.setVisible(true);
+                telaAreaRes.run();
                 dispose();
             }
         });
@@ -90,23 +91,23 @@ public class TelaCadastro extends JFrame{
         cadastro.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent evento){
-            if ((digiteEmail.getText().trim().isEmpty()) || (digiteSenha.getPassword().length == 0)){
-                JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos!", "ERRO - CAMPO VAZIO", JOptionPane.WARNING_MESSAGE);
-                    }
-            else {
-                JOptionPane.showMessageDialog(null, "Cadastro realizado com sucesso!", "Confimação de cadastro", JOptionPane.INFORMATION_MESSAGE);
-            } 
-        }
+                if ((digiteEmail.getText().trim().isEmpty()) || (digiteSenha.getPassword().length == 0)){
+                    JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos!", "ERRO - CAMPO VAZIO", JOptionPane.WARNING_MESSAGE);
+                }
+                else {
+                    JOptionPane.showMessageDialog(null, "Cadastro realizado com sucesso!", "Confimação de cadastro", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
         });
-        
+
         // Cadastro
         var cadastrar = new JLabel("Cadastrar");
         painelMenor.add(cadastrar);
         cadastrar.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 20));
         cadastrar.setBounds(90, 100, 200, 100);
-        
+
         // Logo - Poliedro
-        var icone = new ImageIcon("image.png");
+        var icone = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/image.png");
         var poliedro = icone.getImage().getScaledInstance(140, 70, Image.SCALE_SMOOTH);
         var imagemPoliedro = new JLabel(new ImageIcon(poliedro));
         painelMenor.add(imagemPoliedro);
@@ -129,7 +130,7 @@ public class TelaCadastro extends JFrame{
 
         // Dimensionamento de tela
         setExtendedState(Frame.MAXIMIZED_BOTH);
-        
+
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent evento) {
@@ -156,8 +157,5 @@ public class TelaCadastro extends JFrame{
         msgm.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 12));
         msgm.setForeground(rosa);
         msgm.setBounds(90, 350, 300, 100);
-        
-        setVisible(true);
-        
-        }   
     }
+}
