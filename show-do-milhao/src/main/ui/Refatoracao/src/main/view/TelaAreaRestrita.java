@@ -126,7 +126,7 @@ public class TelaAreaRestrita extends JFrame {
         painelBranco.add(voltar);
         voltar.setFont(new Font("Montserrat", Font.PLAIN, 18));
         voltar.setBounds(190, 490, 110, 30);
-        voltar.setBackground(Color.BLACK);
+        voltar.setBackground(rosa);
         voltar.setForeground(Color.WHITE);
         voltar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent voltarTela) {
