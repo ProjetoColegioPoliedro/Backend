@@ -1,30 +1,33 @@
+package main.view;
+
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 
-public class TelaTemaPeguntas extends JFrame{
-    TelaTemaPeguntas(){
+public class TelaTemaPerguntas extends JFrame{
+    public TelaTemaPerguntas(Runnable voltaUltimaTela, Runnable partida){
+
         var rosa = new Color(238, 33, 82);
-        var roxo = new Color(20, 14, 40); 
-        var check = new ImageIcon("check.png");
-        var xIcon = new ImageIcon("x.png");
-        
+        var roxo = new Color(20, 14, 40);
+        var check = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/check.png");
+        var xIcon = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/x.png");
+
         // Criação da tela
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1000, 1000);
         setExtendedState(Frame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
         setResizable(false);
-        
+
         var fundoTela = new JPanel(null, true);
         fundoTela.setBackground(roxo);
         setContentPane(fundoTela);
-        
+
         var painelMenor = new JPanel(null);
         painelMenor.setBounds(70, 90, 1400, 650);
         painelMenor.setBackground(Color.WHITE);
         fundoTela.add(painelMenor);
-                
+
         // "Tema das perguntas"
         var temaPerguntas = new JLabel("Escolha as matérias: ");
         temaPerguntas.setBounds(500, 15, 500, 40);
@@ -46,7 +49,7 @@ public class TelaTemaPeguntas extends JFrame{
         txtPort.setFont(new Font("Montserrat", Font.ITALIC, 40));
         txtPort.setForeground(Color.BLACK);
         txtPort.setBounds(65, 95, 300, 60);
-        
+
         var matematica = new JCheckBox();
         painelMenor.add(matematica);
         matematica.setBounds(273, 202, 50, 50);
@@ -60,7 +63,7 @@ public class TelaTemaPeguntas extends JFrame{
         txtMat.setFont(new Font("Montserrat", Font.ITALIC, 40));
         txtMat.setForeground(Color.BLACK);
         txtMat.setBounds(65, 190, 300, 60);
-        
+
         var ingles = new JCheckBox("Inglês");
         painelMenor.add(ingles);
         ingles.setBounds(174, 295, 50, 50);
@@ -74,7 +77,7 @@ public class TelaTemaPeguntas extends JFrame{
         txtIng.setFont(new Font("Montserrat", Font.ITALIC, 40));
         txtIng.setForeground(Color.BLACK);
         txtIng.setBounds(65, 285, 300, 60);
-        
+
         var cNatureza = new JCheckBox();
         painelMenor.add(cNatureza);
         cNatureza.setBounds(445, 390, 50, 50);
@@ -88,7 +91,7 @@ public class TelaTemaPeguntas extends JFrame{
         txtCNa.setFont(new Font("Montserrat", Font.ITALIC, 40));
         txtCNa.setForeground(Color.BLACK);
         txtCNa.setBounds(65, 380, 400, 60);
-        
+
         var cHumanas = new JCheckBox();
         painelMenor.add(cHumanas);
         cHumanas.setBounds(400, 485, 50, 50);
@@ -103,6 +106,18 @@ public class TelaTemaPeguntas extends JFrame{
         txtChu.setForeground(Color.BLACK);
         txtChu.setBounds(65, 475, 400, 60);
 
+//        var icone = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/settings.png");
+//        var image = icone.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+//        var config = new JLabel(new ImageIcon(image));
+//        fundoTela.add(config);
+//        config.setBounds(1460, 20, 60, 60);
+//        config.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e){
+//                configs.run();
+//            }
+//        });
+
         var iPartida = new JButton("Iniciar partida");
         iPartida.setFont(new Font("Montserrat", Font.BOLD, 20));
         iPartida.setForeground(Color.BLACK);
@@ -111,28 +126,24 @@ public class TelaTemaPeguntas extends JFrame{
         iPartida.setBounds(1170, 560, 200, 60);
         iPartida.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                var tP = new TelaPartida();
-                tP.setVisible(true);
+                partida.run();
                 dispose();
             }
-        }); 
+        });
 
-        var icone = new ImageIcon("seta.png");
-        var imagem = icone.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+        var volta = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/seta.png");
+        var imagem = volta.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
         var seta = new JLabel(new ImageIcon(imagem));
         fundoTela.add(seta);
         seta.setBounds(20, 20, 60, 60);
         seta.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e){
-                var tMI = new TelaMenuInicial();
-                tMI.setVisible(true);
+            public void mouseClicked(MouseEvent e) {
+                voltaUltimaTela.run();
                 dispose();
             }
         });
+    }
 
-        
 
-        setVisible(true);
-        }
 }

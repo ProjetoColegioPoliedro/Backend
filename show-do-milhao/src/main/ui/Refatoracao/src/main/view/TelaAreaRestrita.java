@@ -1,9 +1,12 @@
+package main.view;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
 public class TelaAreaRestrita extends JFrame {
-    TelaAreaRestrita() {
+    public TelaAreaRestrita(Runnable telaMenuAdmin, Runnable configs, Runnable telaEditaQuest,
+                            Runnable telaAdicionaquest, Runnable telaConsRank, Runnable telaCadastro) {
         var cinza = new Color(217, 217, 217);
         var rosa = new Color(238, 33, 82);
         var roxo = new Color(20, 14, 40);
@@ -13,38 +16,37 @@ public class TelaAreaRestrita extends JFrame {
         setSize(710, 800);
         setLocationRelativeTo(null);
         setExtendedState(Frame.MAXIMIZED_BOTH);
-        
+
         var corFundo = new JPanel(null);
         add(corFundo);
         corFundo.setBackground(roxo);
         corFundo.setSize(800, 800);
-        
+
         var painelBranco = new JPanel(null);
         painelBranco.setBackground(cinza);
         painelBranco.setBounds(100, 100, 500, 550);
         corFundo.add(painelBranco, BorderLayout.CENTER);
-        
-        // Adicionando imagens 
-        var icone = new ImageIcon("image.png");
+
+        // Adicionando imagens
+        var icone = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/image.png");
         var poliedro = icone.getImage().getScaledInstance(140, 70, Image.SCALE_SMOOTH);
         var imagemPoliedro = new JLabel(new ImageIcon(poliedro));
         painelBranco.add(imagemPoliedro);
         imagemPoliedro.setBounds(170, 21, 150, 80);
-        
-        // var iconeConfig = new ImageIcon("settings.png");
-        // var image = iconeConfig.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
-        // var config = new JLabel(new ImageIcon(image));
-        // corFundo.add(config);
-        // config.setBounds(1460, 20, 60, 60);
-        // config.addMouseListener(new MouseAdapter() {
-        //     @Override
-        //     public void mouseClicked(MouseEvent e){
-        //         var tC = new TelaConfiguracoes();
-        //         tC.setVisible(true);
-        //         dispose();
-        //     }
-        // });
-        
+
+         var iconeConfig = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/settings.png");
+         var image = iconeConfig.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+         var config = new JLabel(new ImageIcon(image));
+         corFundo.add(config);
+         config.setBounds(1460, 20, 60, 60);
+         config.addMouseListener(new MouseAdapter() {
+             @Override
+             public void mouseClicked(MouseEvent e){
+                 configs.run();
+                 dispose();
+             }
+         });
+
         // Ajuste nas dimensões
         addComponentListener(new ComponentAdapter() {
             @Override
@@ -66,7 +68,7 @@ public class TelaAreaRestrita extends JFrame {
             }
         });
 
-        
+
         // Botões
         var addPergunta = new JButton("Adicionar pergunta");
         painelBranco.add(addPergunta);
@@ -76,8 +78,7 @@ public class TelaAreaRestrita extends JFrame {
         addPergunta.setFont(new Font("Montserrat", Font.BOLD, 18));
         addPergunta.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent mudaTela){
-                var tAP = new TelaAdicionaPerguntas();
-                tAP.setVisible(true);
+                telaAdicionaquest.run();
                 dispose();
             }
         });
@@ -90,8 +91,7 @@ public class TelaAreaRestrita extends JFrame {
         edPergunta.setForeground(Color.WHITE);
         edPergunta.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent novaTela){
-                var tEP = new TelaEditaPergunta();
-                tEP.setVisible(true);
+                telaEditaQuest.run();
                 dispose();
             }
         });
@@ -104,12 +104,11 @@ public class TelaAreaRestrita extends JFrame {
         conRank.setForeground(Color.WHITE);
         conRank.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent mudaTela) {
-                var tCR = new TelaConsultaRanking();
-                tCR.setVisible(true);
+                telaConsRank.run();
                 dispose();
             }
         });
-        
+
         var cadAluno = new JButton("Cadastrar aluno");
         painelBranco.add(cadAluno);
         cadAluno.setFont(new Font("Montserrat", Font.BOLD, 18));
@@ -118,8 +117,7 @@ public class TelaAreaRestrita extends JFrame {
         cadAluno.setForeground(Color.WHITE);
         cadAluno.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent voltarTela) {
-                var tC = new TelaCadastro();
-                tC.setVisible(true);
+                telaCadastro.run();
                 dispose();
             }
         });
@@ -132,12 +130,9 @@ public class TelaAreaRestrita extends JFrame {
         voltar.setForeground(Color.WHITE);
         voltar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent voltarTela) {
-                var tMIA = new TelaMenuInicialAdmin();
-                tMIA.setVisible(true);
+                telaMenuAdmin.run();
                 dispose();
             }
         });
-
-        setVisible(true);
     }
 }

@@ -1,23 +1,25 @@
+package main.view;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-public class TelaAdicionaPerguntas extends JFrame{
-    TelaAdicionaPerguntas(){
+public class TelaAdicionaPergunta extends JFrame{
+    public TelaAdicionaPergunta(Runnable telaAreaRes){
         var rosa = new Color(238, 33, 82);
-        var roxo = new Color(20, 14, 40); 
+        var roxo = new Color(20, 14, 40);
         var ciano = new Color(30, 180, 195);
         var vermelho = new Color(224, 73, 73);
         var verde = new Color(81, 207, 123);
-       
+
         // Criação da tela
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1000, 1000);
         setExtendedState(Frame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
         setResizable(false);
-        
+
         var fundoTela = new JPanel(null, true);
         fundoTela.setBackground(roxo);
         setContentPane(fundoTela);
@@ -29,35 +31,35 @@ public class TelaAdicionaPerguntas extends JFrame{
         caixaRespA.setForeground(Color.WHITE);
         caixaRespA.setBorder(BorderFactory.createLineBorder(ciano, 7));
         fundoTela.add(caixaRespA);
-        
+
         var caixaRespB = new JLabel("Resposta");
         caixaRespB.setBounds(300, 330, 1000, 80);
         caixaRespB.setFont(new Font("Montserrat", Font.ITALIC, 20));
         caixaRespB.setForeground(Color.WHITE);
         caixaRespB.setBorder(BorderFactory.createLineBorder(ciano, 7));
         fundoTela.add(caixaRespB);
-        
+
         var caixaRespC = new JLabel("Resposta");
         caixaRespC.setBounds(300, 440, 1000, 80);
         caixaRespC.setFont(new Font("Montserrat", Font.ITALIC, 20));
         caixaRespC.setForeground(Color.WHITE);
         caixaRespC.setBorder(BorderFactory.createLineBorder(ciano, 7));
         fundoTela.add(caixaRespC);
-        
+
         var caixaRespD = new JLabel("Resposta");
         caixaRespD.setBounds(300, 550, 1000, 80);
         caixaRespD.setFont(new Font("Montserrat", Font.ITALIC, 20));
         caixaRespD.setForeground(Color.WHITE);
         caixaRespD.setBorder(BorderFactory.createLineBorder(ciano, 7));
         fundoTela.add(caixaRespD);
-        
+
         var caixaPerg = new JLabel("Pergunta");
         caixaPerg.setBounds(180, 70, 1200, 80);
         caixaPerg.setFont(new Font("Montserrat", Font.ITALIC,20));
         caixaPerg.setForeground(Color.WHITE);
         caixaPerg.setBorder(BorderFactory.createLineBorder(rosa, 7));
         fundoTela.add(caixaPerg);
-        
+
         // Guardando em lista
         var respostas = new ArrayList<JLabel>();
         respostas.add(caixaRespA);
@@ -79,7 +81,7 @@ public class TelaAdicionaPerguntas extends JFrame{
         // };
 
         // Arternativas
-        var circulo = new ImageIcon("circuloAlternativa.png");
+        var circulo = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/circuloAlternativa.png");
         var c = circulo.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
         var circ = new JLabel(new ImageIcon(c));
         fundoTela.add(circ);
@@ -90,7 +92,7 @@ public class TelaAdicionaPerguntas extends JFrame{
         letraA.setFont(new Font("Montserrat", Font.BOLD, 40));
         letraA.setForeground(Color.WHITE);
         circ.add(letraA);
-       
+
         var circulo1 = new JLabel(new ImageIcon(c));
         fundoTela.add(circulo1);
         circulo1.setBounds(220, 345, 50, 50);
@@ -100,7 +102,7 @@ public class TelaAdicionaPerguntas extends JFrame{
         letraB.setFont(new Font("Montserrat", Font.BOLD, 40));
         letraB.setForeground(Color.WHITE);
         circulo1.add(letraB);
-       
+
         var circulo2 = new JLabel(new ImageIcon(c));
         fundoTela.add(circulo2);
         circulo2.setBounds(220, 460, 50, 50);
@@ -110,7 +112,7 @@ public class TelaAdicionaPerguntas extends JFrame{
         letraC.setFont(new Font("Montserrat", Font.BOLD, 40));
         letraC.setForeground(Color.WHITE);
         circulo2.add(letraC);
-       
+
         var circulo3 = new JLabel(new ImageIcon(c));
         fundoTela.add(circulo3);
         circulo3.setBounds(220, 560, 50, 50);
@@ -130,15 +132,15 @@ public class TelaAdicionaPerguntas extends JFrame{
         var icone2 = new JLabel(new ImageIcon(edicao));
         caixaRespB.add(icone2);
         icone2.setBounds(935, 12, 50, 50);
-        
+
         var icone3 = new JLabel(new ImageIcon(edicao));
         caixaRespC.add(icone3);
         icone3.setBounds(935, 12, 50, 50);
-        
+
         var icone4 = new JLabel(new ImageIcon(edicao));
         caixaRespD.add(icone4);
         icone4.setBounds(935, 12, 50, 50);
-        
+
         var icone5 = new JLabel(new ImageIcon(edicao));
         caixaPerg.add(icone5);
         icone5.setBounds(1130, 12, 50, 50);
@@ -152,8 +154,7 @@ public class TelaAdicionaPerguntas extends JFrame{
         cancelar.setForeground(Color.WHITE);
         cancelar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                var tAR = new TelaAreaRestrita();
-                tAR.setVisible(true);
+                telaAreaRes.run();
                 dispose();
             }
         });
@@ -166,9 +167,7 @@ public class TelaAdicionaPerguntas extends JFrame{
         salvar.setForeground(Color.WHITE);
         salvar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                JOptionPane.showMessageDialog(null, "Pergunta adicionada com sucesso!", "Confirmação", 2);
-                var tAR = new TelaAreaRestrita();
-                tAR.setVisible(true);
+                telaAreaRes.run();
                 dispose();
             }
         });
@@ -185,7 +184,7 @@ public class TelaAdicionaPerguntas extends JFrame{
         fundoTela.add(nivelDif);
         nivelDif.setBounds(390, 170, 100, 30);
         nivelDif.setBackground(rosa);
-        
+
         var materia = new JLabel("Materia: ");
         materia.setBounds(1010, 133, 200, 100);
         materia.setFont(new Font("Montserrat", Font.BOLD, 20));
@@ -197,7 +196,5 @@ public class TelaAdicionaPerguntas extends JFrame{
         fundoTela.add(materias);
         materias.setBounds(1100, 170, 120, 30);
         materias.setBackground(rosa);
-
-        setVisible(true);
     }
 }
