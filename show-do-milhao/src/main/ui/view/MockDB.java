@@ -1,4 +1,4 @@
-package main.model;
+package view;
 
 public class MockDB {
     public int verify(String nome, String senha){

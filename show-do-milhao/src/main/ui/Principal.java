@@ -1,4 +1,4 @@
-import main.main.Navegador;
+import view.Navegador;
 
 public class Principal{
     public static void main(String[] args) {

@@ -1,6 +1,4 @@
-package main.main;
-
-import main.view.*;
+package view;
 
 public class Navegador {
     private void showTelaInicial(){

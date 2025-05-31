@@ -1,11 +1,12 @@
-package main.view;
+package view;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class TelaHistAdmin extends JFrame{
-    public TelaHistAdmin(Runnable telaMenuAdmin, Runnable configs){
+public class TelaHistorico extends JFrame{
+    public TelaHistorico(Runnable telaMenuEst, Runnable configs){
+        // var rosa = new Color(238, 33, 82);
         var roxo = new Color(20, 14, 40);
 
         // Tela
@@ -38,7 +39,7 @@ public class TelaHistAdmin extends JFrame{
         seta.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e){
-                telaMenuAdmin.run();
+                telaMenuEst.run();
                 dispose();
             }
         });

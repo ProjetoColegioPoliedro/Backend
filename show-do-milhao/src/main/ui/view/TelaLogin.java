@@ -1,7 +1,4 @@
-package main.view;
-//import com.project.main.main.mainn.model.MockDB;
-import main.model.MockDB;
-
+package view;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
