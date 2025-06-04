@@ -34,7 +34,7 @@ public class TelaTempoEncerrado extends JFrame{
         mostraSolucao.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                telaSolucao.run(); // Execute the callback
+                telaSolucao.run();
                 dispose();
             }
         });

@@ -9,8 +9,8 @@ public class TelaTemaPerguntas extends JFrame{
 
         var rosa = new Color(238, 33, 82);
         var roxo = new Color(20, 14, 40);
-        var check = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/check.png");
-        var xIcon = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/x.png");
+        var check = new ImageIcon("assets\\Check.png");
+        var xIcon = new ImageIcon("assets\\x.png");
 
         // Criação da tela
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -131,7 +131,7 @@ public class TelaTemaPerguntas extends JFrame{
             }
         });
 
-        var volta = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/seta.png");
+        var volta = new ImageIcon("assets\\seta.png");
         var imagem = volta.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
         var seta = new JLabel(new ImageIcon(imagem));
         fundoTela.add(seta);

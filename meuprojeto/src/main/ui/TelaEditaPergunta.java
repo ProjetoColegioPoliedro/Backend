@@ -20,7 +20,7 @@ public class TelaEditaPergunta extends JFrame{
         corFundo.setBackground(roxo);
         corFundo.setSize(800, 800);
 
-        var icone = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/seta.png");
+        var icone = new ImageIcon("assets\\seta.png");
         var imagem = icone.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
         var seta = new JLabel(new ImageIcon(imagem));
         corFundo.add(seta);
@@ -34,7 +34,7 @@ public class TelaEditaPergunta extends JFrame{
         });
 
         // Pastas
-        var primeiraPasta = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/pastaCiana.png");
+        var primeiraPasta = new ImageIcon("assets\\pastaCiana.png");
         var pP = primeiraPasta.getImage().getScaledInstance(300, 300, Image.SCALE_SMOOTH);
         var pastaCiana = new JLabel(new ImageIcon(pP));
         corFundo.add(pastaCiana);
@@ -46,7 +46,7 @@ public class TelaEditaPergunta extends JFrame{
         pastaTxt.setBounds(100, 90, 150, 150);
         pastaCiana.add(pastaTxt);
 
-        var segundaPasta = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/pastaAmarela.png");
+        var segundaPasta = new ImageIcon("assets\\pastaAmarela.png");
         var sP = segundaPasta.getImage().getScaledInstance(300, 300, Image.SCALE_SMOOTH);
         var pastaAmarela = new JLabel(new ImageIcon(sP));
         corFundo.add(pastaAmarela);
@@ -58,7 +58,7 @@ public class TelaEditaPergunta extends JFrame{
         pastaTxt1.setBounds(90, 90, 150, 150);
         pastaAmarela.add(pastaTxt1);
 
-        var terceiraPasta = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/pastaVermelha.png");
+        var terceiraPasta = new ImageIcon("assets\\pastaVermelha.png");
         var tP = terceiraPasta.getImage().getScaledInstance(300, 300, Image.SCALE_SMOOTH);
         var pastaVermelha = new JLabel(new ImageIcon(tP));
         corFundo.add(pastaVermelha);

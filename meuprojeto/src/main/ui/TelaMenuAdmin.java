@@ -28,13 +28,13 @@ public class TelaMenuAdmin extends JFrame{
 		ladoEsquerdo.setBackground(amarelo);
 		
 		// Adicionando imagens
-		var logoMilhao = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/logoPrincipal.png");
+		var logoMilhao = new ImageIcon("assets\\logoPrincipal.png");
 		var iconeTelaInicial = logoMilhao.getImage().getScaledInstance(600, 600, Image.SCALE_SMOOTH);
 		var showMilhao = new JLabel(new ImageIcon(iconeTelaInicial));
 		showMilhao.setBounds(-10, -40, 600, 600);
 		ladoEsquerdo.add(showMilhao);
 		
-		var icone = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/settings.png");
+		var icone = new ImageIcon("assets\\settings.png");
 		var imagem = icone.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
 		var config = new JLabel(new ImageIcon(imagem));
 		ladoDireito.add(config);
@@ -48,7 +48,7 @@ public class TelaMenuAdmin extends JFrame{
 		});
 		
 		
-		var segundoIcone = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/poliedroFundoBranco.png");
+		var segundoIcone = new ImageIcon("assets\\poliedroFundoBranco.png");
 		var poliedro = segundoIcone.getImage().getScaledInstance(170, 170, Image.SCALE_SMOOTH);
 		var imagemPoliedro = new JLabel(new ImageIcon(poliedro));
 		ladoEsquerdo.add(imagemPoliedro);

@@ -20,7 +20,7 @@ public class TelaConsultaRanking extends JFrame{
         corFundo.setBackground(roxo);
         corFundo.setSize(800, 800);
 
-        var icone = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/seta.png");
+        var icone = new ImageIcon("assets\\seta.png");
         var imagem = icone.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
         var seta = new JLabel(new ImageIcon(imagem));
         corFundo.add(seta);

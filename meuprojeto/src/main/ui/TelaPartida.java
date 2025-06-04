@@ -139,10 +139,9 @@ public class TelaPartida extends JFrame {
         txtErrar.setFont(new Font("Montserrat", Font.BOLD, 19));
         txtErrar.setBackground(laranja);
         txtErrar.setForeground(Color.BLACK);
-        ;
         corFundo.add(txtErrar);
 
-        var errar = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/retanguloLateral.png");
+        var errar = new ImageIcon("assets\\retanguloLateral.png");
         var circErrar = errar.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH);
         var retanguloUm = new JLabel(new ImageIcon(circErrar));
         corFundo.add(retanguloUm);
@@ -155,7 +154,7 @@ public class TelaPartida extends JFrame {
         // txtErrar.setForeground(Color.WHITE);
         // corFundo.add(txtErrar);
 
-        var acertar = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/retanguloLateral.png");
+        var acertar = new ImageIcon("assets\\retanguloLateral.png");
         var circAcertar = acertar.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH);
         var retanguloDois = new JLabel(new ImageIcon(circAcertar));
         corFundo.add(retanguloDois);
@@ -177,8 +176,10 @@ public class TelaPartida extends JFrame {
         parar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showConfirmDialog(null, "Você tem certeza?", "Confirmação de resposta", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                solucao.run();
+                int resposta = JOptionPane.showConfirmDialog(null, "Você tem certeza?", "Confirmação de resposta", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                if(resposta == JOptionPane.YES_OPTION){
+                    solucao.run();
+                }
             }
         });
 
@@ -190,7 +191,7 @@ public class TelaPartida extends JFrame {
         corFundo.add(txtParar);
 
         // Alternativas
-        var circulo = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/circuloAlternativa.png");
+        var circulo = new ImageIcon("assets\\circuloAlternativa.png");
         var c = circulo.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
         var circ = new JLabel(new ImageIcon(c));
         corFundo.add(circ);

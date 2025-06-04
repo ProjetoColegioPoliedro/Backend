@@ -107,7 +107,7 @@ public class TelaCadastro extends JFrame{
         cadastrar.setBounds(90, 100, 200, 100);
 
         // Logo - Poliedro
-        var icone = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/image.png");
+        var icone = new ImageIcon("C:\\Users\\Admin\\QUIZFORTUNA\\assets\\image.png");
         var poliedro = icone.getImage().getScaledInstance(140, 70, Image.SCALE_SMOOTH);
         var imagemPoliedro = new JLabel(new ImageIcon(poliedro));
         painelMenor.add(imagemPoliedro);

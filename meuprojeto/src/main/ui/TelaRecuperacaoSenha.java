@@ -81,13 +81,13 @@ public class TelaRecuperacaoSenha extends JFrame{
 		login.setBounds(90, 120, 400, 100);
 		
 		// Adicionando imagens
-		var icon = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/image.png");
+		var icon = new ImageIcon("assets\\image.png");
 		var poliedro = icon.getImage().getScaledInstance(150, 80, Image.SCALE_SMOOTH);
 		var imagemPoliedro = new JLabel(new ImageIcon(poliedro));
 		painelMenor.add(imagemPoliedro);
 		imagemPoliedro.setBounds(160, 50, 170, 70);
 		
-		 var icone = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/settings.png");
+		 var icone = new ImageIcon("assets\\settings.png");
 		 var image = icone.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
 		 var config = new JLabel(new ImageIcon(image));
 		 painelInicial.add(config);

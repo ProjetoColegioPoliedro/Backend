@@ -112,7 +112,7 @@ public class TelaLogin extends JFrame{
 		painelMenor.add(imagemPoliedro);
 		imagemPoliedro.setBounds(170, 50, 150, 80);
 		
-		var icone = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/settings.png");
+		var icone = new ImageIcon("assets\\settings.png");
 		var image = icone.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
 		var config = new JLabel(new ImageIcon(image));
 		painelInicial.add(config);

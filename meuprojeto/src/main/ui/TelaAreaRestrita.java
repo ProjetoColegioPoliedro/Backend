@@ -28,13 +28,13 @@ public class TelaAreaRestrita extends JFrame {
         corFundo.add(painelBranco, BorderLayout.CENTER);
 
         // Adicionando imagens
-        var icone = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/image.png");
+        var icone = new ImageIcon("assets\\image.png");
         var poliedro = icone.getImage().getScaledInstance(140, 70, Image.SCALE_SMOOTH);
         var imagemPoliedro = new JLabel(new ImageIcon(poliedro));
         painelBranco.add(imagemPoliedro);
         imagemPoliedro.setBounds(170, 21, 150, 80);
 
-         var iconeConfig = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/settings.png");
+         var iconeConfig = new ImageIcon("assets\\settings.png");
          var image = iconeConfig.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
          var config = new JLabel(new ImageIcon(image));
          corFundo.add(config);

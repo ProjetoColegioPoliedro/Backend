@@ -81,7 +81,7 @@ public class TelaAdicionaPergunta extends JFrame{
         // };
 
         // Arternativas
-        var circulo = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/circuloAlternativa.png");
+        var circulo = new ImageIcon("assets\\circuloAlternativa.png"); 
         var c = circulo.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
         var circ = new JLabel(new ImageIcon(c));
         fundoTela.add(circ);
@@ -123,7 +123,7 @@ public class TelaAdicionaPergunta extends JFrame{
         letraD.setForeground(Color.WHITE);
         circulo3.add(letraD);
 
-        var edit = new ImageIcon("edit.png");
+        var edit = new ImageIcon("assets\\edit.png");
         var edicao = edit.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
         var iconeEdicao = new JLabel(new ImageIcon(edicao));
         caixaRespA.add(iconeEdicao);

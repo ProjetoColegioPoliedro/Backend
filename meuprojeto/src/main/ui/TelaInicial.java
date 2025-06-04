@@ -32,7 +32,7 @@ public class TelaInicial extends JFrame {
 		showMilhao.setBounds(-60, -40, 600, 600);
 		painelMenor.add(showMilhao);
 		
-		var icon = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/settings.png");
+		var icon = new ImageIcon("assets\\settings.png");
 		var image = icon.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
 		var config = new JLabel(new ImageIcon(image));
 		corFundo.add(config);
