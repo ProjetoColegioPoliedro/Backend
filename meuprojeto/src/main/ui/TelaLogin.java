@@ -106,7 +106,7 @@ public class TelaLogin extends JFrame{
 		});
 		
 		// Adicionando imagens
-		var icon = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/image.png");
+		var icon = new ImageIcon("assets\\logo-poliedro-2.png");
 		var poliedro = icon.getImage().getScaledInstance(150, 80, Image.SCALE_SMOOTH);
 		var imagemPoliedro = new JLabel(new ImageIcon(poliedro));
 		painelMenor.add(imagemPoliedro);

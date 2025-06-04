@@ -26,7 +26,7 @@ public class TelaInicial extends JFrame {
 		corFundo.add(painelMenor);
 		
 		// Adicionando imagens
-		var logoMilhao = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/logoPrincipal.png");
+		var logoMilhao = new ImageIcon("assets\\logo.png");
 		var iconeTelaInicial = logoMilhao.getImage().getScaledInstance(600, 600, Image.SCALE_SMOOTH);
 		var showMilhao = new JLabel(new ImageIcon(iconeTelaInicial));
 		showMilhao.setBounds(-60, -40, 600, 600);

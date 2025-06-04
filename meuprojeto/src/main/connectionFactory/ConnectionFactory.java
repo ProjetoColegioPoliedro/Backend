@@ -30,7 +30,7 @@ public class ConnectionFactory {
 
     public Connection obterConexao() throws Exception {
         // Coloquei um parâmetro de fuso para o MySQL
-        var s = String.format("jdbc:mysql://%s:%s/%s?useTimezone=true&serverTimezone=America/Sao_Paulo", host, port, db);
+        var s = String.format("mysql://avnadmin:AVNS_sN0NV7lU2hof1fe1Yas@show-do-milhao-show-do-milhao.l.aivencloud.com:15138/defaultdb?ssl-mode=REQUIRED", host, port, db);
         Connection c = DriverManager.getConnection(s, user, password);
         return c;
     }

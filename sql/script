@@ -1,0 +1,100 @@
+DROP DATABASE IF EXISTS quiz_fortuna;
+CREATE DATABASE quiz_fortuna;
+USE quiz_fortuna; 
+
+CREATE TABLE alternativa (
+  id_alternativa int NOT NULL AUTO_INCREMENT,
+  texto varchar(100) NOT NULL,
+  PRIMARY KEY (id_alternativa)
+);
+CREATE TABLE aluno (
+  id_aluno int NOT NULL AUTO_INCREMENT,
+  nome varchar(100) NOT NULL,
+  login_aluno varchar(50) NOT NULL,
+  senha varchar(50) NOT NULL,
+  ano_letivo int NOT NULL,
+  PRIMARY KEY (id_aluno),
+  CONSTRAINT aluno_chk_1 CHECK ((`login_aluno` like _utf8mb4'%.%@p4ed.com'))
+);
+CREATE TABLE historico_jogo (
+  id_historico int NOT NULL AUTO_INCREMENT,
+  data_partida date DEFAULT NULL,
+  acertos int NOT NULL,
+  erros int NOT NULL,
+  checkpoint_alcancado varchar(100) DEFAULT NULL,
+  pontuacao_total double DEFAULT NULL,
+  id_aluno int DEFAULT NULL,
+  PRIMARY KEY (id_historico),
+  KEY id_aluno (id_aluno),
+  CONSTRAINT historico_jogo_ibfk_1 FOREIGN KEY (id_aluno) REFERENCES aluno (id_aluno)
+);
+CREATE TABLE materia (
+  id_materia int NOT NULL AUTO_INCREMENT,
+  nome varchar(50) DEFAULT NULL,
+  PRIMARY KEY (id_materia)
+);
+CREATE TABLE nivel_dificuldade (
+  id_nivel int NOT NULL AUTO_INCREMENT,
+  descricao varchar(100) DEFAULT NULL,
+  PRIMARY KEY (id_nivel)
+);
+CREATE TABLE premio (
+  id_premio int NOT NULL AUTO_INCREMENT,
+  descricao varchar(200) DEFAULT NULL,
+  faixas_acertos int NOT NULL,
+  valor_simbolico double DEFAULT NULL,
+  PRIMARY KEY (id_premio)
+);
+CREATE TABLE professor_administrador (
+  id_professor int NOT NULL AUTO_INCREMENT,
+  nome varchar(100) NOT NULL,
+  login_professor varchar(50) NOT NULL,
+  senha varchar(50) NOT NULL,
+  PRIMARY KEY (id_professor),
+  CONSTRAINT professor_administrador_chk_1 CHECK ((`login_professor` like _utf8mb4'%.%@p4ed.com'))
+);
+CREATE TABLE questao (
+  id_questao int NOT NULL AUTO_INCREMENT,
+  enunciado varchar(200) NOT NULL,
+  explicacao_erro varchar(200) DEFAULT NULL,
+  ano_letivo int NOT NULL,
+  id_nivel int NOT NULL,
+  id_materia int NOT NULL,
+  ajuda varchar(200) NOT NULL,
+  PRIMARY KEY (id_questao),
+  KEY id_nivel (id_nivel),
+  KEY id_materia (id_materia),
+  CONSTRAINT questao_ibfk_1 FOREIGN KEY (id_nivel) REFERENCES nivel_dificuldade (id_nivel),
+  CONSTRAINT questao_ibfk_2 FOREIGN KEY (id_materia) REFERENCES materia (id_materia)
+);
+CREATE TABLE questao_alternativa (
+  id_qa int NOT NULL AUTO_INCREMENT,
+  id_questao int NOT NULL,
+  id_alternativa int NOT NULL,
+  correta tinyint(1) NOT NULL,
+  PRIMARY KEY (id_qa),
+  KEY id_questao (id_questao),
+  KEY id_alternativa (id_alternativa),
+  CONSTRAINT questao_alternativa_ibfk_1 FOREIGN KEY (id_questao) REFERENCES questao (id_questao),
+  CONSTRAINT questao_alternativa_ibfk_2 FOREIGN KEY (id_alternativa) REFERENCES alternativa (id_alternativa)
+);
+CREATE TABLE ranking (
+  id_ranking int NOT NULL AUTO_INCREMENT,
+  id_aluno int DEFAULT NULL,
+  pontuacao double DEFAULT NULL,
+  ultima_atualizacao date DEFAULT NULL,
+  PRIMARY KEY (id_ranking),
+  KEY id_aluno (id_aluno),
+  CONSTRAINT ranking_ibfk_1 FOREIGN KEY (id_aluno) REFERENCES aluno (id_aluno)
+);
+CREATE TABLE sessao_jogo (
+  id_sessao int NOT NULL AUTO_INCREMENT,
+  data_inicio date DEFAULT NULL,
+  data_fim date DEFAULT NULL,
+  modo_pratica tinyint(1) DEFAULT NULL,
+  pontuacao_total double DEFAULT NULL,
+  id_aluno int DEFAULT NULL,
+  PRIMARY KEY (id_sessao),
+  KEY id_aluno (id_aluno),
+  CONSTRAINT sessao_jogo_ibfk_1 FOREIGN KEY (id_aluno) REFERENCES aluno (id_aluno)
+);
