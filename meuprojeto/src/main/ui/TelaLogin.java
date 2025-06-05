@@ -3,6 +3,7 @@ package ui;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+import model.MockDB;
 
 public class TelaLogin extends JFrame{
 	public TelaLogin(Runnable voltaTelaAnterior, Runnable fgtSenha, Runnable configs, Runnable showTelaAdmin, Runnable showTelaMenuEstudante){
@@ -73,6 +74,21 @@ public class TelaLogin extends JFrame{
 				}
 				else {
 					JOptionPane.showMessageDialog(null, "Login efetuado com sucesso!", "Confimação de login", JOptionPane.INFORMATION_MESSAGE);
+
+					//função retorna se é administrador ou nao (1 ou 0)
+
+					int type;
+					MockDB mock = new MockDB();
+					type = mock.verify(digiteEmail.getText(), digiteSenha.getText());
+
+					if(type == 1){
+						showTelaAdmin.run();
+						dispose();
+					}
+					else{
+						showTelaMenuEstudante.run();
+						dispose();
+					}
 				}
 			}
 		});
