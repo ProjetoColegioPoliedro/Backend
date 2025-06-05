@@ -5,7 +5,7 @@ import javax.swing.*;
 import java.awt.event.*;
 
 public class TelaLogin extends JFrame{
-	public TelaLogin(Runnable voltaTelaAnterior, Runnable fgtSenha, Runnable configs, Runnable showTelaAdmin, Runnable showTelaMenu){
+	public TelaLogin(Runnable voltaTelaAnterior, Runnable fgtSenha, Runnable configs, Runnable showTelaAdmin, Runnable showTelaMenuEstudante){
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(710, 800);
 		setLocationRelativeTo(null);

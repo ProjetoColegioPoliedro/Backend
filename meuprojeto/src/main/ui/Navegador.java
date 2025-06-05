@@ -1,5 +1,4 @@
-package controller;
-import ui.*;
+package ui;
 
 public class Navegador {
     private void showTelaInicial(){
