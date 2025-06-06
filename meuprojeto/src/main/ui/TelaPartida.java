@@ -3,9 +3,9 @@ package ui;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;   // Mantém este
-import java.util.List;        // Mantém este
-import java.util.Collections; // Mantém este (pois Questao.getTextosAlternativas usa Collections.shuffle)
+import java.util.ArrayList;   
+import java.util.List;        
+import java.util.Collections;  
 import javax.swing.Timer;
 
 import model.Questao;
@@ -204,7 +204,6 @@ public class TelaPartida extends JFrame {
     }
 
     // Método auxiliar para configurar JLabels de resposta e adicionar listener
-    // Agora recebe os Runnables de ação de resposta
     private void configuraLabelResposta(JLabel label, int x, int y, Color borderColor, Runnable respostaCorretaAction, Runnable respostaIncorretaAction) {
         label.setBounds(x, y, 1000, 80);
         label.setFont(new Font("Montserrat", Font.ITALIC, 20));
@@ -243,9 +242,7 @@ public class TelaPartida extends JFrame {
                     } else {
                         // Caso de erro na busca da questão (altSelecionada, questaoAtual ou alternativaCorreta nulos)
                         JOptionPane.showMessageDialog(null, "Erro interno: Questão ou alternativa correta não carregada corretamente.", "Erro de Lógica", JOptionPane.ERROR_MESSAGE);
-                        // Você pode querer retornar ao menu ou encerrar o jogo aqui.
-                        // Para não travar, podemos voltar para a tela de origem (se tiver um Runnable para isso)
-                        // ou apenas fechar a tela.
+                       
                         dispose(); 
                     }
                 }
@@ -276,11 +273,7 @@ public class TelaPartida extends JFrame {
         }
         
         this.questaoAtual = novaQuestao;
-        this.segundos = 45; // Reinicia o cronômetro para a nova questão
-        // Você pode querer resetar o texto do cronometro aqui também
-        // JLabel cronometro = (JLabel) ((JPanel)circuloFinal.getComponent(0)).getComponent(0); // Exemplo se cronometro não for atributo
-        // if (cronometro != null) { cronometro.setText("45"); }
-
+        this.segundos = 45; 
         caixaPerg.setText("<html>" + novaQuestao.getEnunciado() + "</html>"); // Usa HTML para quebrar linha se o texto for longo
 
         List<String> textosAlternativas = novaQuestao.getTextosAlternativas(true); // Embaralha as alternativas
