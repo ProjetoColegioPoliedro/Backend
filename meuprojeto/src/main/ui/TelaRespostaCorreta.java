@@ -1,11 +1,12 @@
 package ui;
 
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 import java.awt.event.*;
 
 public class TelaRespostaCorreta extends JFrame{
-    public TelaRespostaCorreta(){
+
+    public TelaRespostaCorreta(Runnable proximaAcao){ // Modificado aqui
         // var rosa = new Color(238, 33, 82);
         var roxo = new Color(20, 14, 40);
 
@@ -32,7 +33,12 @@ public class TelaRespostaCorreta extends JFrame{
         proxQuestao.setForeground(Color.WHITE);
         corFundo.add(proxQuestao);
         proxQuestao.addMouseListener(new MouseAdapter() {
-
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                dispose(); // Fecha a tela de resposta correta
+                proximaAcao.run(); // Executa a ação recebida (que no Navegador é showTelaPartida)
+            }
         });
+
     }
 }

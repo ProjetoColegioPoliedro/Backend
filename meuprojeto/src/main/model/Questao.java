@@ -1,14 +1,23 @@
 package model;
 
+import java.util.List;
+import java.util.ArrayList; 
+import java.util.Collections; 
+
+
 public class Questao {
 
-    private int idQuestao;          // Corresponde a id_questao (PK no banco)
-    private String enunciado;       // Corresponde a enunciado (a pergunta em si)
-    private String explicacaoErro;  // Corresponde a explicacao_erro (o feedback ao errar)
-    private int anoLetivo;          // Corresponde a ano_letivo (a qual ano se destina a questão)
-    private int idNivel;            // Corresponde a id_nivel (FK para Nível de Dificuldade)
-    private int idMateria;          // Corresponde a id_materia (FK para Matéria)
-    private String ajuda;           // Corresponde a ajuda (texto de dica)
+    private int idQuestao;
+    private String enunciado;
+    private String explicacaoErro;
+    private int anoLetivo;
+    private int idNivel;
+    private int idMateria;
+    private String ajuda;
+    
+   
+    private List<Alternativa> alternativas; // Lista de todas as alternativas para esta questão
+    private Alternativa alternativaCorreta; // A alternativa correta
 
     public Questao() {
     }
@@ -33,8 +42,7 @@ public class Questao {
         this.ajuda = ajuda;
     }
 
-    // Getters e Setters
-
+    // Getters e Setters existentes
     public int getIdQuestao() { return idQuestao; }
     public void setIdQuestao(int idQuestao) { this.idQuestao = idQuestao; }
     public String getEnunciado() { return enunciado; }
@@ -49,4 +57,37 @@ public class Questao {
     public void setIdMateria(int idMateria) { this.idMateria = idMateria; }
     public String getAjuda() { return ajuda; }
     public void setAjuda(String ajuda) { this.ajuda = ajuda; }
+
+    
+    public List<Alternativa> getAlternativas() { return alternativas; }
+    public void setAlternativas(List<Alternativa> alternativas) { this.alternativas = alternativas; }
+    public Alternativa getAlternativaCorreta() { return alternativaCorreta; }
+    public void setAlternativaCorreta(Alternativa alternativaCorreta) { this.alternativaCorreta = alternativaCorreta; }
+
+    /**
+     * Retorna o texto da alternativa correta.
+     * @return O texto da alternativa correta, ou null se não definida.
+     */
+    public String getTextoAlternativaCorreta() {
+        return alternativaCorreta != null ? alternativaCorreta.getTexto() : null;
+    }
+
+    /**
+     * Retorna uma lista dos textos das alternativas para exibição (útil para a UI).
+     * Pode embaralhar a ordem se desejar.
+     * @param embaralhar Se true, embaralha a ordem das alternativas.
+     * @return Uma lista de Strings com o texto de cada alternativa.
+     */
+    public List<String> getTextosAlternativas(boolean embaralhar) {
+        List<String> textos = new ArrayList<>();
+        if (alternativas != null) {
+            for (Alternativa alt : alternativas) {
+                textos.add(alt.getTexto());
+            }
+            if (embaralhar) {
+                Collections.shuffle(textos);
+            }
+        }
+        return textos;
+    }
 }
