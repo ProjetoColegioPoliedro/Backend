@@ -9,7 +9,7 @@ import model.QuestaoAlternativa;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Collections; // Para Collections.shuffle
+import java.util.Collections; 
 
 public class QuestaoService {
 
