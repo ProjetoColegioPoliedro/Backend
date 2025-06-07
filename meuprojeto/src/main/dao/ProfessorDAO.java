@@ -20,6 +20,8 @@ public class ProfessorDAO {
     private static final String SELECIONAR_PROFESSOR_POR_ID_SQL = "SELECT id_professor, nome, login_professor, senha FROM professor WHERE id_professor = ?;";
     // SQL para selecionar um professor pelo login
     private static final String SELECIONAR_PROFESSOR_POR_LOGIN_SQL = "SELECT id_professor, nome, login_professor, senha FROM professor WHERE login_professor = ?;";
+    // SQL para selecionar um professor pelo login e senha (NOVA SQL)
+    private static final String SELECIONAR_PROFESSOR_POR_LOGIN_E_SENHA_SQL = "SELECT id_professor, nome, login_professor, senha FROM professor WHERE login_professor = ? AND senha = ?;";
     // SQL para selecionar todos os professores
     private static final String SELECIONAR_TODOS_PROFESSORES_SQL = "SELECT id_professor, nome, login_professor, senha FROM professor ORDER BY nome;";
     // SQL para deletar um professor pelo ID
@@ -70,7 +72,7 @@ public class ProfessorDAO {
 
         } catch (SQLException e) {
             if (e.getSQLState().startsWith("23")) { // Violação de constraint (ex: UNIQUE no login_professor)
-                 System.err.println("Erro SQL: Professor com o login '" + professor.getLoginProfessor() + "' já existe. " + e.getMessage());
+                System.err.println("Erro SQL: Professor com o login '" + professor.getLoginProfessor() + "' já existe. " + e.getMessage());
             } else {
                 System.err.println("Erro SQL ao inserir professor: " + e.getMessage());
                 e.printStackTrace();
@@ -112,8 +114,7 @@ public class ProfessorDAO {
     }
 
     /**
-     * Busca um professor pelo seu login.
-     *
+     * 
      * @param login O login do professor a ser buscado.
      * @return Um objeto Professor se encontrado, caso contrário null.
      */
@@ -139,6 +140,43 @@ public class ProfessorDAO {
             }
         } catch (SQLException e) {
             System.err.println("Erro SQL ao buscar professor por login: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            closeResources(conexao, pstmt, rs);
+        }
+        return professor;
+    }
+
+    /**
+     * 
+     *
+     * @param login O login do professor.
+     * @param senha A senha do professor.
+     * @return Um objeto Professor se encontrado e as credenciais baterem, caso contrário null.
+     */
+    public Professor buscarProfessorPorLoginESenha(String login, String senha) {
+        Professor professor = null;
+        Connection conexao = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        if (login == null || login.trim().isEmpty() || senha == null || senha.isEmpty()) {
+            System.err.println("Tentativa de buscar Professor com login/senha nulos ou vazios.");
+            return null;
+        }
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+            pstmt = conexao.prepareStatement(SELECIONAR_PROFESSOR_POR_LOGIN_E_SENHA_SQL);
+            pstmt.setString(1, login);
+            pstmt.setString(2, senha); 
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                professor = mapResultSetToProfessor(rs);
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro SQL ao buscar professor por login e senha: " + e.getMessage());
             e.printStackTrace();
         } finally {
             closeResources(conexao, pstmt, rs);
@@ -199,7 +237,7 @@ public class ProfessorDAO {
 
             pstmt.setString(1, professor.getNome());
             pstmt.setString(2, professor.getLoginProfessor());
-            pstmt.setString(3, professor.getSenha()); // ATENÇÃO: Segurança de senha
+            pstmt.setString(3, professor.getSenha()); 
             pstmt.setInt(4, professor.getIdProfessor());
 
             int linhasAfetadas = pstmt.executeUpdate();
@@ -211,8 +249,8 @@ public class ProfessorDAO {
             }
 
         } catch (SQLException e) {
-             if (e.getSQLState().startsWith("23")) { 
-                 System.err.println("Erro SQL: Não foi possível atualizar. Professor com o login '" + professor.getLoginProfessor() + "' já pode existir. " + e.getMessage());
+            if (e.getSQLState().startsWith("23")) { 
+                System.err.println("Erro SQL: Não foi possível atualizar. Professor com o login '" + professor.getLoginProfessor() + "' já pode existir. " + e.getMessage());
             } else {
                 System.err.println("Erro SQL ao atualizar professor: " + e.getMessage());
                 e.printStackTrace();
@@ -235,7 +273,7 @@ public class ProfessorDAO {
         PreparedStatement pstmt = null;
 
         if (idProfessor <= 0) {
-             System.err.println("Tentativa de excluir Professor com ID inválido.");
+            System.err.println("Tentativa de excluir Professor com ID inválido.");
             return false;
         }
 
@@ -249,12 +287,11 @@ public class ProfessorDAO {
                 excluido = true;
                 System.out.println("Professor excluído com sucesso! ID: " + idProfessor);
             } else {
-                 System.out.println("Nenhum professor encontrado com o ID: " + idProfessor + " para exclusão.");
+                System.out.println("Nenhum professor encontrado com o ID: " + idProfessor + " para exclusão.");
             }
         } catch (SQLException e) {
-            // Tratar erro de FK constraint violation se o professor estiver sendo usado
             if (e.getSQLState().startsWith("23")) { 
-                 System.err.println("Erro SQL: Não foi possível excluir o Professor ID " + idProfessor + ". Ele pode estar associado a outros registros. " + e.getMessage());
+                System.err.println("Erro SQL: Não foi possível excluir o Professor ID " + idProfessor + ". Ele pode estar associado a outros registros. " + e.getMessage());
             } else {
                 System.err.println("Erro SQL ao excluir professor: " + e.getMessage());
                 e.printStackTrace();

@@ -1,7 +1,7 @@
 package dao;
 
-import model.Aluno; // Importa a classe Aluno do seu pacote model
-import connectionFactory.ConnectionFactory; // Importa sua classe de conexão
+import model.Aluno; 
+import connectionFactory.ConnectionFactory; 
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,12 +14,13 @@ import java.util.List;
 public class AlunoDAO {
 
     // SQL para inserir um novo aluno
-    // Assumindo que id_aluno é auto-incrementável no banco
     private static final String INSERIR_ALUNO_SQL = "INSERT INTO aluno (nome, login_aluno, senha, ano_letivo) VALUES (?, ?, ?, ?);";
     // SQL para selecionar um aluno pelo ID
     private static final String SELECIONAR_ALUNO_POR_ID_SQL = "SELECT id_aluno, nome, login_aluno, senha, ano_letivo FROM aluno WHERE id_aluno = ?;";
     // SQL para selecionar um aluno pelo login
     private static final String SELECIONAR_ALUNO_POR_LOGIN_SQL = "SELECT id_aluno, nome, login_aluno, senha, ano_letivo FROM aluno WHERE login_aluno = ?;";
+    // SQL para selecionar um aluno pelo login e senha (NOVA SQL)
+    private static final String SELECIONAR_ALUNO_POR_LOGIN_E_SENHA = "SELECT id_aluno, nome, login_aluno, senha, ano_letivo FROM aluno WHERE login_aluno = ? AND senha = ?;";
     // SQL para selecionar todos os alunos
     private static final String SELECIONAR_TODOS_ALUNOS_SQL = "SELECT id_aluno, nome, login_aluno, senha, ano_letivo FROM aluno;";
     // SQL para deletar um aluno pelo ID
@@ -29,7 +30,7 @@ public class AlunoDAO {
 
     /**
      * Insere um novo aluno no banco de dados.
-     * A senha deve ser tratada com hashing antes de ser persistida em um ambiente real.
+     * 
      *
      * @param aluno O objeto Aluno a ser inserido (sem o id, se for auto-incrementável).
      * @return O ID do aluno inserido, ou -1 em caso de falha.
@@ -46,7 +47,7 @@ public class AlunoDAO {
 
             pstmt.setString(1, aluno.getNome());
             pstmt.setString(2, aluno.getLoginAluno());
-            pstmt.setString(3, aluno.getSenha()); // ATENÇÃO: Armazenar senhas em texto plano é inseguro. Use hashing.
+            pstmt.setString(3, aluno.getSenha()); 
             pstmt.setInt(4, aluno.getAnoLetivo());
 
             int linhasAfetadas = pstmt.executeUpdate();
@@ -124,6 +125,41 @@ public class AlunoDAO {
             }
         } catch (SQLException e) {
             System.err.println("Erro SQL ao buscar aluno por login: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            closeResources(conexao, pstmt, rs);
+        }
+        return aluno;
+    }
+
+    /**
+     * @param login O login do aluno.
+     * @param senha A senha do aluno.
+     * @return Um objeto Aluno se encontrado e as credenciais baterem, caso contrário null.
+     */
+    public Aluno buscarAlunoPorLoginESenha(String login, String senha) {
+        Aluno aluno = null;
+        Connection conexao = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        if (login == null || login.trim().isEmpty() || senha == null || senha.isEmpty()) {
+            System.err.println("Tentativa de buscar Aluno com login/senha nulos ou vazios.");
+            return null;
+        }
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+            pstmt = conexao.prepareStatement(SELECIONAR_ALUNO_POR_LOGIN_E_SENHA);
+            pstmt.setString(1, login);
+            pstmt.setString(2, senha); 
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                aluno = mapResultSetToAluno(rs);
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro SQL ao buscar aluno por login e senha: " + e.getMessage());
             e.printStackTrace();
         } finally {
             closeResources(conexao, pstmt, rs);
@@ -214,7 +250,7 @@ public class AlunoDAO {
         PreparedStatement pstmt = null;
 
         if (idAluno <= 0) {
-             System.err.println("Tentativa de excluir aluno com ID inválido.");
+            System.err.println("Tentativa de excluir aluno com ID inválido.");
             return false;
         }
 
@@ -228,7 +264,7 @@ public class AlunoDAO {
                 excluido = true;
                 System.out.println("Aluno excluído com sucesso! ID: " + idAluno);
             } else {
-                 System.out.println("Nenhum aluno encontrado com o ID: " + idAluno + " para exclusão.");
+                System.out.println("Nenhum aluno encontrado com o ID: " + idAluno + " para exclusão.");
             }
 
         } catch (SQLException e) {
@@ -250,7 +286,7 @@ public class AlunoDAO {
         int idAluno = rs.getInt("id_aluno");
         String nome = rs.getString("nome");
         String loginAluno = rs.getString("login_aluno");
-        String senha = rs.getString("senha"); // Lembre-se da segurança de senhas
+        String senha = rs.getString("senha"); 
         int anoLetivo = rs.getInt("ano_letivo");
         return new Aluno(idAluno, nome, loginAluno, senha, anoLetivo);
     }
