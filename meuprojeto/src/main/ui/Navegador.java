@@ -7,12 +7,15 @@ import javax.swing.SwingUtilities;
 
 public class Navegador {
     private QuestaoService questaoService;
-    private Runnable ultimaTelaMenu;
+    // O 'ultimaTelaMenu' é um atributo para guardar a referência do último menu visitado,
+    // útil para ações de "voltar ao menu" após certas operações (como login).
+    private Runnable ultimaTelaMenu; 
 
     public Navegador() {
         this.questaoService = new QuestaoService();
     }
 
+    // Métodos para exibir as diferentes telas da aplicação
     private void showTelaInicial(){
         var telaInicial = new TelaInicial(this::showTelaLogin, () -> showTelaConfiguracoes(this::showTelaInicial));
         telaInicial.setVisible(true);
@@ -34,79 +37,82 @@ public class Navegador {
     }
 
     private void showTelaMenuEstudante(){
-        this.ultimaTelaMenu = this::showTelaMenuEstudante;
+        // Atribui a tela atual ao 'ultimaTelaMenu'
+        this.ultimaTelaMenu = this::showTelaMenuEstudante; 
         var telaMenuEst = new TelaMenuEstudante(() -> showTelaConfiguracoes(this::showTelaMenuEstudante), () -> showTelaTemaPerguntas(this::showTelaMenuEstudante), this::showTelaHistoricoEst);
         telaMenuEst.setVisible(true);
     }
 
     private void showTelaMenuAdmin(){
-        this.ultimaTelaMenu = this::showTelaMenuAdmin;
+        // Atribui a tela atual ao 'ultimaTelaMenu'
+        this.ultimaTelaMenu = this::showTelaMenuAdmin; 
         TelaMenuAdmin telaMenuAdmin = new TelaMenuAdmin(()->showTelaConfiguracoes(this::showTelaMenuAdmin), ()->showTelaTemaPerguntas(this::showTelaMenuAdmin), this::showTelaHistoricoAdmin, this::showTelaAreaRestrita);
         telaMenuAdmin.setVisible(true);
     }
 
     private void showTelaTemaPerguntas(Runnable voltarParaMenu) {
+        // O segundo Runnable (partida) chama showTelaPartida. O 'voltarParaMenu' neste contexto é showTelaTemaPerguntas.
         TelaTemaPerguntas telaTemaP = new TelaTemaPerguntas(voltarParaMenu, () -> showTelaPartida(() -> showTelaTemaPerguntas(voltarParaMenu)));
         telaTemaP.setVisible(true);
     }
 
     /**
      * Exibe a Tela de Partida, buscando uma questão do banco de dados.
-     * Define as ações a serem tomadas após o tempo esgotar, o jogador parar,
-     * ou a resposta ser correta/incorreta.
+     * Define as ações a serem tomadas quando o jogador parar, ou a resposta for correta/incorreta.
+     * (O tempo esgotado foi removido com o cronômetro, então o parâmetro 'acabouTempo' não é mais usado na TelaPartida).
      * @param voltarParaMenu Runnable para a ação de voltar ao menu (ou tela anterior), usado como base para reiniciar a partida.
      */
     private void showTelaPartida(Runnable voltarParaMenu) {
+        // 1. Tenta buscar uma questão aleatória do banco de dados através do QuestaoService
         Questao questaoParaPartida = questaoService.buscarQuestaoAleatoria();
 
+        // 2. Verifica se uma questão foi encontrada
         if (questaoParaPartida != null) {
-            // Define o Runnable para iniciar uma nova partida (usado após a tela de solução/feedback)
-            Runnable iniciarProximaPartida = voltarParaMenu;
+            // Definindo o Runnable que inicia a próxima partida (ou seja, chama showTelaPartida novamente).
+            // Este será o destino final após o usuário ver a solução ou responder corretamente.
+            Runnable iniciarProximaPartida = () -> this.showTelaPartida(voltarParaMenu); 
 
+            // Ação que será executada quando a questão for encerrada por "Pular" ou "Parar".
+            // Esta ação leva à tela de solução da questão atual, e de lá o jogador pode ir para a próxima partida.
+            Runnable acaoAoEncerrarQuestao = () -> showTelaSolucao(questaoParaPartida, iniciarProximaPartida); 
+
+            // Instancia a TelaPartida com os 4 parâmetros esperados (Questao, acaoAoEncerrarQuestao, respostaCorretaAction, respostaIncorretaAction)
             TelaPartida telaPartida = new TelaPartida(
-                questaoParaPartida, // A questão completa a ser exibida
+                questaoParaPartida, // 1º parâmetro: Objeto Questao a ser exibido na tela
 
-                
-                // Ação para quando o tempo acabar na TelaPartida
-                // Leva para TelaTempoEncerrado, que por sua vez levará para a solução, e a solução para a próxima partida.
-                () -> showTelaTempoEncerrado(questaoParaPartida, iniciarProximaPartida), 
-                
-                //Ação para quando o botão "parar" for clicado. Leva para o menu incial.
-                this.ultimaTelaMenu,
-                
-                // Ação para quando o jogador clica em "Parar" na TelaPartida
-                // Leva diretamente para a TelaSolucao, e a solução para a próxima partida.
-                () -> showTelaSolucao(questaoParaPartida, iniciarProximaPartida), 
+                acaoAoEncerrarQuestao, // 2º parâmetro: Runnable para ação ao encerrar a questão (usado pelos botões "Pular" e "Parar")
 
-                // Ação para quando a resposta é CORRETA:
+                // 3º parâmetro: Runnable respostaCorretaAction (ação a ser executada após uma resposta correta)
                 () -> {
                     // Após uma resposta correta, exibe a tela de resposta correta.
                     // O Runnable passado para showTelaRespostaCorreta define o que acontece DEPOIS: iniciar próxima partida.
                     this.showTelaRespostaCorreta(iniciarProximaPartida); 
                 },
 
-                // Ação para quando a resposta é INCORRETA:
+                // 4º parâmetro: Runnable respostaIncorretaAction (ação a ser executada após uma resposta incorreta)
                 () -> {
                     // Após uma resposta incorreta, exibe a tela de resposta incorreta.
-                    // Passa a Questao e a ação para ir para a solução, que levará à próxima partida.
-                    this.showTelaRespostaIncorreta(questaoParaPartida, () -> showTelaSolucao(questaoParaPartida, iniciarProximaPartida)); 
+                    // O Runnable passado para showTelaRespostaIncorreta levará à tela de solução,
+                    // e da tela de solução para a próxima partida.
+                    this.showTelaRespostaIncorreta(questaoParaPartida, acaoAoEncerrarQuestao); 
                 }
             );
-            telaPartida.setVisible(true);
-            telaPartida.iniciarCronometro();
+            telaPartida.setVisible(true); // Torna a tela de partida visível
+            // Não há mais chamada para telaPartida.iniciarCronometro(); aqui, pois o cronômetro foi removido.
         } else {
+            // Se nenhuma questão for carregada do banco de dados (ex: banco vazio, erro de conexão)
             JOptionPane.showMessageDialog(null, "Não foi possível carregar uma questão para a partida. Verifique o banco de dados e as questões cadastradas.", "Erro ao Iniciar Partida", JOptionPane.ERROR_MESSAGE);
-            voltarParaMenu.run(); // Volta para a tela anterior (geralmente o menu)
+            voltarParaMenu.run(); // Retorna para a tela anterior (geralmente o menu ou seleção de tema)
         }
     }
 
     /**
      * Exibe a Tela de Tempo Encerrado.
+     * (Este método ainda existe, mas a TelaPartida não o chama mais diretamente sem o cronômetro).
      * @param questao A questão atual para a qual o tempo esgotou (útil para passar para a solução).
      * @param proximaAcao Runnable que define o que acontece após esta tela ser fechada/concluída (ex: ir para a solução).
      */
     private void showTelaTempoEncerrado(Questao questao, Runnable proximaAcao) { 
-        // A TelaTempoEncerrado recebe 'proximaAcao' que é o Runnable para ir para a solução.
         TelaTempoEncerrado telaTempo = new TelaTempoEncerrado(questao, proximaAcao);
         telaTempo.setVisible(true);
     }
@@ -117,8 +123,6 @@ public class Navegador {
      * @param proximaPartidaAction Runnable para a ação de iniciar uma nova partida (ou voltar ao menu).
      */
     private void showTelaSolucao(Questao questao, Runnable proximaPartidaAction){
-        // A TelaSolucao receberá a 'Questao' para exibir seus detalhes e a 'proximaPartidaAction'
-        // para o botão de "Jogar novamente" (ou "Próxima Questão").
         TelaSolucao telaSolucao = new TelaSolucao(questao, proximaPartidaAction); 
         telaSolucao.setVisible(true);
     }
@@ -128,7 +132,6 @@ public class Navegador {
      * @param proximaAcao Runnable que define o que acontece após esta tela ser fechada/concluída (ex: iniciar próxima partida).
      */
     private void showTelaRespostaCorreta(Runnable proximaAcao) { 
-        // A TelaRespostaCorreta receberá o 'proximaAcao' e terá um botão para executá-lo.
         TelaRespostaCorreta telaRespCor = new TelaRespostaCorreta(proximaAcao);
         telaRespCor.setVisible(true);
     }
@@ -139,7 +142,6 @@ public class Navegador {
      * @param proximaAcao Runnable que define o que acontece após esta tela ser fechada/concluída (neste caso, ir para a solução).
      */
     private void showTelaRespostaIncorreta(Questao questao, Runnable proximaAcao) { 
-        // A TelaRespostaIncorreta receberá a 'Questao' e o 'proximaAcao' (para exibir a solução)
         TelaRespostaIncorreta telaRespInc = new TelaRespostaIncorreta(questao, proximaAcao); 
         telaRespInc.setVisible(true);
     }
