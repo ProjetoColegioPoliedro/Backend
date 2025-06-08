@@ -22,7 +22,7 @@ public class TelaPartida extends JFrame {
     private boolean ajuda5050Usada = false; 
 
     // Construtor com Runnables 
-    public TelaPartida(Questao questao, Runnable acaoAoEncerrarQuestao, Runnable respostaCorretaAction, Runnable respostaIncorretaAction, Runnable configs) {
+    public TelaPartida(Questao questao, Runnable acaoAoEncerrarQuestao, Runnable respostaCorretaAction, Runnable respostaIncorretaAction, Runnable configs, Runnable pararJogo) {
         this.questaoAtual = questao;
         
         var roxo = new Color(20, 14, 40);
@@ -217,7 +217,7 @@ public class TelaPartida extends JFrame {
                 int confirm = JOptionPane.showConfirmDialog(null, "Você tem certeza que quer parar o jogo?", "Parar Jogo", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                 if(confirm == JOptionPane.YES_OPTION){
                     dispose();
-                    acaoAoEncerrarQuestao.run(); 
+                    pararJogo.run(); 
                 }
             }
         });

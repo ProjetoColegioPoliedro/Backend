@@ -70,7 +70,7 @@ public class Navegador {
         if (questaoParaPartida != null) {
             // Definindo o Runnable que inicia a próxima partida (ou seja, chama showTelaPartida novamente).
             // Este será o destino final após o usuário ver a solução ou responder corretamente.
-            Runnable iniciarProximaPartida = () -> this.showTelaPartida(voltarParaMenu); 
+            Runnable iniciarProximaPartida = () -> this.showTelaPartida(voltarParaMenu);
 
             // Ação que será executada quando a questão for encerrada por "Pular" ou "Parar".
             // Esta ação leva à tela de solução da questão atual, e de lá o jogador pode ir para a próxima partida.
@@ -98,7 +98,10 @@ public class Navegador {
                 },
 
                 // 5º parâmetro: Runnable configs (inicia a tela de configurações)
-                () -> showTelaConfiguracoes(() -> showTelaPartida(voltarParaMenu))
+                () -> showTelaConfiguracoes(() -> showTelaPartida(voltarParaMenu)),
+
+                // 6º parâmetro: Runnable pararJogo (ação para quando o botão "parar" for clicado. Leva para o menu incial).
+                this.ultimaTelaMenu
             );
             telaPartida.setVisible(true); // Torna a tela de partida visível
             // Não há mais chamada para telaPartida.iniciarCronometro(); aqui, pois o cronômetro foi removido.
