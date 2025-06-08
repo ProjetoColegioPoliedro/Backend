@@ -80,7 +80,7 @@ public class Navegador {
             TelaPartida telaPartida = new TelaPartida(
                 questaoParaPartida, // 1º parâmetro: Objeto Questao a ser exibido na tela
 
-                acaoAoEncerrarQuestao, // 2º parâmetro: Runnable para ação ao encerrar a questão (usado pelos botões "Pular" e "Parar")
+                iniciarProximaPartida, // 2º parâmetro: Runnable para ação ao encerrar a questão (usado pelo botão "Pular")
 
                 // 3º parâmetro: Runnable respostaCorretaAction (ação a ser executada após uma resposta correta)
                 () -> {
