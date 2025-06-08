@@ -43,7 +43,7 @@ public class Navegador {
     }
 
     private void showTelaTemaPerguntas(Runnable voltarParaMenu) {
-        TelaTemaPerguntas telaTemaP = new TelaTemaPerguntas(voltarParaMenu, () -> showTelaPartida(voltarParaMenu));
+        TelaTemaPerguntas telaTemaP = new TelaTemaPerguntas(voltarParaMenu, () -> showTelaPartida(() -> showTelaTemaPerguntas(voltarParaMenu)));
         telaTemaP.setVisible(true);
     }
 
@@ -58,7 +58,7 @@ public class Navegador {
 
         if (questaoParaPartida != null) {
             // Define o Runnable para iniciar uma nova partida (usado após a tela de solução/feedback)
-            Runnable iniciarProximaPartida = () -> this.showTelaPartida(voltarParaMenu);
+            Runnable iniciarProximaPartida = voltarParaMenu;
 
             TelaPartida telaPartida = new TelaPartida(
                 questaoParaPartida, // A questão completa a ser exibida
