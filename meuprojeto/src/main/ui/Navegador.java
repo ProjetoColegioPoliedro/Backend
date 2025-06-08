@@ -7,6 +7,7 @@ import javax.swing.SwingUtilities;
 
 public class Navegador {
     private QuestaoService questaoService;
+    private Runnable ultimaTelaMenu;
 
     public Navegador() {
         this.questaoService = new QuestaoService();
@@ -33,11 +34,13 @@ public class Navegador {
     }
 
     private void showTelaMenuEstudante(){
+        this.ultimaTelaMenu = this::showTelaMenuEstudante;
         var telaMenuEst = new TelaMenuEstudante(() -> showTelaConfiguracoes(this::showTelaMenuEstudante), () -> showTelaTemaPerguntas(this::showTelaMenuEstudante), this::showTelaHistoricoEst);
         telaMenuEst.setVisible(true);
     }
 
     private void showTelaMenuAdmin(){
+        this.ultimaTelaMenu = this::showTelaMenuAdmin;
         TelaMenuAdmin telaMenuAdmin = new TelaMenuAdmin(()->showTelaConfiguracoes(this::showTelaMenuAdmin), ()->showTelaTemaPerguntas(this::showTelaMenuAdmin), this::showTelaHistoricoAdmin, this::showTelaAreaRestrita);
         telaMenuAdmin.setVisible(true);
     }
@@ -63,10 +66,14 @@ public class Navegador {
             TelaPartida telaPartida = new TelaPartida(
                 questaoParaPartida, // A questão completa a ser exibida
 
+                
                 // Ação para quando o tempo acabar na TelaPartida
                 // Leva para TelaTempoEncerrado, que por sua vez levará para a solução, e a solução para a próxima partida.
                 () -> showTelaTempoEncerrado(questaoParaPartida, iniciarProximaPartida), 
-
+                
+                //Ação para quando o botão "parar" for clicado. Leva para o menu incial.
+                this.ultimaTelaMenu,
+                
                 // Ação para quando o jogador clica em "Parar" na TelaPartida
                 // Leva diretamente para a TelaSolucao, e a solução para a próxima partida.
                 () -> showTelaSolucao(questaoParaPartida, iniciarProximaPartida), 

@@ -25,7 +25,8 @@ public class TelaPartida extends JFrame {
     private boolean ajuda5050Usada = false; 
 
     // Construtor com Runnables 
-    public TelaPartida(Questao questao, Runnable acabouTempo, Runnable solucao, Runnable respostaCorretaAction, Runnable respostaIncorretaAction) {
+    public TelaPartida(Questao questao, Runnable acabouTempo, Runnable pararJogo, Runnable solucao, 
+        Runnable respostaCorretaAction, Runnable respostaIncorretaAction) {
         this.questaoAtual = questao;
         
         var roxo = new Color(20, 14, 40);
@@ -211,7 +212,7 @@ public class TelaPartida extends JFrame {
                 if(confirm == JOptionPane.YES_OPTION){
                     pararCronometro();
                     dispose();
-                    solucao.run(); // Leva para a tela de solução (e de lá para a próxima partida ou menu)
+                    pararJogo.run(); // Leva para a tela de solução (e de lá para a próxima partida ou menu)
                 }
             }
         });
