@@ -266,11 +266,11 @@ public class TelaPartida extends JFrame {
 
                     if (altSelecionada != null && questaoAtual != null && questaoAtual.getAlternativaCorreta() != null) {
                         if (altSelecionada.equals(questaoAtual.getAlternativaCorreta())) { 
-                            JOptionPane.showMessageDialog(null, "Resposta Correta!", "Acerto", JOptionPane.INFORMATION_MESSAGE);
+                            // JOptionPane.showMessageDialog(null, "Resposta Correta!", "Acerto", JOptionPane.INFORMATION_MESSAGE);
                             dispose(); 
                             respostaCorretaAction.run(); 
                         } else {
-                            JOptionPane.showMessageDialog(null, "Resposta Incorreta! A correta era: " + questaoAtual.getTextoAlternativaCorreta(), "Erro", JOptionPane.ERROR_MESSAGE);
+                            // JOptionPane.showMessageDialog(null, "Resposta Incorreta! A correta era: " + questaoAtual.getTextoAlternativaCorreta(), "Erro", JOptionPane.ERROR_MESSAGE);
                             dispose(); 
                             respostaIncorretaAction.run(); 
                         }
