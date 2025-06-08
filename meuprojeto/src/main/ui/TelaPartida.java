@@ -22,7 +22,7 @@ public class TelaPartida extends JFrame {
     private boolean ajuda5050Usada = false; 
 
     // Construtor com Runnables 
-    public TelaPartida(Questao questao, Runnable acaoAoEncerrarQuestao, Runnable respostaCorretaAction, Runnable respostaIncorretaAction) {
+    public TelaPartida(Questao questao, Runnable acaoAoEncerrarQuestao, Runnable respostaCorretaAction, Runnable respostaIncorretaAction, Runnable configs) {
         this.questaoAtual = questao;
         
         var roxo = new Color(20, 14, 40);
@@ -39,6 +39,19 @@ public class TelaPartida extends JFrame {
         var corFundo = new JPanel(null, true);
         corFundo.setBackground(roxo);
         setContentPane(corFundo);
+
+        var icone = new ImageIcon("assets\\settings.png");
+		var imagem = icone.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+		var config = new JLabel(new ImageIcon(imagem));
+		corFundo.add(config);
+		config.setBounds(1460, 20, 60, 60);
+		config.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e){
+				configs.run(); // abre a tela de configurações
+				dispose();
+			}
+		});
 
         // Inicializa os JLabels das respostas e da pergunta
         caixaRespA = new JLabel("");

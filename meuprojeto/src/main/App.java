@@ -1,4 +1,3 @@
-// ponto de entrada. quando executar o projeto, é esse arquivo que o Java procura para começar a rodar o código. é onde instancia as classes e controla o fluxo do jogo.
 import ui.Navegador;
 
 public class App{

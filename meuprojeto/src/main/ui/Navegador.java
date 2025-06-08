@@ -95,7 +95,10 @@ public class Navegador {
                     // O Runnable passado para showTelaRespostaIncorreta levará à tela de solução,
                     // e da tela de solução para a próxima partida.
                     this.showTelaRespostaIncorreta(questaoParaPartida, acaoAoEncerrarQuestao); 
-                }
+                },
+
+                // 5º parâmetro: Runnable configs (inicia a tela de configurações)
+                () -> showTelaConfiguracoes(() -> showTelaPartida(voltarParaMenu))
             );
             telaPartida.setVisible(true); // Torna a tela de partida visível
             // Não há mais chamada para telaPartida.iniciarCronometro(); aqui, pois o cronômetro foi removido.
