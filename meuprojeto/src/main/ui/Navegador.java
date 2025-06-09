@@ -84,7 +84,7 @@ public class Navegador {
             boolean penultimaQuestao = (questaoAtual == TOTAL_QUESTOES - 1);
             boolean ultimaQuestão = (questaoAtual == TOTAL_QUESTOES);
 
-            // Runnable que conta a quantidade de questões da partida
+            // Runnable para contar a quantidade de questões da partida
             Runnable contaQuestao = () -> {
                 // Adiciona um a cada rodada que passa
                 questaoAtual++;
@@ -98,8 +98,7 @@ public class Navegador {
                 }
             };
             
-            // Ação que será executada quando a questão for encerrada por "Pular".
-            // Esta ação leva à tela de solução da questão atual, e de lá o jogador pode ir para a próxima partida.
+            // Esta ação leva à tela de solução da questão atual, e de lá o jogador pode ir para a próxima rodada.
             Runnable acaoRespostaIncorreta = () -> showTelaSolucao(questaoParaPartida, contaQuestao);
 
             // Instancia a TelaPartida com os 4 parâmetros esperados (Questao, acaoAoEncerrarQuestao, respostaCorretaAction, respostaIncorretaAction)
@@ -126,7 +125,7 @@ public class Navegador {
                 // 5º parâmetro: Runnable configs (inicia a tela de configurações)
                 () -> showTelaConfiguracoes(() -> showTelaPartida(voltarParaMenu)),
 
-                // 6º parâmetro: Runnable pararJogo (ação para quando o botão "parar" for clicado. Leva para o menu incial).
+                // 6º parâmetro: Runnable pararJogo (ação para quando o botão "parar" for clicado. Leva para o menu incial e reseta a partida).
                 () -> {
                     resetarPartida();
                     this.ultimaTelaMenu.run();
