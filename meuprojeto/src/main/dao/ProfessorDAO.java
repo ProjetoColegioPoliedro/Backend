@@ -13,28 +13,23 @@ import java.util.List;
 
 public class ProfessorDAO {
 
-    // SQL para inserir um novo professor
-    // Assumindo que id_professor é auto-incrementável no banco
-    private static final String INSERIR_PROFESSOR_SQL = "INSERT INTO professor (nome, login_professor, senha) VALUES (?, ?, ?);";
-    // SQL para selecionar um professor pelo ID
-    private static final String SELECIONAR_PROFESSOR_POR_ID_SQL = "SELECT id_professor, nome, login_professor, senha FROM professor WHERE id_professor = ?;";
-    // SQL para selecionar um professor pelo login
-    private static final String SELECIONAR_PROFESSOR_POR_LOGIN_SQL = "SELECT id_professor, nome, login_professor, senha FROM professor WHERE login_professor = ?;";
-    // SQL para selecionar um professor pelo login e senha (NOVA SQL)
-    private static final String SELECIONAR_PROFESSOR_POR_LOGIN_E_SENHA_SQL = "SELECT id_professor, nome, login_professor, senha FROM professor WHERE login_professor = ? AND senha = ?;";
-    // SQL para selecionar todos os professores
-    private static final String SELECIONAR_TODOS_PROFESSORES_SQL = "SELECT id_professor, nome, login_professor, senha FROM professor ORDER BY nome;";
-    // SQL para deletar um professor pelo ID
-    private static final String DELETAR_PROFESSOR_SQL = "DELETE FROM professor WHERE id_professor = ?;";
-    // SQL para atualizar os dados de um professor
-    private static final String ATUALIZAR_PROFESSOR_SQL = "UPDATE professor SET nome = ?, login_professor = ?, senha = ? WHERE id_professor = ?;";
+    // SQL para inserir um novo professor (TABELA CORRIGIDA)
+    private static final String INSERIR_PROFESSOR_SQL = "INSERT INTO professor_administrador (nome, login_professor, senha) VALUES (?, ?, ?);";
+    // SQL para selecionar um professor pelo ID (TABELA CORRIGIDA)
+    private static final String SELECIONAR_PROFESSOR_POR_ID_SQL = "SELECT id_professor, nome, login_professor, senha FROM professor_administrador WHERE id_professor = ?;";
+    // SQL para selecionar um professor pelo login (TABELA CORRIGIDA)
+    private static final String SELECIONAR_PROFESSOR_POR_LOGIN_SQL = "SELECT id_professor, nome, login_professor, senha FROM professor_administrador WHERE login_professor = ?;";
+    // SQL para selecionar um professor pelo login e senha (TABELA CORRIGIDA)
+    private static final String SELECIONAR_PROFESSOR_POR_LOGIN_E_SENHA_SQL = "SELECT id_professor, nome, login_professor, senha FROM professor_administrador WHERE login_professor = ? AND senha = ?;";
+    // SQL para selecionar todos os professores (TABELA CORRIGIDA)
+    private static final String SELECIONAR_TODOS_PROFESSORES_SQL = "SELECT id_professor, nome, login_professor, senha FROM professor_administrador ORDER BY nome;";
+    // SQL para deletar um professor pelo ID (TABELA CORRIGIDA)
+    private static final String DELETAR_PROFESSOR_SQL = "DELETE FROM professor_administrador WHERE id_professor = ?;";
+    // SQL para atualizar os dados de um professor (TABELA CORRIGIDA)
+    private static final String ATUALIZAR_PROFESSOR_SQL = "UPDATE professor_administrador SET nome = ?, login_professor = ?, senha = ? WHERE id_professor = ?;";
 
     /**
      * Insere um novo professor no banco de dados.
-     * A senha deve ser tratada com hashing antes de ser persistida em um ambiente real.
-     *
-     * @param professor O objeto Professor a ser inserido.
-     * @return O ID do professor inserido, ou -1 em caso de falha.
      */
     public int inserirProfessor(Professor professor) {
         int idGerado = -1;
@@ -85,9 +80,6 @@ public class ProfessorDAO {
 
     /**
      * Busca um professor pelo seu ID.
-     *
-     * @param idProfessor O ID do professor a ser buscado.
-     * @return Um objeto Professor se encontrado, caso contrário null.
      */
     public Professor buscarProfessorPorId(int idProfessor) {
         Professor professor = null;
@@ -114,9 +106,7 @@ public class ProfessorDAO {
     }
 
     /**
-     * 
-     * @param login O login do professor a ser buscado.
-     * @return Um objeto Professor se encontrado, caso contrário null.
+     * Busca um professor pelo seu login.
      */
     public Professor buscarProfessorPorLogin(String login) {
         Professor professor = null;
@@ -148,11 +138,7 @@ public class ProfessorDAO {
     }
 
     /**
-     * 
-     *
-     * @param login O login do professor.
-     * @param senha A senha do professor.
-     * @return Um objeto Professor se encontrado e as credenciais baterem, caso contrário null.
+     * Autentica um professor pelo login e senha.
      */
     public Professor buscarProfessorPorLoginESenha(String login, String senha) {
         Professor professor = null;
@@ -169,7 +155,7 @@ public class ProfessorDAO {
             conexao = ConnectionFactory.getConnection();
             pstmt = conexao.prepareStatement(SELECIONAR_PROFESSOR_POR_LOGIN_E_SENHA_SQL);
             pstmt.setString(1, login);
-            pstmt.setString(2, senha); 
+            pstmt.setString(2, senha);
             rs = pstmt.executeQuery();
 
             if (rs.next()) {
@@ -186,8 +172,6 @@ public class ProfessorDAO {
 
     /**
      * Lista todos os professores cadastrados no banco de dados.
-     *
-     * @return Uma lista de objetos Professor.
      */
     public List<Professor> listarTodosProfessores() {
         List<Professor> professores = new ArrayList<>();
@@ -214,9 +198,6 @@ public class ProfessorDAO {
 
     /**
      * Atualiza os dados de um professor existente no banco de dados.
-     *
-     * @param professor O objeto Professor com os dados atualizados.
-     * @return true se a atualização foi bem-sucedida, false caso contrário.
      */
     public boolean atualizarProfessor(Professor professor) {
         boolean atualizado = false;
@@ -237,7 +218,7 @@ public class ProfessorDAO {
 
             pstmt.setString(1, professor.getNome());
             pstmt.setString(2, professor.getLoginProfessor());
-            pstmt.setString(3, professor.getSenha()); 
+            pstmt.setString(3, professor.getSenha());
             pstmt.setInt(4, professor.getIdProfessor());
 
             int linhasAfetadas = pstmt.executeUpdate();
@@ -249,7 +230,7 @@ public class ProfessorDAO {
             }
 
         } catch (SQLException e) {
-            if (e.getSQLState().startsWith("23")) { 
+            if (e.getSQLState().startsWith("23")) {
                 System.err.println("Erro SQL: Não foi possível atualizar. Professor com o login '" + professor.getLoginProfessor() + "' já pode existir. " + e.getMessage());
             } else {
                 System.err.println("Erro SQL ao atualizar professor: " + e.getMessage());
@@ -263,9 +244,6 @@ public class ProfessorDAO {
 
     /**
      * Exclui um professor do banco de dados pelo seu ID.
-     *
-     * @param idProfessor O ID do professor a ser excluído.
-     * @return true se a exclusão foi bem-sucedida, false caso contrário.
      */
     public boolean excluirProfessor(int idProfessor) {
         boolean excluido = false;
@@ -290,7 +268,7 @@ public class ProfessorDAO {
                 System.out.println("Nenhum professor encontrado com o ID: " + idProfessor + " para exclusão.");
             }
         } catch (SQLException e) {
-            if (e.getSQLState().startsWith("23")) { 
+            if (e.getSQLState().startsWith("23")) {
                 System.err.println("Erro SQL: Não foi possível excluir o Professor ID " + idProfessor + ". Ele pode estar associado a outros registros. " + e.getMessage());
             } else {
                 System.err.println("Erro SQL ao excluir professor: " + e.getMessage());
