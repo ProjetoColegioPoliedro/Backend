@@ -13,8 +13,6 @@ public class Questao {
     private int anoLetivo;
     private int idNivel;
     private int idMateria;
-    private String ajuda;
-    
    
     private List<Alternativa> alternativas; // Lista de todas as alternativas para esta questão
     private Alternativa alternativaCorreta; // A alternativa correta
@@ -22,24 +20,23 @@ public class Questao {
     public Questao() {
     }
 
-    public Questao(int idQuestao, String enunciado, String explicacaoErro, int anoLetivo, int idNivel, int idMateria, String ajuda) {
+    public Questao(int idQuestao, String enunciado, String explicacaoErro, int anoLetivo, int idNivel, int idMateria) {
         this.idQuestao = idQuestao;
         this.enunciado = enunciado;
         this.explicacaoErro = explicacaoErro;
         this.anoLetivo = anoLetivo;
         this.idNivel = idNivel;
         this.idMateria = idMateria;
-        this.ajuda = ajuda;
     }
 
     // Construtor sem ID para questões novas
-    public Questao(String enunciado, String explicacaoErro, int anoLetivo, int idNivel, int idMateria, String ajuda) {
+    public Questao(String enunciado, String explicacaoErro, int anoLetivo, int idNivel, int idMateria) {
         this.enunciado = enunciado;
         this.explicacaoErro = explicacaoErro;
         this.anoLetivo = anoLetivo;
         this.idNivel = idNivel;
         this.idMateria = idMateria;
-        this.ajuda = ajuda;
+        
     }
 
     // Getters e Setters existentes
@@ -55,8 +52,6 @@ public class Questao {
     public void setIdNivel(int idNivel) { this.idNivel = idNivel; }
     public int getIdMateria() { return idMateria; }
     public void setIdMateria(int idMateria) { this.idMateria = idMateria; }
-    public String getAjuda() { return ajuda; }
-    public void setAjuda(String ajuda) { this.ajuda = ajuda; }
 
     
     public List<Alternativa> getAlternativas() { return alternativas; }

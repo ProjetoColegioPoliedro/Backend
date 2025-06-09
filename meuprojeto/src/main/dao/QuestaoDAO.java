@@ -1,7 +1,7 @@
 package dao;
 
-import model.Questao; // Importa a classe Questao do seu pacote model
-import connectionFactory.ConnectionFactory; // Importa sua classe de conexão
+import model.Questao;
+import connectionFactory.ConnectionFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,51 +13,60 @@ import java.util.List;
 
 public class QuestaoDAO {
 
-    // SQL para inserir uma nova questão
-    private static final String INSERIR_QUESTAO_SQL = "INSERT INTO questao (enunciado, explicacao_erro, ano_letivo, id_nivel, id_materia, ajuda) VALUES (?, ?, ?, ?, ?, ?);";
-    // SQL para selecionar uma questão pelo ID
-    private static final String SELECIONAR_QUESTAO_POR_ID_SQL = "SELECT id_questao, enunciado, explicacao_erro, ano_letivo, id_nivel, id_materia, ajuda FROM questao WHERE id_questao = ?;";
-    // SQL para selecionar todas as questões
-    private static final String SELECIONAR_TODAS_QUESTOES_SQL = "SELECT id_questao, enunciado, explicacao_erro, ano_letivo, id_nivel, id_materia, ajuda FROM questao ORDER BY id_materia, ano_letivo, id_nivel;";
-    // SQL para selecionar questões por matéria
-    private static final String SELECIONAR_QUESTOES_POR_MATERIA_SQL = "SELECT id_questao, enunciado, explicacao_erro, ano_letivo, id_nivel, id_materia, ajuda FROM questao WHERE id_materia = ? ORDER BY ano_letivo, id_nivel;";
-    // SQL para selecionar questões por nível
-    private static final String SELECIONAR_QUESTOES_POR_NIVEL_SQL = "SELECT id_questao, enunciado, explicacao_erro, ano_letivo, id_nivel, id_materia, ajuda FROM questao WHERE id_nivel = ? ORDER BY id_materia, ano_letivo;";
-    // SQL para selecionar questões por ano letivo
-    private static final String SELECIONAR_QUESTOES_POR_ANO_LETIVO_SQL = "SELECT id_questao, enunciado, explicacao_erro, ano_letivo, id_nivel, id_materia, ajuda FROM questao WHERE ano_letivo = ? ORDER BY id_materia, id_nivel;";
+    // SQL para inserir uma nova questão - 'ajuda' REMOVIDA E AJUSTADO O NÚMERO DE PLACEHOLDERS
+    private static final String INSERIR_QUESTAO_SQL = "INSERT INTO questao (enunciado, explicacao_erro, ano_letivo, id_nivel, id_materia) VALUES (?, ?, ?, ?, ?);";
+    // SQL para selecionar uma questão pelo ID - 'ajuda' REMOVIDA
+    private static final String SELECIONAR_QUESTAO_POR_ID_SQL = "SELECT id_questao, enunciado, explicacao_erro, ano_letivo, id_nivel, id_materia FROM questao WHERE id_questao = ?;";
+    // SQL para selecionar todas as questões - 'ajuda' REMOVIDA
+    private static final String SELECIONAR_TODAS_QUESTOES_SQL = "SELECT id_questao, enunciado, explicacao_erro, ano_letivo, id_nivel, id_materia FROM questao ORDER BY id_materia, ano_letivo, id_nivel;";
+    // SQL para selecionar questões por matéria - 'ajuda' REMOVIDA
+    private static final String SELECIONAR_QUESTOES_POR_MATERIA_SQL = "SELECT id_questao, enunciado, explicacao_erro, ano_letivo, id_nivel, id_materia FROM questao WHERE id_materia = ? ORDER BY ano_letivo, id_nivel;";
+    // SQL para selecionar questões por nível - 'ajuda' REMOVIDA
+    private static final String SELECIONAR_QUESTOES_POR_NIVEL_SQL = "SELECT id_questao, enunciado, explicacao_erro, ano_letivo, id_nivel, id_materia FROM questao WHERE id_nivel = ? ORDER BY id_materia, ano_letivo;";
+    // SQL para selecionar questões por ano letivo - 'ajuda' REMOVIDA
+    private static final String SELECIONAR_QUESTOES_POR_ANO_LETIVO_SQL = "SELECT id_questao, enunciado, explicacao_erro, ano_letivo, id_nivel, id_materia FROM questao WHERE ano_letivo = ? ORDER BY id_materia, id_nivel;";
     // SQL para deletar uma questão pelo ID
     private static final String DELETAR_QUESTAO_SQL = "DELETE FROM questao WHERE id_questao = ?;";
-    // SQL para atualizar os dados de uma questão
-    private static final String ATUALIZAR_QUESTAO_SQL = "UPDATE questao SET enunciado = ?, explicacao_erro = ?, ano_letivo = ?, id_nivel = ?, id_materia = ?, ajuda = ? WHERE id_questao = ?;";
+    // SQL para atualizar os dados de uma questão - 'ajuda' REMOVIDA
+    private static final String ATUALIZAR_QUESTAO_SQL = "UPDATE questao SET enunciado = ?, explicacao_erro = ?, ano_letivo = ?, id_nivel = ?, id_materia = ? WHERE id_questao = ?;";
 
     /**
-     * Insere uma nova questão no banco de dados.
+     * Adiciona uma nova questão no banco de dados.
+     * Renomeado de 'inserirQuestao' para 'adicionarQuestao' e adicionado throws SQLException.
      *
      * @param questao O objeto Questao a ser inserido.
-     * @return O ID da questão inserida, ou -1 em caso de falha.
+     * @return O ID da questão inserida.
+     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
      */
-    public int inserirQuestao(Questao questao) {
+    public int adicionarQuestao(Questao questao) throws SQLException {
         int idGerado = -1;
         Connection conexao = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
 
-        if (questao == null || questao.getEnunciado() == null || questao.getEnunciado().trim().isEmpty() ||
-            questao.getIdNivel() <= 0 || questao.getIdMateria() <= 0) {
-            System.err.println("Tentativa de inserir Questao nula, com enunciado vazio ou IDs de nível/matéria inválidos.");
-            return -1;
+        if (questao == null || questao.getEnunciado() == null || questao.getEnunciado().trim().isEmpty()) {
+            System.err.println("Tentativa de inserir Questao nula ou com enunciado vazio.");
+            throw new IllegalArgumentException("Questão inválida para inserção: enunciado não pode ser vazio.");
         }
+        // Validações adicionais para IDs de nível e matéria, se eles forem obrigatórios no banco
+        if (questao.getIdNivel() <= 0 || questao.getIdMateria() <= 0) {
+            System.err.println("Tentativa de inserir Questao com IDs de nível/matéria inválidos.");
+            throw new IllegalArgumentException("Questão inválida para inserção: ID de nível ou matéria inválido.");
+        }
+
 
         try {
             conexao = ConnectionFactory.getConnection();
             pstmt = conexao.prepareStatement(INSERIR_QUESTAO_SQL, Statement.RETURN_GENERATED_KEYS);
 
+            // IMPORTANTE: Certifique-se de que os getters da sua Questao retornam valores não nulos ou trate-os.
+            // Para PreparedStatement, String null funciona, mas pode ser bom usar setNString se for NVARCHAR.
             pstmt.setString(1, questao.getEnunciado());
             pstmt.setString(2, questao.getExplicacaoErro());
             pstmt.setInt(3, questao.getAnoLetivo());
             pstmt.setInt(4, questao.getIdNivel());
             pstmt.setInt(5, questao.getIdMateria());
-            pstmt.setString(6, questao.getAjuda());
+            // pstmt.setString(6, questao.getAjuda()); // <-- Essa linha foi removida corretamente
 
             int linhasAfetadas = pstmt.executeUpdate();
 
@@ -72,10 +81,7 @@ public class QuestaoDAO {
                 System.err.println("Nenhuma linha afetada ao inserir questão.");
             }
 
-        } catch (SQLException e) {
-            System.err.println("Erro SQL ao inserir questão: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
+        } finally { // O try-catch foi removido daqui
             closeResources(conexao, pstmt, rs);
         }
         return idGerado;
@@ -244,7 +250,7 @@ public class QuestaoDAO {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         
-        StringBuilder sqlBuilder = new StringBuilder("SELECT id_questao, enunciado, explicacao_erro, ano_letivo, id_nivel, id_materia, ajuda FROM questao WHERE 1=1");
+        StringBuilder sqlBuilder = new StringBuilder("SELECT id_questao, enunciado, explicacao_erro, ano_letivo, id_nivel, id_materia FROM questao WHERE 1=1"); // 'ajuda' REMOVIDA
         List<Object> params = new ArrayList<>();
 
         if (idMateria > 0) {
@@ -288,8 +294,9 @@ public class QuestaoDAO {
      *
      * @param questao O objeto Questao com os dados atualizados.
      * @return true se a atualização foi bem-sucedida, false caso contrário.
+     * @throws SQLException Se ocorrer um erro de banco de dados.
      */
-    public boolean atualizarQuestao(Questao questao) {
+    public boolean atualizarQuestao(Questao questao) throws SQLException {
         boolean atualizado = false;
         Connection conexao = null;
         PreparedStatement pstmt = null;
@@ -298,20 +305,23 @@ public class QuestaoDAO {
             questao.getEnunciado() == null || questao.getEnunciado().trim().isEmpty() ||
             questao.getIdNivel() <= 0 || questao.getIdMateria() <= 0) {
             System.err.println("Tentativa de atualizar Questao nula, com ID inválido, enunciado vazio ou IDs de nível/matéria inválidos.");
-            return false;
+            throw new IllegalArgumentException("Questão inválida para atualização.");
         }
 
         try {
             conexao = ConnectionFactory.getConnection();
-            pstmt = conexao.prepareStatement(ATUALIZAR_QUESTAO_SQL);
+            // ATUALIZAR_QUESTAO_SQL tem 6 ?s na cláusula SET + 1 ? no WHERE = 7 no total.
+            // setString(1, enunciado), setString(2, explicacaoErro), setInt(3, anoLetivo),
+            // setInt(4, idNivel), setInt(5, idMateria), setInt(6, idQuestao)
+            pstmt = conexao.prepareStatement(ATUALIZAR_QUESTAO_SQL); 
 
             pstmt.setString(1, questao.getEnunciado());
             pstmt.setString(2, questao.getExplicacaoErro());
             pstmt.setInt(3, questao.getAnoLetivo());
             pstmt.setInt(4, questao.getIdNivel());
             pstmt.setInt(5, questao.getIdMateria());
-            pstmt.setString(6, questao.getAjuda());
-            pstmt.setInt(7, questao.getIdQuestao());
+            // REMOVIDO: pstmt.setString(6, questao.getAjuda()); // <-- Esta linha foi removida corretamente
+            pstmt.setInt(6, questao.getIdQuestao()); // O ID da questão é agora o 6º parâmetro no SQL de UPDATE
 
             int linhasAfetadas = pstmt.executeUpdate();
             if (linhasAfetadas > 0) {
@@ -321,9 +331,6 @@ public class QuestaoDAO {
                 System.out.println("Nenhuma questão encontrada com o ID: " + questao.getIdQuestao() + " para atualização.");
             }
 
-        } catch (SQLException e) {
-            System.err.println("Erro SQL ao atualizar questão: " + e.getMessage());
-            e.printStackTrace();
         } finally {
             closeResources(conexao, pstmt, null);
         }
@@ -336,23 +343,20 @@ public class QuestaoDAO {
      *
      * @param idQuestao O ID da questão a ser excluída.
      * @return true se a exclusão foi bem-sucedida, false caso contrário.
+     * @throws SQLException Se ocorrer um erro no banco de dados.
      */
-    public boolean excluirQuestao(int idQuestao) {
+    public boolean excluirQuestao(int idQuestao) throws SQLException {
         boolean excluido = false;
         Connection conexao = null;
         PreparedStatement pstmt = null;
 
         if (idQuestao <= 0) {
-             System.err.println("Tentativa de excluir Questao com ID inválido.");
-            return false;
+            System.err.println("Tentativa de excluir Questao com ID inválido.");
+            throw new IllegalArgumentException("ID de questão inválido para exclusão.");
         }
         
-        // É crucial que as associações em questao_alternativa sejam excluídas ANTES.
-        // Isso pode ser feito aqui, ou na camada de serviço, ou por ON DELETE CASCADE no DB.
-        // Exemplo de chamada ao DAO correspondente (se existir e for apropriado):
-        // QuestaoAlternativaDAO qaDAO = new QuestaoAlternativaDAO();
-        // qaDAO.excluirAssociacoesPorQuestao(idQuestao);
-
+        // Se houver um QuestaoAlternativaDAO, idealmente chamaria para excluir associações aqui
+        // new QuestaoAlternativaDAO().excluirAssociacoesPorQuestao(idQuestao);
 
         try {
             conexao = ConnectionFactory.getConnection();
@@ -364,15 +368,7 @@ public class QuestaoDAO {
                 excluido = true;
                 System.out.println("Questão excluída com sucesso! ID: " + idQuestao);
             } else {
-                 System.out.println("Nenhuma questão encontrada com o ID: " + idQuestao + " para exclusão.");
-            }
-        } catch (SQLException e) {
-             // Se houver FKs para esta questão em outras tabelas (além de questao_alternativa que deveria ser tratada antes)
-            if (e.getSQLState().startsWith("23")) { 
-                 System.err.println("Erro SQL: Não foi possível excluir a Questão ID " + idQuestao + ". Ela pode estar associada a outros registros. " + e.getMessage());
-            } else {
-                System.err.println("Erro SQL ao excluir questão: " + e.getMessage());
-                e.printStackTrace();
+                System.out.println("Nenhuma questão encontrada com o ID: " + idQuestao + " para exclusão.");
             }
         } finally {
             closeResources(conexao, pstmt, null);
@@ -382,6 +378,7 @@ public class QuestaoDAO {
 
     /**
      * Mapeia uma linha do ResultSet para um objeto Questao.
+     * 'ajuda' REMOVIDA daqui.
      */
     private Questao mapResultSetToQuestao(ResultSet rs) throws SQLException {
         int idQuestao = rs.getInt("id_questao");
@@ -390,8 +387,11 @@ public class QuestaoDAO {
         int anoLetivo = rs.getInt("ano_letivo");
         int idNivel = rs.getInt("id_nivel");
         int idMateria = rs.getInt("id_materia");
-        String ajuda = rs.getString("ajuda");
-        return new Questao(idQuestao, enunciado, explicacaoErro, anoLetivo, idNivel, idMateria, ajuda);
+        // String ajuda = rs.getString("ajuda"); // <--- REMOVIDO
+        
+        // O construtor Questao(idQuestao, enunciado, explicacaoErro, anoLetivo, idNivel, idMateria) deve existir.
+        // As alternativas e a correta são setadas na camada de serviço (QuestaoService).
+        return new Questao(idQuestao, enunciado, explicacaoErro, anoLetivo, idNivel, idMateria);
     }
 
     /**
@@ -402,18 +402,19 @@ public class QuestaoDAO {
             if (rs != null) rs.close();
         } catch (SQLException e) {
             System.err.println("Erro ao fechar ResultSet: " + e.getMessage());
+            e.printStackTrace();
         }
         try {
             if (stmt != null) stmt.close();
         } catch (SQLException e) {
             System.err.println("Erro ao fechar PreparedStatement: " + e.getMessage());
+            e.printStackTrace();
         }
         try {
             if (conn != null && !conn.isClosed()) conn.close();
         } catch (SQLException e) {
             System.err.println("Erro ao fechar Connection: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
-
-
