@@ -5,7 +5,9 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class TelaConfiguracoes extends JFrame{
+	
 	public TelaConfiguracoes(Runnable telaInicial, Runnable voltaUltimaTela){
+
 		var rosa = new Color(238, 33, 82);
 		var roxo = new Color(20, 14, 40);
 		

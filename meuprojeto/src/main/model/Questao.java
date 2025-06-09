@@ -7,6 +7,18 @@ import java.util.Collections;
 
 public class Questao {
 
+    /**
+     * Verifica se o texto de uma alternativa fornecida corresponde ao da alternativa correta.
+     * @param textoAlternativa O texto da alternativa selecionada pelo usuário.
+     * @return true se for a alternativa correta, false caso contrário.
+     */
+    public boolean isAlternativaCorreta(String textoAlternativa) {
+        if (alternativaCorreta == null || textoAlternativa == null) {
+            return false;
+        }
+        return alternativaCorreta.getTexto().trim().equals(textoAlternativa.trim());
+    }
+
     private int idQuestao;
     private String enunciado;
     private String explicacaoErro;
