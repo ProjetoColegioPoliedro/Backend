@@ -118,10 +118,6 @@ public class Navegador {
      * @param questao A questão atual para a qual o tempo esgotou (útil para passar para a solução).
      * @param proximaAcao Runnable que define o que acontece após esta tela ser fechada/concluída (ex: ir para a solução).
      */
-    private void showTelaTempoEncerrado(Questao questao, Runnable proximaAcao) { 
-        TelaTempoEncerrado telaTempo = new TelaTempoEncerrado(questao, proximaAcao);
-        telaTempo.setVisible(true);
-    }
 
     /**
      * Exibe a Tela de Solução para uma questão específica.
@@ -164,19 +160,14 @@ public class Navegador {
 
     private void showTelaAreaRestrita(){
         TelaAreaRestrita telaAreaRes = new TelaAreaRestrita(this::showTelaMenuAdmin, () -> showTelaConfiguracoes(this::showTelaAreaRestrita),
-                this::showTelaAdicionaPergunta, this::showTelaEditaPergunta, this::showTelaConsultaRanking, this::showTelaCadastro);
+                this::showTelaAdicionaPergunta, this::showTelaConsultaRanking, this::showTelaCadastro);
         telaAreaRes.setVisible(true);
     }
 
     private void showTelaAdicionaPergunta(){
-        TelaAdicionaPergunta telaAddPerg = new TelaAdicionaPergunta(this::showTelaAreaRestrita);
-        telaAddPerg.setVisible(true);
-    }
-
-    private void showTelaEditaPergunta(){
-        TelaEditaPergunta telaEdPerg = new TelaEditaPergunta(this::showTelaAreaRestrita);
-        telaEdPerg.setVisible(true);
-    }
+    TelaAdicionaPergunta telaAddPerg = new TelaAdicionaPergunta(this::showTelaAreaRestrita, this.questaoService);
+    telaAddPerg.setVisible(true);
+}
 
     private void showTelaConsultaRanking(){
         TelaConsultaRanking telaConsRank = new TelaConsultaRanking(this::showTelaAreaRestrita);

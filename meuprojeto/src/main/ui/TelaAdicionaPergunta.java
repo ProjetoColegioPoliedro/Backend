@@ -1,12 +1,36 @@
 package ui;
 
+import service.QuestaoService; // Importação adicionada
+import model.Questao;         // Importação adicionada
+import model.Alternativa;     // Importação adicionada
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.List;        // Importação adicionada para usar List
+import java.util.HashMap;     // Importação adicionada para usar HashMap
+import java.util.Map;         // Importação adicionada para usar Map
 
-public class TelaAdicionaPergunta extends JFrame{
-    public TelaAdicionaPergunta(Runnable telaAreaRes){
+public class TelaAdicionaPergunta extends JFrame {
+
+    // Atributos de classe adicionados
+    private QuestaoService questaoService;
+    private JTextField campoPerg;
+    private JTextField campoRespA;
+    private JTextField campoRespB;
+    private JTextField campoRespC;
+    private JTextField campoRespD;
+    private JComboBox<String> nivelDif;
+    private JComboBox<String> materias;
+
+    private JTextField campoCorretoSelecionado = null; // Para armazenar a alternativa correta clicada
+    private Map<JTextField, Border> bordasPadraoRespostas = new HashMap<>(); // Para resetar as bordas
+
+    // Construtor ajustado para receber QuestaoService
+    public TelaAdicionaPergunta(Runnable telaAreaRes, QuestaoService questaoService) {
+        this.questaoService = questaoService; // Inicialização do QuestaoService
+
         var rosa = new Color(238, 33, 82);
         var roxo = new Color(20, 14, 40);
         var ciano = new Color(30, 180, 195);
@@ -24,7 +48,7 @@ public class TelaAdicionaPergunta extends JFrame{
         fundoTela.setBackground(roxo);
         setContentPane(fundoTela);
 
-        // Caixas
+        // Caixas (ainda são JLabels neste ponto, serão convertidos no próximo passo)
         var caixaRespA = new JLabel("Resposta");
         caixaRespA.setBounds(300, 220, 1000, 80);
         caixaRespA.setFont(new Font("Montserrat", Font.ITALIC, 20));
@@ -60,28 +84,15 @@ public class TelaAdicionaPergunta extends JFrame{
         caixaPerg.setBorder(BorderFactory.createLineBorder(rosa, 7));
         fundoTela.add(caixaPerg);
 
-        // Guardando em lista
+        // Guardando em lista (este ArrayList de JLabel não será mais o principal foco para entrada de texto)
         var respostas = new ArrayList<JLabel>();
         respostas.add(caixaRespA);
         respostas.add(caixaRespB);
         respostas.add(caixaRespC);
         respostas.add(caixaRespD);
 
-        // percorrer lista com for e adiconar evento (?)
-
-        // var labelVerde = new MouseAdapter() {
-        //     @Override
-        //     public void mouseClicked(MouseEvent caixaSelecao){
-        //     {
-        //             r.setBorder(BorderFactory.createLineBorder(ciano, 7));
-        //         }
-        //         JLabel clicado = (Jlabel) caixaSelecao.getSource();
-        //         clicado.setBorder(BorderFactory.createLineBorder(Color.GREEN));
-        //     }
-        // };
-
-        // Arternativas
-        var circulo = new ImageIcon("assets\\circuloAlternativa.png"); 
+        // Arternativas visuais (círculos e letras)
+        var circulo = new ImageIcon("assets\\circuloAlternativa.png");
         var c = circulo.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
         var circ = new JLabel(new ImageIcon(c));
         fundoTela.add(circ);
@@ -123,6 +134,7 @@ public class TelaAdicionaPergunta extends JFrame{
         letraD.setForeground(Color.WHITE);
         circulo3.add(letraD);
 
+        // Ícones de Edição (funcionalidade ainda não implementada aqui)
         var edit = new ImageIcon("assets\\edit.png");
         var edicao = edit.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
         var iconeEdicao = new JLabel(new ImageIcon(edicao));
@@ -167,12 +179,11 @@ public class TelaAdicionaPergunta extends JFrame{
         salvar.setForeground(Color.WHITE);
         salvar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                telaAreaRes.run();
-                dispose();
+                // Lógica de salvar será adicionada aqui
             }
         });
 
-        // Filtro
+        // Filtro (ComboBoxes, ainda não referenciados aos atributos de classe)
         var dificuldade = new JLabel("Dificuldade: ");
         dificuldade.setBounds(270, 133, 200, 100);
         dificuldade.setFont(new Font("Montserrat", Font.BOLD, 20));
@@ -180,10 +191,10 @@ public class TelaAdicionaPergunta extends JFrame{
         fundoTela.add(dificuldade);
 
         String [] opcoes = {"Fácil", "Médio", "Difícil"};
-        var nivelDif = new JComboBox<>(opcoes);
-        fundoTela.add(nivelDif);
-        nivelDif.setBounds(390, 170, 100, 30);
-        nivelDif.setBackground(rosa);
+        var nivelDifTemp = new JComboBox<>(opcoes); // Variável temporária
+        fundoTela.add(nivelDifTemp);
+        nivelDifTemp.setBounds(390, 170, 100, 30);
+        nivelDifTemp.setBackground(rosa);
 
         var materia = new JLabel("Materia: ");
         materia.setBounds(1010, 133, 200, 100);
@@ -192,9 +203,9 @@ public class TelaAdicionaPergunta extends JFrame{
         fundoTela.add(materia);
 
         String [] materiaOpcoes = {"Português", "Matemática", "Inglês", "Ciências Humanas", "Ciências da natureza"};
-        var materias = new JComboBox<>(materiaOpcoes);
-        fundoTela.add(materias);
-        materias.setBounds(1100, 170, 120, 30);
-        materias.setBackground(rosa);
+        var materiasTemp = new JComboBox<>(materiaOpcoes); // Variável temporária
+        fundoTela.add(materiasTemp);
+        materiasTemp.setBounds(1100, 170, 120, 30);
+        materiasTemp.setBackground(rosa);
     }
 }
