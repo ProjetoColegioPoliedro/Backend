@@ -10,7 +10,7 @@ public class TelaRespostaIncorreta extends JFrame {
     private Questao questaoAtual; // Adicione este atributo para armazenar a questão
 
     // Construtor modificado para receber a Questao
-    public TelaRespostaIncorreta(Questao questao, Runnable solucao){ // Modificado aqui
+    public TelaRespostaIncorreta(Questao questao, Runnable contQuestao, boolean penultimaQuestao, boolean ultimaQuestão){ // Modificado aqui
         this.questaoAtual = questao; // Armazena a questão atual
 
         var roxo = new Color(20, 14, 40);
@@ -32,22 +32,35 @@ public class TelaRespostaIncorreta extends JFrame {
         respIncorreta.setForeground(Color.WHITE);
         corFundo.add(respIncorreta);
 
+         // Possibilidade de resposta com operador ternário
+        String mensagem = ultimaQuestão ? "Fim de jogo!\tVoltar para o menu." : "Ver solução";
+
         // Label/Botão "Ver solução"
-        var verSolucao = new JLabel("Ver solução"); // Pode ser um JLabel com MouseListener ou um JButton
+        var verSolucao = new JLabel(mensagem); // Pode ser um JLabel com MouseListener ou um JButton
         verSolucao.setBounds(700, 340, 500, 70); // Ajuste a posição
         verSolucao.setFont(new Font("Montserrat", Font.ITALIC, 35));
         verSolucao.setForeground(Color.WHITE);
         corFundo.add(verSolucao);
 
-        // Adiciona o MouseListener ao JLabel "Ver solução"
-        verSolucao.addMouseListener(new MouseAdapter() {
-            @Override // É bom manter o @Override para métodos sobrescritos
-            public void mouseClicked(MouseEvent e){
-                dispose(); // Fecha a tela de resposta incorreta
-                // Executa o Runnable 'solucao' que foi passado, que por sua vez
-                // no Navegador, está configurado para chamar showTelaSolucao(questaoAtual, voltarParaMenu).
-                solucao.run(); 
-            }
-        });
+        if(!ultimaQuestão){
+            // Adiciona o MouseListener ao JLabel "Ver solução"
+            verSolucao.addMouseListener(new MouseAdapter() {
+                @Override // É bom manter o @Override para métodos sobrescritos
+                public void mouseClicked(MouseEvent e){
+                    dispose(); // Fecha a tela de resposta incorreta
+                    // Executa o Runnable 'solucao' que foi passado, que por sua vez
+                    // no Navegador, está configurado para chamar showTelaSolucao(questaoAtual, voltarParaMenu).
+                    contQuestao.run(); 
+                }
+            });
+        } else{
+            verSolucao.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    dispose();
+                    contQuestao.run();
+                }
+            });
+        }
     }
 }
