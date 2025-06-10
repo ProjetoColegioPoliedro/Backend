@@ -1,176 +1,187 @@
 package ui;
 
-import java.awt.*;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
-import service.AuthService; // Importa a classe AuthService para usar o serviço de autenticação
 
-public class TelaLogin extends JFrame{
-    // Adiciona uma instância do serviço de autenticação, que será usada para verificar credenciais
-    private AuthService authService; 
+// Certifique-se de que a interface LoginAuthCallback foi criada no pacote 'ui'
+// import ui.LoginAuthCallback; // Se estiver em outro pacote, ajuste o import
 
-    // Construtor da TelaLogin. Recebe Runnables para as ações de navegação.
-    public TelaLogin(Runnable voltaTelaAnterior, Runnable fgtSenha, Runnable configs, Runnable showTelaAdmin, Runnable showTelaMenuEstudante){
-        // Inicializa o AuthService. Ele será responsável por interagir com os DAOs.
-        this.authService = new AuthService(); 
+public class TelaLogin extends JFrame {
 
-        // Configurações básicas da janela (JFrame)
+    private JTextField campoLogin;
+    private JPasswordField campoSenha;
+
+    // Cores (ajuste conforme suas cores globais se tiver)
+    private final Color ROXO = new Color(20, 14, 40);
+    private final Color ROSA = new Color(238, 33, 82);
+    private final Color CINZA = new Color(217, 217, 217);
+    private final Color BRANCO = Color.WHITE;
+    private final Color PRETO = Color.BLACK;
+    private final Color CINZA_TEXTO_PADRAO = Color.GRAY;
+
+
+    // Construtor com a nova interface de callback para autenticação
+    // Ele recebe 3 Runnables (voltar, recuperar, configs) e 1 LoginAuthCallback
+    public TelaLogin(Runnable voltaTelaInicial, Runnable recuperacaoSenha, Runnable configs, LoginAuthCallback authCallback) {
+        // Configurações básicas da janela
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(710, 800);
-        setLocationRelativeTo(null); // Centraliza a janela na tela
-        setExtendedState(Frame.MAXIMIZED_BOTH); // Maximiza a janela para preencher a tela
-        
-        // Definição de cores personalizadas
-        var cinza = new Color(217, 217, 217);
-        var rosa = new Color(238, 33, 82);
-        var roxo = new Color(20, 14, 40);
-        
-        // Painel de fundo da tela (maior), usando layout nulo para posicionamento absoluto
-        var painelInicial = new JPanel(null, true);
-        painelInicial.setSize(800, 800); // Tamanho inicial, ajustado pelo redimensionamento
-        painelInicial.setBackground(roxo);
-        add(painelInicial); // Adiciona o painel ao JFrame
-        
-        // Painel menor (onde ficam os campos de login e botões), centralizado
-        var painelMenor = new JPanel(null);
-        painelMenor.setBackground(Color.WHITE);
-        painelMenor.setBounds(100, 100, 500, 550); // Posição e tamanho iniciais
-        painelInicial.add(painelMenor, BorderLayout.CENTER); // Adiciona o painel menor ao painel inicial
-        
-        // Título da tela de login
-        var login = new JLabel("Faça o seu login");
-        painelMenor.add(login);
-        login.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 25));
-        login.setBounds(90, 120, 200, 100);
-        
-        // Campo de texto para o E-mail (login)
-        var digiteEmail = new JTextField();
-        digiteEmail.setColumns(30);
-        digiteEmail.setBackground(cinza);
-        digiteEmail.setBounds(90, 230, 320, 40);
-        painelMenor.add(digiteEmail);
-        digiteEmail.setFont(new Font("New Cordial", Font.ITALIC, 10));
-        
-        var email = new JLabel("E-mail");
-        email.setFont(new Font("Cordia New", Font.BOLD, 12));
-        email.setBounds(90, 210, 200, 20);
-        painelMenor.add(email);
-        
-        // Campo de senha (JPasswordField para ocultar a senha digitada)
-        var digiteSenha = new JPasswordField(); // Importante: Usar JPasswordField para senhas
-        digiteSenha.setColumns(30);
-        digiteSenha.setBackground(cinza);
-        digiteSenha.setBounds(90, 310, 320, 40);
-        painelMenor.add(digiteSenha);
-        digiteSenha.setFont(new Font("Cordia New", Font.ITALIC, 10));
-        
-        var senha = new JLabel("Senha");
-        senha.setFont(new Font("Cordia New", Font.BOLD, 12));
-        senha.setBounds(90, 290, 200, 20);
-        painelMenor.add(senha);
-        
-        // Botão "Entrar" - Ação de autenticação principal
-        var entrar = new JButton("Entrar");
-        painelMenor.add(entrar);
-        entrar.setFont(new Font("Cordia New", Font.BOLD, 14));
-        entrar.setBounds(300, 390, 110, 30);
-        entrar.setBackground(rosa);
-        entrar.setForeground(Color.WHITE);
-        
-        // ActionListener para o botão "Entrar"
-        entrar.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent evento){
-                String loginDigitado = digiteEmail.getText().trim(); // Pega o texto do email e remove espaços
-                // Converte a senha de char[] (seguro) para String (para passar ao AuthService)
-                String senhaDigitada = new String(digiteSenha.getPassword()).trim(); 
+        setLocationRelativeTo(null);
+        setExtendedState(Frame.MAXIMIZED_BOTH); // Maximiza a janela
 
-                // Validação de campos vazios
-                if (loginDigitado.isEmpty() || senhaDigitada.isEmpty()){
-                    JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos!", "ERRO - CAMPO VAZIO", JOptionPane.WARNING_MESSAGE);
-                }
-                else {
-                    // Chama o serviço de autenticação para verificar as credenciais
-                    int userType = authService.autenticarUsuario(loginDigitado, senhaDigitada);
+        JPanel painelInicial = new JPanel(null);
+        painelInicial.setBackground(ROXO);
+        setContentPane(painelInicial);
 
-                    // Processa o resultado da autenticação
-                    if (userType == 0){ // Retorno 0 significa Aluno autenticado
-                        JOptionPane.showMessageDialog(null, "Login de Aluno efetuado com sucesso!", "Confirmação de Login", JOptionPane.INFORMATION_MESSAGE);
-                        showTelaMenuEstudante.run(); // Executa o Runnable para abrir a tela do menu de estudante
-                        dispose(); // Fecha a tela de login
-                    } else if (userType == 1){ // Retorno 1 significa Professor/Admin autenticado
-                        JOptionPane.showMessageDialog(null, "Login de Professor/Admin efetuado com sucesso!", "Confirmação de Login", JOptionPane.INFORMATION_MESSAGE);
-                        showTelaAdmin.run(); // Executa o Runnable para abrir a tela do menu de administrador
-                        dispose(); // Fecha a tela de login
-                    } else { // Retorno -1 significa falha na autenticação
-                        JOptionPane.showMessageDialog(null, "Login ou senha inválidos. Tente novamente.", "Falha na Autenticação", JOptionPane.ERROR_MESSAGE);
-                        digiteSenha.setText(""); // Limpa o campo de senha por segurança
-                    }
-                }
-            }
-        });
-        
-        // Botão "Cancelar"
-        var cancelar = new JButton("Cancelar");
-        painelMenor.add(cancelar);
-        cancelar.setFont(new Font("Cordia New", Font.BOLD, 14));
-        cancelar.setBounds(90, 390, 110, 30);
-        cancelar.setBackground(rosa);
-        cancelar.setForeground(Color.WHITE);
-        cancelar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent volta) {
-                voltaTelaAnterior.run(); // Executa o Runnable para voltar à tela anterior (ex: Tela Inicial)
-                dispose(); // Fecha a tela de login
-            }
-        });
-        
-        // Link "Esqueceu a senha?"
-        var esqueceuSenha = new JLabel("Esqueceu a senha?");
-        painelMenor.add(esqueceuSenha);
-        esqueceuSenha.setFont(new Font("Arial", Font.ITALIC, 10));
-        esqueceuSenha.setBounds(209, 420, 200, 100);
-        esqueceuSenha.setForeground(Color.BLUE);
-        // MouseListener para o link "Esqueceu a senha?"
-        esqueceuSenha.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e){
-                fgtSenha.run(); // Executa o Runnable para abrir a tela de recuperação de senha
-                dispose(); // Fecha a tela de login
-            }
-        });
-        
-        // Imagens (logo e ícone de configurações)
-        var icon = new ImageIcon("assets\\logo-poliedro-2.png");
-        var poliedro = icon.getImage().getScaledInstance(150, 80, Image.SCALE_SMOOTH);
-        var imagemPoliedro = new JLabel(new ImageIcon(poliedro));
-        painelMenor.add(imagemPoliedro);
-        imagemPoliedro.setBounds(170, 50, 150, 80);
-        
-        var icone = new ImageIcon("assets\\settings.png");
-        var image = icone.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
-        var config = new JLabel(new ImageIcon(image));
-        painelInicial.add(config);
-        config.setBounds(1460, 20, 60, 60);
-        // MouseListener para o ícone de configurações
-        config.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e){
-                configs.run(); // Executa o Runnable para abrir a tela de configurações
-                dispose(); // Fecha a tela de login
-            }
-        });
-        
-        // Listener para redimensionamento da janela (centraliza o painel menor)
-        addComponentListener(new ComponentAdapter() {
+        JPanel painelCentral = new JPanel(null);
+        painelCentral.setBackground(BRANCO);
+        painelCentral.setBounds(0, 0, 500, 500); // Tamanho fixo, será centralizado
+        painelInicial.add(painelCentral);
+
+        // Listener para centralizar o painelCentral ao redimensionar
+        painelInicial.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent evento) {
                 int frameWidth = getWidth();
                 int frameHeight = getHeight();
-                int painelMenorWidth = painelMenor.getWidth();
-                int painelMenorHeight = painelMenor.getHeight();
-                int x = (frameWidth - painelMenorWidth) / 2;
-                int y = (frameHeight - painelMenorHeight) / 2;
-                painelMenor.setLocation(x, y);
+                int panelWidth = painelCentral.getWidth();
+                int panelHeight = painelCentral.getHeight();
+                int x = (frameWidth - panelWidth) / 2;
+                int y = (frameHeight - panelHeight) / 2;
+                painelCentral.setLocation(x, y);
+            }
+        });
+
+        // Título "Login"
+        JLabel tituloLogin = new JLabel("Login");
+        tituloLogin.setFont(new Font("Montserrat", Font.BOLD, 28));
+        tituloLogin.setForeground(ROXO);
+        tituloLogin.setBounds(200, 80, 150, 40);
+        painelCentral.add(tituloLogin);
+
+        // Campos de Login e Senha
+        JLabel labelLogin = new JLabel("Login:");
+        labelLogin.setFont(new Font("Montserrat", Font.BOLD, 14));
+        labelLogin.setBounds(90, 150, 100, 20);
+        painelCentral.add(labelLogin);
+
+        campoLogin = criarCampoTexto(painelCentral, "Digite seu login", 90, 170, 320, 40);
+
+        JLabel labelSenha = new JLabel("Senha:");
+        labelSenha.setFont(new Font("Montserrat", Font.BOLD, 14));
+        labelSenha.setBounds(90, 230, 100, 20);
+        painelCentral.add(labelSenha);
+
+        campoSenha = criarCampoSenha(painelCentral, "Digite sua senha", 90, 250, 320, 40);
+
+        // Botão de Login
+        JButton btnLogin = criarBotao(painelCentral, "Entrar", 200, 320, 100, 30, ROSA, BRANCO, e -> {
+            String login = campoLogin.getText().trim();
+            String senha = new String(campoSenha.getPassword());
+            authCallback.authenticate(login, senha); // <--- Chama o callback de autenticação
+
+            // IMPORTANTE: A TelaLogin deve ser fechada APENAS se a autenticação for bem-sucedida,
+            // ou se o callback indicar que ela deve ser fechada.
+            // Para simplificar, pode-se fechar aqui se o callback 'authenticate' não lançar exceção
+            // ou se você tiver um retorno do callback.
+            // Por enquanto, vamos deixar a decisão de fechar para o Navegador, após o resultado do callback.
+            // Se o Navegador decidir mudar de tela, ele chamará dispose() na TelaLogin.
+        });
+
+        // Botões de navegação secundários
+        JButton btnRecuperacaoSenha = criarBotao(painelCentral, "Recuperar Senha", 90, 370, 150, 30, ROSA, BRANCO, e -> {
+            recuperacaoSenha.run();
+            dispose();
+        });
+        JButton btnConfiguracoes = criarBotao(painelCentral, "Configurações", 250, 370, 150, 30, ROSA, BRANCO, e -> {
+            configs.run();
+            dispose();
+        });
+        JButton btnVoltar = criarBotao(painelCentral, "Voltar", 200, 420, 100, 30, ROSA, BRANCO, e -> {
+            voltaTelaInicial.run();
+            dispose();
+        });
+    }
+
+    // --- Métodos Auxiliares para Criação de Componentes e Placeholders ---
+    private JTextField criarCampoTexto(JPanel parentPanel, String placeholder, int x, int y, int width, int height) {
+        JTextField campo = new JTextField(placeholder);
+        campo.setBounds(x, y, width, height);
+        campo.setBackground(CINZA);
+        campo.setForeground(CINZA_TEXTO_PADRAO);
+        campo.setFont(new Font("Montserrat", Font.PLAIN, 14));
+        parentPanel.add(campo);
+        adicionarPlaceholderListener(campo, placeholder);
+        return campo;
+    }
+
+    private JPasswordField criarCampoSenha(JPanel parentPanel, String placeholder, int x, int y, int width, int height) {
+        JPasswordField campo = new JPasswordField(placeholder);
+        campo.setBounds(x, y, width, height);
+        campo.setBackground(CINZA);
+        campo.setForeground(CINZA_TEXTO_PADRAO);
+        campo.setFont(new Font("Montserrat", Font.PLAIN, 14));
+        parentPanel.add(campo);
+        adicionarPlaceholderListener(campo, placeholder);
+        return campo;
+    }
+
+    private JButton criarBotao(JPanel parentPanel, String texto, int x, int y, int width, int height, Color bgColor, Color fgColor, ActionListener action) {
+        JButton botao = new JButton(texto);
+        botao.setBounds(x, y, width, height);
+        botao.setBackground(bgColor);
+        botao.setForeground(fgColor);
+        botao.setFont(new Font("Montserrat", Font.BOLD, 13));
+        botao.addActionListener(action);
+        parentPanel.add(botao);
+        return botao;
+    }
+
+    private void adicionarPlaceholderListener(JTextField campo, String placeholder) {
+        campo.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (campo.getText().equals(placeholder) && campo.getForeground().equals(CINZA_TEXTO_PADRAO)) {
+                    campo.setText("");
+                    campo.setForeground(PRETO);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (campo.getText().isEmpty()) {
+                    campo.setText(placeholder);
+                    campo.setForeground(CINZA_TEXTO_PADRAO);
+                }
+            }
+        });
+    }
+
+    private void adicionarPlaceholderListener(JPasswordField campo, String placeholder) {
+        campo.setEchoChar((char) 0); // Torna o placeholder visível
+        campo.setForeground(CINZA_TEXTO_PADRAO);
+        campo.setText(placeholder); // Setando o texto diretamente
+
+        campo.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                String currentText = new String(campo.getPassword()); // Pega o texto atual
+                if (currentText.equals(placeholder)) {
+                    campo.setText("");
+                    campo.setEchoChar('*'); // Volta para o caractere de senha
+                    campo.setForeground(PRETO);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                String currentText = new String(campo.getPassword()); // Pega o texto atual
+                if (currentText.isEmpty()) {
+                    campo.setText(placeholder);
+                    campo.setEchoChar((char) 0); // Torna o placeholder visível
+                    campo.setForeground(CINZA_TEXTO_PADRAO);
+                }
             }
         });
     }

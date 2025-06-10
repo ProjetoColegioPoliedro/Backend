@@ -4,323 +4,250 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Collections; // Import para Collections.shuffle
-
 import model.Questao;
-import model.Alternativa;
+import model.Alternativa; // Importe a classe Alternativa
 
 public class TelaPartida extends JFrame {
     private JLabel caixaPerg;
-    private JLabel caixaRespA;
-    private JLabel caixaRespB;
-    private JLabel caixaRespC;
-    private JLabel caixaRespD;
-    
+    private JLabel caixaRespA, caixaRespB, caixaRespC, caixaRespD;
+    private List<JLabel> labelsRespostas;
     private Questao questaoAtual;
-    private List<JLabel> labelsRespostas; // Para facilitar o acesso aos JLabels das respostas
-    private boolean ajuda5050Usada = false; 
+    private boolean ajuda5050Usada = false;
+    private JButton eliminDuas; // Para poder desabilitar
 
-    // Construtor com Runnables 
-    public TelaPartida(Questao questao, Runnable acaoAoEncerrarQuestao, Runnable respostaCorretaAction, Runnable respostaIncorretaAction, Runnable configs, Runnable pararJogo) {
+    // Construtor com todos os Runnables necessários
+    public TelaPartida(Questao questao, Runnable acaoAoPular, Runnable respostaCorretaAction, Runnable respostaIncorretaAction, Runnable configsAction, Runnable pararJogoAction) {
         this.questaoAtual = questao;
         
+        // Configurações de cores e da janela
         var roxo = new Color(20, 14, 40);
         var laranja = new Color(250, 164, 31);
         var ciano = new Color(30, 180, 195);
         var rosa = new Color(238, 33, 82);
-
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1500, 1500);
         setExtendedState(Frame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
-        setResizable(false);
-
+        setResizable(false); // Mantido false, mas para layouts adaptáveis seria true
+        
+        // Painel de fundo, todos os componentes devem ser adicionados AQUI
         var corFundo = new JPanel(null, true);
         corFundo.setBackground(roxo);
-        setContentPane(corFundo);
+        setContentPane(corFundo); // Define este painel como o conteúdo principal do JFrame
 
-        var icone = new ImageIcon("assets\\settings.png");
-		var imagem = icone.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
-		var config = new JLabel(new ImageIcon(imagem));
-		corFundo.add(config);
-		config.setBounds(1460, 20, 60, 60);
-		config.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e){
-				configs.run(); // abre a tela de configurações
-				dispose();
-			}
-		});
+        // --- COMPONENTES DA UI ---
+        // Botão Configurações
+        // Carrega a imagem uma vez e a escala.
+        ImageIcon settingsIcon = new ImageIcon("assets/settings.png");
+        Image scaledSettingsImage = settingsIcon.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+        JLabel config = new JLabel(new ImageIcon(scaledSettingsImage));
+        config.setBounds(1460, 20, 60, 60);
+        config.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                configsAction.run(); // Apenas chama a ação, sem destruir a tela de partida
+            }
+        });
+        corFundo.add(config); // Adicionado ao corFundo
 
-        // Inicializa os JLabels das respostas e da pergunta
-        caixaRespA = new JLabel("");
-        caixaRespB = new JLabel("");
-        caixaRespC = new JLabel("");
-        caixaRespD = new JLabel("");
-        caixaPerg = new JLabel("");
+        // Labels de Pergunta e Respostas
+        caixaPerg = new JLabel();
+        caixaPerg.setBounds(180, 50, 1200, 80);
+        caixaPerg.setFont(new Font("Montserrat", Font.ITALIC, 20));
+        caixaPerg.setForeground(Color.WHITE);
+        caixaPerg.setBorder(BorderFactory.createLineBorder(rosa, 7));
+        corFundo.add(caixaPerg); // Adicionado ao corFundo
 
         labelsRespostas = new ArrayList<>();
+        caixaRespA = new JLabel();
+        caixaRespB = new JLabel();
+        caixaRespC = new JLabel();
+        caixaRespD = new JLabel();
         labelsRespostas.add(caixaRespA);
         labelsRespostas.add(caixaRespB);
         labelsRespostas.add(caixaRespC);
         labelsRespostas.add(caixaRespD);
         
-        // Configuração dos JLabels de Respostas
-        // Cada label de resposta precisa saber as ações para quando for clicado.
-        configuraLabelResposta(caixaRespA, 300, 200, ciano, respostaCorretaAction, respostaIncorretaAction);
-        configuraLabelResposta(caixaRespB, 300, 310, ciano, respostaCorretaAction, respostaIncorretaAction);
-        configuraLabelResposta(caixaRespC, 300, 420, ciano, respostaCorretaAction, respostaIncorretaAction);
-        configuraLabelResposta(caixaRespD, 300, 530, ciano, respostaCorretaAction, respostaIncorretaAction);
+        // Configura cada label de resposta, passando o corFundo para adicionar
+        configuraLabelResposta(caixaRespA, corFundo, 300, 200, ciano, respostaCorretaAction, respostaIncorretaAction);
+        configuraLabelResposta(caixaRespB, corFundo, 300, 310, ciano, respostaCorretaAction, respostaIncorretaAction);
+        configuraLabelResposta(caixaRespC, corFundo, 300, 420, ciano, respostaCorretaAction, respostaIncorretaAction);
+        configuraLabelResposta(caixaRespD, corFundo, 300, 530, ciano, respostaCorretaAction, respostaIncorretaAction);
 
-        // Configuração do JLabel da Pergunta
-        caixaPerg.setBounds(180, 50, 1200, 80);
-        caixaPerg.setFont(new Font("Montserrat", Font.ITALIC, 20));
-        caixaPerg.setForeground(Color.WHITE);
-        caixaPerg.setBorder(BorderFactory.createLineBorder(rosa, 7));
-        corFundo.add(caixaPerg);
+        // Botões de Ajuda (Pular, 50/50, Parar)
+        setupBotoesAcao(corFundo, laranja, acaoAoPular, pararJogoAction);
 
+        // Adiciona os círculos com as letras (A, B, C, D)
+        ImageIcon circuloIcon = new ImageIcon("assets\\circuloAlternativa.png");
+        Image scaledCirculoImage = circuloIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+        adicionarCirculoAlternativa(corFundo, scaledCirculoImage, 220, 215, "A"); 
+        adicionarCirculoAlternativa(corFundo, scaledCirculoImage, 220, 325, "B");
+        adicionarCirculoAlternativa(corFundo, scaledCirculoImage, 220, 440, "C");
+        adicionarCirculoAlternativa(corFundo, scaledCirculoImage, 220, 540, "D");
+
+        // Carrega a questão inicial na tela
         carregarQuestaoNaTela(this.questaoAtual);
+    }
 
-        // Botão Pular Questão
-        var pularQuestao = new JButton(">>");
-        pularQuestao.setFont(new Font("Montserrat", Font.BOLD, 22));
-        pularQuestao.setBackground(laranja);
-        pularQuestao.setForeground(Color.BLACK);
-        corFundo.add(pularQuestao);
-        pularQuestao.setBounds(340, 650, 60, 60);
-        pularQuestao.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int confirm = JOptionPane.showConfirmDialog(null, "Você tem certeza que quer pular esta questão?", "Pular Questão", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                if (confirm == JOptionPane.YES_OPTION) {
-                    dispose();
-                    acaoAoEncerrarQuestao.run();
-                }
-            }
-        });
-
-        var pulQues = new JLabel("Pular questâo");
-        pulQues.setBounds(410, 645, 500, 70);
-        pulQues.setFont(new Font("Montserrat", Font.BOLD, 25));
-        pulQues.setForeground(Color.WHITE);
-        corFundo.add(pulQues);
-
-        // Botão Eliminar Duas Alternativas (1/2) - Lógica adicionada aqui
-        var eliminDuas = new JButton("1/2");
-        eliminDuas.setFont(new Font("Montserrat", Font.BOLD, 19));
-        eliminDuas.setBackground(laranja);
-        eliminDuas.setForeground(Color.BLACK);
-        corFundo.add(eliminDuas);
-        eliminDuas.setBounds(820, 650, 60, 60);
-        eliminDuas.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Verifica se a ajuda já foi usada nesta partida
-                if (ajuda5050Usada) {
-                    JOptionPane.showMessageDialog(null, "A ajuda 50/50 já foi usada nesta partida!", "Ajuda Esgotada", JOptionPane.WARNING_MESSAGE);
-                    return; // Sai do método se a ajuda já foi usada
-                }
-
-                int confirm = JOptionPane.showConfirmDialog(null, "Você tem certeza que quer usar a ajuda 50/50?", "Confirmação de Ajuda", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                
-                if (confirm == JOptionPane.YES_OPTION) {
-                    // Validação básica para garantir que a questão está carregada corretamente
-                    if (questaoAtual == null || questaoAtual.getAlternativas() == null || questaoAtual.getAlternativaCorreta() == null) {
-                        JOptionPane.showMessageDialog(null, "Não foi possível usar a ajuda 50/50. Dados da questão incompletos.", "Erro na Ajuda", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-
-                    // Marca a ajuda como usada para esta partida
-                    ajuda5050Usada = true; 
-                    eliminDuas.setEnabled(false); // Desabilita o botão após o uso
-
-                    List<JLabel> alternativasIncorretasLabels = new ArrayList<>();
-                    
-                    // Itera sobre os JLabels das respostas para encontrar quais representam alternativas incorretas
-                    for (JLabel currentLabel : labelsRespostas) { 
-                        // Limpa o texto do JLabel (removendo tags HTML e espaços em branco desnecessários) para comparação
-                        String textoLabelLimpo = currentLabel.getText().replaceAll("<html>", "").replaceAll("</html>", "").trim();
-
-                        // Encontra o objeto Alternativa correspondente ao texto deste JLabel
-                        Alternativa altObjeto = null;
-                        for (Alternativa alt : questaoAtual.getAlternativas()) {
-                            if (alt.getTexto().trim().equals(textoLabelLimpo)) {
-                                altObjeto = alt;
-                                break;
-                            }
-                        }
-
-                        // Se encontrou o objeto Alternativa correspondente E ele não é a alternativa correta,
-                        // adiciona o JLabel à lista de incorretas.
-                        if (altObjeto != null && !altObjeto.equals(questaoAtual.getAlternativaCorreta())) {
-                            alternativasIncorretasLabels.add(currentLabel);
-                        }
-                    }
-
-                    // Verifica se há pelo menos duas alternativas incorretas para remover
-                    if (alternativasIncorretasLabels.size() >= 2) {
-                        Collections.shuffle(alternativasIncorretasLabels); // Embaralha a lista para remover aleatoriamente
-                        
-                        // Esconde visualmente as duas primeiras alternativas incorretas da lista embaralhada
-                        alternativasIncorretasLabels.get(0).setVisible(false);
-                        alternativasIncorretasLabels.get(1).setVisible(false);
-                        
-                        JOptionPane.showMessageDialog(null, "Duas alternativas incorretas foram eliminadas!", "Ajuda 50/50 Usada", JOptionPane.INFORMATION_MESSAGE);
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Não foi possível eliminar duas alternativas. Poucas alternativas incorretas disponíveis ou erro na lógica.", "Erro na Ajuda", JOptionPane.WARNING_MESSAGE);
-                    }
-                }
-            }
-        });
-
-        var eliDuasTxt = new JLabel("Eliminar duas alternativas");
-        eliDuasTxt.setBounds(890, 645, 500, 70);
-        eliDuasTxt.setFont(new Font("Montserrat", Font.BOLD, 25));
-        eliDuasTxt.setForeground(Color.WHITE);
-        corFundo.add(eliDuasTxt);
-
-        // Visores (contadores de acertos/erros) - sem alterações na funcionalidade aqui
-        var txtErrar = new JLabel("");
-        txtErrar.setFont(new Font("Montserrat", Font.BOLD, 19));
-        txtErrar.setBackground(laranja);
-        txtErrar.setForeground(Color.BLACK);
-        corFundo.add(txtErrar);
-
-        var errar = new ImageIcon("assets\\retanguloLateral.png");
-        var circErrar = errar.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-        var retanguloUm = new JLabel(new ImageIcon(circErrar));
-        corFundo.add(retanguloUm);
-        retanguloUm.setBounds(1400, 250, 70, 70);
-
-        var acertar = new ImageIcon("assets\\retanguloLateral.png");
-        var circAcertar = acertar.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-        var retanguloDois = new JLabel(new ImageIcon(circAcertar));
-        corFundo.add(retanguloDois);
-        retanguloDois.setBounds(1400, 370, 70, 70);
-
-        var txtAcertar = new JLabel("");
-        txtAcertar.setBounds(1393, 400, 500, 70);
-        txtAcertar.setFont(new Font("Montserrat", Font.BOLD, 19));
-        txtAcertar.setForeground(Color.WHITE);
-        corFundo.add(txtAcertar);
-
-        // Botão "Parar" o jogo
-        var parar = new JButton("C");
-        parar.setFont(new Font("Montserrat", Font.BOLD, 19));
-        parar.setBackground(laranja);
-        parar.setForeground(Color.BLACK);
-        corFundo.add(parar);
-        parar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int confirm = JOptionPane.showConfirmDialog(null, "Você tem certeza que quer parar o jogo?", "Parar Jogo", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                if(confirm == JOptionPane.YES_OPTION){
-                    dispose();
-                    pararJogo.run(); 
-                }
-            }
-        });
-
-        parar.setBounds(1404, 500, 60, 60);
-        var txtParar = new JLabel("Parar");
-        txtParar.setBounds(1410, 540, 500, 70);
-        txtParar.setFont(new Font("Montserrat", Font.BOLD, 19));
-        txtParar.setForeground(Color.WHITE);
-        corFundo.add(txtParar);
-
-        // Alternativas visuais (círculos A, B, C, D)
-        var circulo = new ImageIcon("assets\\circuloAlternativa.png");
-        var imgCirculo = circulo.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-        
-        // Chamadas para o método auxiliar que adiciona os círculos
-        adicionarCirculoAlternativa(corFundo, imgCirculo, 220, 215, "A"); 
-        adicionarCirculoAlternativa(corFundo, imgCirculo, 220, 325, "B");
-        adicionarCirculoAlternativa(corFundo, imgCirculo, 220, 440, "C");
-        adicionarCirculoAlternativa(corFundo, imgCirculo, 220, 540, "D");
-
-    } // Faltava esta chave para fechar o construtor!
-
-    private void configuraLabelResposta(JLabel label, int x, int y, Color borderColor, Runnable respostaCorretaAction, Runnable respostaIncorretaAction) {
+    // Método auxiliar para configurar e adicionar JLabels de resposta
+    private void configuraLabelResposta(JLabel label, JPanel parentPanel, int x, int y, Color borderColor, Runnable respostaCorretaAction, Runnable respostaIncorretaAction) {
         label.setBounds(x, y, 1000, 80);
         label.setFont(new Font("Montserrat", Font.ITALIC, 20));
         label.setForeground(Color.WHITE);
         label.setBorder(BorderFactory.createLineBorder(borderColor, 7));
-        getContentPane().add(label);
+        parentPanel.add(label); // <--- Adicionado ao painel 'corFundo' (parentPanel)
         label.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent clique) {
                 int confirm = JOptionPane.showConfirmDialog(null, "Você tem certeza?", "Confirmação de resposta", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                 if (confirm == JOptionPane.YES_OPTION) {
-                    Alternativa altSelecionada = null;
-                    String textoSelecionado = label.getText().replaceAll("<html>", "").replaceAll("</html>", "").trim(); 
+                    // Limpa tags HTML para obter o texto puro da alternativa para comparação
+                    String textoSelecionado = label.getText().replaceAll("<[^>]*>", "").trim();
                     
-                    if (questaoAtual != null && questaoAtual.getAlternativas() != null) {
-                        for (Alternativa alt : questaoAtual.getAlternativas()) {
-                            if (alt.getTexto().trim().equals(textoSelecionado)) {
-                                altSelecionada = alt;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (altSelecionada != null && questaoAtual != null && questaoAtual.getAlternativaCorreta() != null) {
-                        if (altSelecionada.equals(questaoAtual.getAlternativaCorreta())) { 
-                            // JOptionPane.showMessageDialog(null, "Resposta Correta!", "Acerto", JOptionPane.INFORMATION_MESSAGE);
-                            dispose(); 
-                            respostaCorretaAction.run(); 
-                        } else {
-                            // JOptionPane.showMessageDialog(null, "Resposta Incorreta! A correta era: " + questaoAtual.getTextoAlternativaCorreta(), "Erro", JOptionPane.ERROR_MESSAGE);
-                            dispose(); 
-                            respostaIncorretaAction.run(); 
-                        }
+                    // Verifica se a alternativa selecionada é a correta
+                    // Correção: Usa o método isAlternativaCorreta do modelo Questao (que precisa ser adicionado lá)
+                    if (questaoAtual.isAlternativaCorreta(textoSelecionado)) {
+                        respostaCorretaAction.run();
                     } else {
-                        JOptionPane.showMessageDialog(null, "Erro interno: Questão ou alternativa correta não carregada corretamente para verificação.", "Erro de Lógica", JOptionPane.ERROR_MESSAGE);
-                        dispose(); 
+                        respostaIncorretaAction.run();
                     }
                 }
             }
         });
     }
-    
-    private void adicionarCirculoAlternativa(JPanel panel, Image img, int x, int y, String letra) {
-        var circuloLabel = new JLabel(new ImageIcon(img));
-        panel.add(circuloLabel);
-        circuloLabel.setBounds(x, y, 50, 50); 
 
-        var letraLabel = new JLabel(letra);
-        letraLabel.setBounds(11, 0, 50, 50); 
-        letraLabel.setFont(new Font("Montserrat", Font.BOLD, 40));
-        letraLabel.setForeground(Color.WHITE);
-        circuloLabel.add(letraLabel);
-    }
-
-    /**
-     * Carrega uma nova questão na tela, atualizando o enunciado e as alternativas.
-     * @param novaQuestao O objeto Questao a ser exibido.
-     */
+    // Método para carregar uma nova questão na tela
     public void carregarQuestaoNaTela(Questao novaQuestao) {
         if (novaQuestao == null) {
+            // O Navegador já deve tratar questões nulas antes de chegar aqui
             JOptionPane.showMessageDialog(this, "Nenhuma questão para exibir!", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
         this.questaoAtual = novaQuestao;
-    
+        // Usa HTML para permitir quebra de linha se o enunciado for longo
         caixaPerg.setText("<html>" + novaQuestao.getEnunciado() + "</html>"); 
 
+        // Garante que todos os JLabels das alternativas estejam visíveis
+        // (importante para resetar o efeito do 50/50 de uma questão anterior)
         for (JLabel label : labelsRespostas) {
             label.setVisible(true);
+            // Também reseta a borda para a cor padrão
+            label.setBorder(BorderFactory.createLineBorder(new Color(30, 180, 195), 7)); 
         }
     
-        List<String> textosAlternativas = novaQuestao.getTextosAlternativas(true); 
+        List<String> textosAlternativas = novaQuestao.getTextosAlternativas(true); // Embaralha as alternativas
         
-        while (textosAlternativas.size() < 4) {
-            textosAlternativas.add(" "); 
-        }
-
+        // Preenche os JLabels das respostas com os textos embaralhados
         for (int i = 0; i < labelsRespostas.size(); i++) {
-            labelsRespostas.get(i).setText("<html>" + textosAlternativas.get(i) + "</html>");
+            if (i < textosAlternativas.size()) {
+                labelsRespostas.get(i).setText("<html>" + textosAlternativas.get(i) + "</html>");
+            } else {
+                labelsRespostas.get(i).setText(""); // Limpa o texto se não houver alternativa correspondente
+                labelsRespostas.get(i).setVisible(false); // Ou esconde o label se não tiver alternativa
+            }
         }
-    } 
-} 
+    }
+    
+    private void usarAjuda5050() {
+        if (ajuda5050Usada) {
+            JOptionPane.showMessageDialog(this, "A ajuda 50/50 já foi usada nesta partida!", "Ajuda Esgotada", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int confirm = JOptionPane.showConfirmDialog(this, "Deseja usar a ajuda 50/50?", "Confirmação", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            ajuda5050Usada = true;
+            eliminDuas.setEnabled(false); // Desabilita o botão após o uso
+
+            List<JLabel> alternativasIncorretasLabels = new ArrayList<>();
+            for (JLabel currentLabel : labelsRespostas) {
+                // Pega o texto puro para comparação
+                String textoLabelLimpo = currentLabel.getText().replaceAll("<[^>]*>", "").trim();
+                // Verifica se a alternativa é incorreta e se está visível
+                if (currentLabel.isVisible() && !questaoAtual.isAlternativaCorreta(textoLabelLimpo)) {
+                    alternativasIncorretasLabels.add(currentLabel);
+                }
+            }
+
+            // Remove duas alternativas incorretas aleatoriamente
+            if (alternativasIncorretasLabels.size() >= 2) {
+                Collections.shuffle(alternativasIncorretasLabels);
+                alternativasIncorretasLabels.get(0).setVisible(false);
+                alternativasIncorretasLabels.get(1).setVisible(false);
+                JOptionPane.showMessageDialog(this, "Duas alternativas incorretas foram eliminadas!", "Ajuda 50/50 Usada", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Não foi possível eliminar duas alternativas. Poucas alternativas incorretas disponíveis ou erro na lógica.", "Erro na Ajuda", JOptionPane.WARNING_MESSAGE);
+            }
+        }
+    }
+    
+    private void setupBotoesAcao(JPanel panel, Color cor, Runnable acaoPular, Runnable acaoParar) {
+        // Botão Pular Questão
+        JButton pularQuestao = new JButton(">>");
+        pularQuestao.setFont(new Font("Montserrat", Font.BOLD, 22));
+        pularQuestao.setBackground(cor);
+        pularQuestao.setForeground(Color.BLACK);
+        pularQuestao.setBounds(340, 650, 60, 60); // Posição fixa
+        pularQuestao.addActionListener(e -> {
+            if (JOptionPane.showConfirmDialog(this, "Você tem certeza que quer pular esta questão?", "Pular Questão", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                acaoPular.run(); // Chama a ação de pular (que já avança a questão no Navegador)
+            }
+        });
+        panel.add(pularQuestao);
+
+        JLabel pulQuesTxt = new JLabel("Pular questão");
+        pulQuesTxt.setBounds(410, 645, 500, 70); // Posição fixa
+        pulQuesTxt.setFont(new Font("Montserrat", Font.BOLD, 25));
+        pulQuesTxt.setForeground(Color.WHITE);
+        panel.add(pulQuesTxt);
+        
+        // Botão Eliminar Duas Alternativas (50/50)
+        eliminDuas = new JButton("1/2"); // Atribui ao atributo de classe
+        eliminDuas.setFont(new Font("Montserrat", Font.BOLD, 19));
+        eliminDuas.setBackground(cor);
+        eliminDuas.setForeground(Color.BLACK);
+        eliminDuas.setBounds(820, 650, 60, 60); // Posição fixa
+        eliminDuas.addActionListener(e -> usarAjuda5050());
+        panel.add(eliminDuas);
+
+        JLabel eliDuasTxt = new JLabel("Eliminar duas alternativas");
+        eliDuasTxt.setBounds(890, 645, 500, 70); // Posição fixa
+        eliDuasTxt.setFont(new Font("Montserrat", Font.BOLD, 25));
+        eliDuasTxt.setForeground(Color.WHITE);
+        panel.add(eliDuasTxt);
+
+        // Botão "Parar" o jogo
+        JButton parar = new JButton("C");
+        parar.setFont(new Font("Montserrat", Font.BOLD, 19));
+        parar.setBackground(cor);
+        parar.setForeground(Color.BLACK);
+        parar.setBounds(1404, 500, 60, 60); // Posição fixa
+        parar.addActionListener(e -> {
+            if (JOptionPane.showConfirmDialog(this, "Você tem certeza que quer parar o jogo?", "Parar Jogo", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                acaoParar.run(); // Chama a ação de parar o jogo
+            }
+        });
+        panel.add(parar);
+
+        JLabel txtParar = new JLabel("Parar");
+        txtParar.setBounds(1410, 540, 500, 70); // Posição fixa
+        txtParar.setFont(new Font("Montserrat", Font.BOLD, 19));
+        txtParar.setForeground(Color.WHITE);
+        panel.add(txtParar);
+    }
+
+    // Método auxiliar para adicionar os círculos das letras (A, B, C, D)
+    // Corrigido para adicionar ao painel passado
+    private void adicionarCirculoAlternativa(JPanel panel, Image img, int x, int y, String letra) {
+        JLabel circuloLabel = new JLabel(new ImageIcon(img));
+        panel.add(circuloLabel); // <--- Adicionado ao painel passado
+        circuloLabel.setBounds(x, y, 50, 50); 
+
+        JLabel letraLabel = new JLabel(letra);
+        letraLabel.setBounds(11, 0, 50, 50); // Posição relativa ao circuloLabel (dentro dele)
+        letraLabel.setFont(new Font("Montserrat", Font.BOLD, 40));
+        letraLabel.setForeground(Color.WHITE);
+        circuloLabel.add(letraLabel);
+    }
+}

@@ -1,16 +1,16 @@
 package ui;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.*;
 
-import model.Questao; // Adicione este import
+import model.Questao; // Importe o modelo de questão
 
 public class TelaRespostaIncorreta extends JFrame {
-    private Questao questaoAtual; // Adicione este atributo para armazenar a questão
+    private Questao questaoAtual; // Armazena a questão atual
 
-    // Construtor modificado para receber a Questao
-    public TelaRespostaIncorreta(Questao questao, Runnable contQuestao, boolean penultimaQuestao, boolean ultimaQuestão){ // Modificado aqui
+    // Construtor modificado para receber a Questao, o Runnable para a próxima ação, e o texto do botão
+    public TelaRespostaIncorreta(Questao questao, Runnable proximaAcao, String buttonText) { // <-- Assinatura ajustada
         this.questaoAtual = questao; // Armazena a questão atual
 
         var roxo = new Color(20, 14, 40);
@@ -32,35 +32,20 @@ public class TelaRespostaIncorreta extends JFrame {
         respIncorreta.setForeground(Color.WHITE);
         corFundo.add(respIncorreta);
 
-         // Possibilidade de resposta com operador ternário
-        String mensagem = ultimaQuestão ? "Fim de jogo!\tVoltar para o menu." : "Ver solução";
-
-        // Label/Botão "Ver solução"
-        var verSolucao = new JLabel(mensagem); // Pode ser um JLabel com MouseListener ou um JButton
+        // Label/Botão "Ver solução" ou "Fim de jogo!"
+        var verSolucao = new JLabel(buttonText); // Usa o texto passado como parâmetro
         verSolucao.setBounds(700, 340, 500, 70); // Ajuste a posição
         verSolucao.setFont(new Font("Montserrat", Font.ITALIC, 35));
         verSolucao.setForeground(Color.WHITE);
         corFundo.add(verSolucao);
 
-        if(!ultimaQuestão){
-            // Adiciona o MouseListener ao JLabel "Ver solução"
-            verSolucao.addMouseListener(new MouseAdapter() {
-                @Override // É bom manter o @Override para métodos sobrescritos
-                public void mouseClicked(MouseEvent e){
-                    dispose(); // Fecha a tela de resposta incorreta
-                    // Executa o Runnable 'solucao' que foi passado, que por sua vez
-                    // no Navegador, está configurado para chamar showTelaSolucao(questaoAtual, voltarParaMenu).
-                    contQuestao.run(); 
-                }
-            });
-        } else{
-            verSolucao.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    dispose();
-                    contQuestao.run();
-                }
-            });
-        }
+        // Adiciona o MouseListener ao JLabel, independentemente do texto
+        verSolucao.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e){
+                dispose(); // Fecha a tela de resposta incorreta
+                proximaAcao.run(); // Executa o Runnable para a próxima ação
+            }
+        });
     }
 }

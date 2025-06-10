@@ -1,5 +1,7 @@
 package service;
 
+import java.sql.SQLException;
+
 import dao.AlunoDAO;
 import dao.ProfessorDAO;
 import model.Aluno;
@@ -22,6 +24,7 @@ public class AuthService {
      * @return 0 se for Aluno, 1 se for Professor/Admin, -1 se a autenticação falhar.
      */
     public int autenticarUsuario(String login, String senha) {
+    try {
         // Tenta autenticar como Aluno
         Aluno aluno = alunoDAO.buscarAlunoPorLoginESenha(login, senha);
         if (aluno != null) {
@@ -35,8 +38,12 @@ public class AuthService {
             System.out.println("DEBUG: Professor/Admin autenticado: " + professor.getNome() + " (Login: " + professor.getLoginProfessor() + ")");
             return 1; // Tipo 1 para Professor/Admin
         }
-
-        System.out.println("DEBUG: Falha na autenticação para login: " + login);
-        return -1; // Falha na autenticação
+    } catch (SQLException e) {
+        e.printStackTrace();
+        // Você pode logar ou tratar o erro de outra forma, se desejar
     }
+
+    System.out.println("DEBUG: Falha na autenticação para login: " + login);
+    return -1; // Falha na autenticação
+}
 }
