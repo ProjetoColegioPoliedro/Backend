@@ -192,6 +192,7 @@ public class TelaPartida extends JFrame {
         pularQuestao.addActionListener(e -> {
             if (JOptionPane.showConfirmDialog(this, "Você tem certeza que quer pular esta questão?", "Pular Questão", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
                 acaoPular.run(); // Chama a ação de pular (que já avança a questão no Navegador)
+                pularQuestao.setEnabled(false);
             }
         });
         panel.add(pularQuestao);
