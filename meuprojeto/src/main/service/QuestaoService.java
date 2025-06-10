@@ -83,8 +83,8 @@ public class QuestaoService {
             }
         }
         
-        // 4. Embaralha a lista final de questões COMPLETAS para misturar os níveis
-        Collections.shuffle(questoesCompletasParaPartida);
+
+        
 
         System.out.println("DEBUG (QuestaoService): Total de questões COMPLETAS para a partida: " + questoesCompletasParaPartida.size());
         return questoesCompletasParaPartida;
