@@ -26,60 +26,41 @@ public class AlternativaDAO {
     private static final String ATUALIZAR_ALTERNATIVA_SQL = "UPDATE alternativa SET texto = ? WHERE id_alternativa = ?;";
 
     /**
-     * Insere uma nova alternativa no banco de dados.
-     * @param <Alternativa>
+     * Adiciona uma nova alternativa no banco de dados.
+     * Renomeado de 'inserirAlternativa' para 'adicionarAlternativa' e adicionado throws SQLException.
      *
      * @param alternativa O objeto Alternativa a ser inserido (sem o id, se for auto-incrementável).
-     * @return O ID da alternativa inserida, ou -1 em caso de falha.
+     * @return O ID da alternativa inserida.
+     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
      */
-
-    public int inserirAlternativa(Alternativa alternativa) {
-        int idGerado = -1; // Inicializa com um valor que indica falha
-        // Declara os recursos JDBC fora do try para que possam ser fechados no finally
+    public int adicionarAlternativa(Alternativa alternativa) throws SQLException { // <-- Nome e throws ajustados
+        int idGerado = -1;
         Connection conexao = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
 
         try {
-            // 1. Obter a conexão do ConnectionFactory
-            conexao = ConnectionFactory.getConnection(); // Use o nome da sua classe e método aqui
-
-            // 2. Preparar a instrução SQL, retornando as chaves geradas
+            conexao = ConnectionFactory.getConnection();
             pstmt = conexao.prepareStatement(INSERIR_ALTERNATIVA_SQL, Statement.RETURN_GENERATED_KEYS);
-
-            // 3. Definir os parâmetros da instrução SQL
             pstmt.setString(1, alternativa.getTexto());
 
-            // 4. Executar a instrução SQL
             int linhasAfetadas = pstmt.executeUpdate();
 
-            // 5. Processar o resultado (obter o ID gerado)
             if (linhasAfetadas > 0) {
-                rs = pstmt.getGeneratedKeys(); // Recupera as chaves geradas
+                rs = pstmt.getGeneratedKeys();
                 if (rs.next()) {
-                    idGerado = rs.getInt(1); // Pega o ID da primeira coluna do ResultSet
-                    alternativa.setIdAlternativa(idGerado); // Atualiza o objeto com o ID gerado
+                    idGerado = rs.getInt(1);
+                    alternativa.setIdAlternativa(idGerado);
                     System.out.println("Alternativa inserida com sucesso! ID: " + idGerado);
                 }
             } else {
                 System.err.println("Nenhuma linha afetada ao inserir alternativa.");
             }
 
-        } catch (SQLException e) {
-            System.err.println("Erro SQL ao inserir alternativa: " + e.getMessage());
-            e.printStackTrace(); // Importante para depuração
-            // Considere lançar uma exceção personalizada aqui se preferir
-        } finally {
-            // 6. Fechar os recursos no bloco finally
-            try {
-                if (rs != null) rs.close();
-                if (pstmt != null) pstmt.close();
-                if (conexao != null) conexao.close();
-            } catch (SQLException ex) {
-                System.err.println("Erro ao fechar recursos JDBC: " + ex.getMessage());
-            }
+        } finally { // O try-catch foi removido daqui pois a exceção é propagada
+            closeResources(conexao, pstmt, rs);
         }
-        return idGerado; // Retorna o ID gerado ou -1 em caso de falha
+        return idGerado;
     }
 
     /**
@@ -95,36 +76,21 @@ public class AlternativaDAO {
         ResultSet rs = null;
 
         try {
-            // 1. Obter conexão
             conexao = ConnectionFactory.getConnection();
-
-            // 2. Preparar SQL
             pstmt = conexao.prepareStatement(SELECIONAR_ALTERNATIVA_POR_ID_SQL);
-
-            // 3. Definir parâmetro
             pstmt.setInt(1, idAlternativa);
-
-            // 4. Executar consulta
             rs = pstmt.executeQuery();
 
-            // 5. Processar ResultSet
             if (rs.next()) {
                 String texto = rs.getString("texto");
-                // Cria o objeto Alternativa com os dados do banco
-                alternativa = new Alternativa(idAlternativa, texto);
+                // Cria o objeto Alternativa com o construtor Alternativa(int, String)
+                alternativa = new Alternativa(idAlternativa, texto); // <-- Usa o construtor que aceita ID e Texto
             }
         } catch (SQLException e) {
             System.err.println("Erro SQL ao buscar alternativa por ID: " + e.getMessage());
             e.printStackTrace();
         } finally {
-            // 6. Fechar recursos
-            try {
-                if (rs != null) rs.close();
-                if (pstmt != null) pstmt.close();
-                if (conexao != null) conexao.close();
-            } catch (SQLException ex) {
-                System.err.println("Erro ao fechar recursos JDBC: " + ex.getMessage());
-            }
+            closeResources(conexao, pstmt, rs);
         }
         return alternativa;
     }
@@ -137,37 +103,24 @@ public class AlternativaDAO {
     public List<Alternativa> listarTodasAlternativas() {
         List<Alternativa> alternativas = new ArrayList<>();
         Connection conexao = null;
-        PreparedStatement pstmt = null; // Usar PreparedStatement mesmo sem parâmetros para consistência
+        PreparedStatement pstmt = null;
         ResultSet rs = null;
 
         try {
-            // 1. Obter conexão
             conexao = ConnectionFactory.getConnection();
-
-            // 2. Preparar SQL
             pstmt = conexao.prepareStatement(SELECIONAR_TODAS_ALTERNATIVAS_SQL);
-
-            // 3. Executar consulta
             rs = pstmt.executeQuery();
 
-            // 4. Processar ResultSet
             while (rs.next()) {
                 int idAlternativa = rs.getInt("id_alternativa");
                 String texto = rs.getString("texto");
-                alternativas.add(new Alternativa(idAlternativa, texto));
+                alternativas.add(new Alternativa(idAlternativa, texto)); // <-- Usa o construtor que aceita ID e Texto
             }
         } catch (SQLException e) {
             System.err.println("Erro SQL ao listar todas as alternativas: " + e.getMessage());
             e.printStackTrace();
         } finally {
-            // 5. Fechar recursos
-            try {
-                if (rs != null) rs.close();
-                if (pstmt != null) pstmt.close();
-                if (conexao != null) conexao.close();
-            } catch (SQLException ex) {
-                System.err.println("Erro ao fechar recursos JDBC: " + ex.getMessage());
-            }
+            closeResources(conexao, pstmt, rs);
         }
         return alternativas;
     }
@@ -177,49 +130,34 @@ public class AlternativaDAO {
      *
      * @param alternativa O objeto Alternativa com os dados atualizados.
      * @return true se a atualização foi bem-sucedida, false caso contrário.
+     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
      */
-    public boolean atualizarAlternativa(Alternativa alternativa) {
+    public boolean atualizarAlternativa(Alternativa alternativa) throws SQLException { // <-- Adicionado throws SQLException
         boolean atualizado = false;
         Connection conexao = null;
         PreparedStatement pstmt = null;
 
-        // Validação básica para garantir que a alternativa e o ID são válidos
         if (alternativa == null || alternativa.getIdAlternativa() <= 0) {
             System.err.println("Tentativa de atualizar alternativa nula ou com ID inválido.");
-            return false;
+            throw new IllegalArgumentException("Alternativa inválida para atualização."); // Lança exceção para dados inválidos
         }
 
         try {
-            // 1. Obter conexão
             conexao = ConnectionFactory.getConnection();
-
-            // 2. Preparar SQL
             pstmt = conexao.prepareStatement(ATUALIZAR_ALTERNATIVA_SQL);
-
-            // 3. Definir parâmetros
             pstmt.setString(1, alternativa.getTexto());
             pstmt.setInt(2, alternativa.getIdAlternativa());
 
-            // 4. Executar atualização
             int linhasAfetadas = pstmt.executeUpdate();
             if (linhasAfetadas > 0) {
                 atualizado = true;
                 System.out.println("Alternativa atualizada com sucesso! ID: " + alternativa.getIdAlternativa());
             } else {
-                 System.out.println("Nenhuma alternativa encontrada com o ID: " + alternativa.getIdAlternativa() + " para atualização.");
+                System.out.println("Nenhuma alternativa encontrada com o ID: " + alternativa.getIdAlternativa() + " para atualização.");
             }
 
-        } catch (SQLException e) {
-            System.err.println("Erro SQL ao atualizar alternativa: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
-            // 5. Fechar recursos
-            try {
-                if (pstmt != null) pstmt.close();
-                if (conexao != null) conexao.close();
-            } catch (SQLException ex) {
-                System.err.println("Erro ao fechar recursos JDBC: " + ex.getMessage());
-            }
+        } finally { // O try-catch foi removido daqui
+            closeResources(conexao, pstmt, null);
         }
         return atualizado;
     }
@@ -229,28 +167,23 @@ public class AlternativaDAO {
      *
      * @param idAlternativa O ID da alternativa a ser excluída.
      * @return true se a exclusão foi bem-sucedida, false caso contrário.
+     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
      */
-    public boolean excluirAlternativa(int idAlternativa) {
+    public boolean excluirAlternativa(int idAlternativa) throws SQLException { // <-- Adicionado throws SQLException
         boolean excluido = false;
         Connection conexao = null;
         PreparedStatement pstmt = null;
 
         if (idAlternativa <= 0) {
             System.err.println("Tentativa de excluir alternativa com ID inválido.");
-            return false;
+            throw new IllegalArgumentException("ID de alternativa inválido para exclusão.");
         }
 
         try {
-            // 1. Obter conexão
             conexao = ConnectionFactory.getConnection();
-
-            // 2. Preparar SQL
             pstmt = conexao.prepareStatement(DELETAR_ALTERNATIVA_SQL);
-
-            // 3. Definir parâmetro
             pstmt.setInt(1, idAlternativa);
 
-            // 4. Executar exclusão
             int linhasAfetadas = pstmt.executeUpdate();
             if (linhasAfetadas > 0) {
                 excluido = true;
@@ -259,18 +192,33 @@ public class AlternativaDAO {
                 System.out.println("Nenhuma alternativa encontrada com o ID: " + idAlternativa + " para exclusão.");
             }
 
-        } catch (SQLException e) {
-            System.err.println("Erro SQL ao excluir alternativa: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
-            // 5. Fechar recursos
-            try {
-                if (pstmt != null) pstmt.close();
-                if (conexao != null) conexao.close();
-            } catch (SQLException ex) {
-                System.err.println("Erro ao fechar recursos JDBC: " + ex.getMessage());
-            }
+        } finally { // O try-catch foi removido daqui
+            closeResources(conexao, pstmt, null);
         }
         return excluido;
-    }   
-}    
+    }
+
+    /**
+     * Método utilitário para fechar os recursos JDBC.
+     */
+    private void closeResources(Connection conn, PreparedStatement stmt, ResultSet rs) {
+        try {
+            if (rs != null) rs.close();
+        } catch (SQLException e) {
+            System.err.println("Erro ao fechar ResultSet: " + e.getMessage());
+            e.printStackTrace(); // Para depuração
+        }
+        try {
+            if (stmt != null) stmt.close();
+        } catch (SQLException e) {
+            System.err.println("Erro ao fechar PreparedStatement: " + e.getMessage());
+            e.printStackTrace(); // Para depuração
+        }
+        try {
+            if (conn != null && !conn.isClosed()) conn.close();
+        } catch (SQLException e) {
+            System.err.println("Erro ao fechar Connection: " + e.getMessage());
+            e.printStackTrace(); // Para depuração
+        }
+    }
+}

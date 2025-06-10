@@ -1,10 +1,7 @@
 package dao;
 
-import model.QuestaoAlternativa; // Importa a classe QuestaoAlternativa do seu pacote model
-// Supondo que você também tenha as classes Questao e Alternativa em model para testes ou buscas mais complexas
-// import model.Questao;
-// import model.Alternativa;
-import connectionFactory.ConnectionFactory; // Importa sua classe de conexão
+import model.QuestaoAlternativa;
+import connectionFactory.ConnectionFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,38 +13,29 @@ import java.util.List;
 
 public class QuestaoAlternativaDAO {
 
-    // SQL para inserir uma nova associação Questao-Alternativa
-    // Assumindo que id_qa é auto-incrementável no banco
     private static final String INSERIR_QA_SQL = "INSERT INTO questao_alternativa (id_questao, id_alternativa, correta) VALUES (?, ?, ?);";
-    // SQL para selecionar uma associação pelo ID
     private static final String SELECIONAR_QA_POR_ID_SQL = "SELECT id_qa, id_questao, id_alternativa, correta FROM questao_alternativa WHERE id_qa = ?;";
-    // SQL para selecionar todas as alternativas de uma questão
     private static final String SELECIONAR_ALTERNATIVAS_POR_QUESTAO_SQL = "SELECT id_qa, id_questao, id_alternativa, correta FROM questao_alternativa WHERE id_questao = ?;";
-    // SQL para selecionar a(s) alternativa(s) correta(s) de uma questão
     private static final String SELECIONAR_CORRETA_POR_QUESTAO_SQL = "SELECT id_qa, id_questao, id_alternativa, correta FROM questao_alternativa WHERE id_questao = ? AND correta = TRUE;";
-    // SQL para selecionar todas as associações (geralmente não muito útil sem filtros, mas pode ser para admin)
     @SuppressWarnings("unused")
     private static final String SELECIONAR_TODAS_QA_SQL = "SELECT id_qa, id_questao, id_alternativa, correta FROM questao_alternativa;";
-    // SQL para deletar uma associação pelo ID
     private static final String DELETAR_QA_POR_ID_SQL = "DELETE FROM questao_alternativa WHERE id_qa = ?;";
-    // SQL para deletar todas as associações de uma questão específica
     private static final String DELETAR_QA_POR_QUESTAO_SQL = "DELETE FROM questao_alternativa WHERE id_questao = ?;";
-    // SQL para deletar todas as associações de uma alternativa específica
     @SuppressWarnings("unused")
     private static final String DELETAR_QA_POR_ALTERNATIVA_SQL = "DELETE FROM questao_alternativa WHERE id_alternativa = ?;";
-    // SQL para atualizar os dados de uma associação
     private static final String ATUALIZAR_QA_SQL = "UPDATE questao_alternativa SET id_questao = ?, id_alternativa = ?, correta = ? WHERE id_qa = ?;";
-    // SQL para desmarcar todas as alternativas como corretas para uma questão (antes de marcar uma nova como correta)
     private static final String DESMARCAR_CORRETAS_POR_QUESTAO_SQL = "UPDATE questao_alternativa SET correta = FALSE WHERE id_questao = ?;";
 
 
     /**
-     * Insere uma nova associação entre Questão e Alternativa.
+     * Adiciona uma nova associação entre Questão e Alternativa.
+     * Renomeado de 'inserirQuestaoAlternativa' para 'adicionarQuestaoAlternativa' e adicionado throws SQLException.
      *
      * @param qa O objeto QuestaoAlternativa a ser inserido.
      * @return O ID da associação inserida (id_qa), ou -1 em caso de falha.
+     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
      */
-    public int inserirQuestaoAlternativa(QuestaoAlternativa qa) {
+    public int adicionarQuestaoAlternativa(QuestaoAlternativa qa) throws SQLException { // <-- Nome e throws ajustados
         int idGerado = -1;
         Connection conexao = null;
         PreparedStatement pstmt = null;
@@ -55,16 +43,18 @@ public class QuestaoAlternativaDAO {
 
         if (qa == null || qa.getIdQuestao() <= 0 || qa.getIdAlternativa() <= 0) {
             System.err.println("Tentativa de inserir QuestaoAlternativa nula ou com IDs de questão/alternativa inválidos.");
-            return -1;
+            throw new IllegalArgumentException("Associação Questão-Alternativa inválida.");
         }
 
         try {
             conexao = ConnectionFactory.getConnection();
-            // Se uma questão só pode ter uma alternativa correta,
-            // pode ser necessário desmarcar outras antes de inserir/marcar uma nova como correta.
-            // Isso pode ser feito aqui ou na lógica de serviço.
-            // Exemplo: if (qa.isCorreta()) { desmarcarCorretasParaQuestao(conexao, qa.getIdQuestao()); }
-
+            
+            // Se esta associação está marcando a alternativa como correta, e só pode haver uma correta por questão,
+            // desmarcamos as outras ANTES de inserir/atualizar esta.
+            // É importante fazer isso *antes* de inserir a nova para evitar ter múltiplas corretas momentaneamente.
+            if (qa.isCorreta()) {
+                desmarcarCorretasParaQuestao(conexao, qa.getIdQuestao()); // Passa a conexão interna
+            }
 
             pstmt = conexao.prepareStatement(INSERIR_QA_SQL, Statement.RETURN_GENERATED_KEYS);
 
@@ -85,16 +75,7 @@ public class QuestaoAlternativaDAO {
                 System.err.println("Nenhuma linha afetada ao inserir associação Questão-Alternativa.");
             }
 
-        } catch (SQLException e) {
-            // Verificar se a combinação (id_questao, id_alternativa) já existe se houver uma constraint UNIQUE
-            if (e.getSQLState().startsWith("23")) {
-                 System.err.println("Erro SQL: A associação entre Questão ID " + qa.getIdQuestao() +
-                                    " e Alternativa ID " + qa.getIdAlternativa() + " já pode existir. " + e.getMessage());
-            } else {
-                System.err.println("Erro SQL ao inserir associação Questão-Alternativa: " + e.getMessage());
-                e.printStackTrace();
-            }
-        } finally {
+        } finally { // O try-catch foi removido daqui
             closeResources(conexao, pstmt, rs);
         }
         return idGerado;
@@ -102,30 +83,30 @@ public class QuestaoAlternativaDAO {
 
     /**
      * Desmarca todas as alternativas como corretas para uma determinada questão.
-     * Útil antes de definir uma nova alternativa correta para garantir que apenas uma seja marcada.
+     * Este método é private e aceita uma Connection, sendo usado internamente para transações.
+     *
+     * @param conexao A conexão JDBC a ser usada (não será fechada por este método).
      * @param idQuestao O ID da questão.
-     * @return true se alguma linha foi atualizada, false caso contrário.
+     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
      */
-    public boolean desmarcarCorretasParaQuestao(int idQuestao) {
-        Connection conexao = null;
-        PreparedStatement pstmt = null;
-        boolean sucesso = false;
+    private void desmarcarCorretasParaQuestao(Connection conexao, int idQuestao) throws SQLException { // <-- Alterado para private e exige Connection
+        PreparedStatement pstmtInterno = null;
         try {
-            conexao = ConnectionFactory.getConnection();
-            pstmt = conexao.prepareStatement(DESMARCAR_CORRETAS_POR_QUESTAO_SQL);
-            pstmt.setInt(1, idQuestao);
-            int linhasAfetadas = pstmt.executeUpdate();
-            sucesso = linhasAfetadas >= 0; // Mesmo 0 linhas afetadas pode ser sucesso se não havia nenhuma marcada
+            pstmtInterno = conexao.prepareStatement(DESMARCAR_CORRETAS_POR_QUESTAO_SQL);
+            pstmtInterno.setInt(1, idQuestao);
+            int linhasAfetadas = pstmtInterno.executeUpdate();
             if(linhasAfetadas > 0) {
-                 System.out.println(linhasAfetadas + " alternativa(s) desmarcada(s) como correta(s) para a questão ID: " + idQuestao);
+                System.out.println(linhasAfetadas + " alternativa(s) desmarcada(s) como correta(s) para a questão ID: " + idQuestao + " (transação).");
             }
-        } catch (SQLException e) {
-            System.err.println("Erro SQL ao desmarcar alternativas corretas para a questão ID " + idQuestao + ": " + e.getMessage());
-            e.printStackTrace();
         } finally {
-            closeResources(conexao, pstmt, null);
+            // NÃO FECHAR A CONEXÃO AQUI! Ela veio de fora.
+            try {
+                if (pstmtInterno != null) pstmtInterno.close();
+            } catch (SQLException ex) {
+                System.err.println("Erro ao fechar PreparedStatement interno: " + ex.getMessage());
+                ex.printStackTrace();
+            }
         }
-        return sucesso;
     }
 
 
@@ -239,28 +220,29 @@ public class QuestaoAlternativaDAO {
         return null; 
     }
 
-
     /**
      * Atualiza uma associação Questao-Alternativa existente.
      *
      * @param qa O objeto QuestaoAlternativa com os dados atualizados.
      * @return true se a atualização foi bem-sucedida, false caso contrário.
+     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
      */
-    public boolean atualizarQuestaoAlternativa(QuestaoAlternativa qa) {
+    public boolean atualizarQuestaoAlternativa(QuestaoAlternativa qa) throws SQLException { // <-- Adicionado throws SQLException
         boolean atualizado = false;
         Connection conexao = null;
         PreparedStatement pstmt = null;
 
         if (qa == null || qa.getIdQa() <= 0 || qa.getIdQuestao() <= 0 || qa.getIdAlternativa() <= 0) {
             System.err.println("Tentativa de atualizar QuestaoAlternativa nula ou com IDs inválidos.");
-            return false;
+            throw new IllegalArgumentException("Associação Questão-Alternativa inválida para atualização.");
         }
 
         try {
             conexao = ConnectionFactory.getConnection();
-             // Se estiver marcando esta como correta, e só pode haver uma, desmarque as outras primeiro
+            
+            // Se estiver marcando esta como correta, e só pode haver uma, desmarque as outras primeiro
             if (qa.isCorreta()) {
-                desmarcarCorretasParaQuestao(qa.getIdQuestao()); // Usa o método público que já tem o try-catch
+                desmarcarCorretasParaQuestao(conexao, qa.getIdQuestao()); // Usa o método privado auxiliar
             }
 
             pstmt = conexao.prepareStatement(ATUALIZAR_QA_SQL);
@@ -277,10 +259,7 @@ public class QuestaoAlternativaDAO {
                 System.out.println("Nenhuma associação Questão-Alternativa encontrada com ID_QA: " + qa.getIdQa() + " para atualização.");
             }
 
-        } catch (SQLException e) {
-            System.err.println("Erro SQL ao atualizar associação Questão-Alternativa: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
+        } finally { // O try-catch foi removido daqui
             closeResources(conexao, pstmt, null);
         }
         return atualizado;
@@ -291,15 +270,16 @@ public class QuestaoAlternativaDAO {
      *
      * @param idQa O ID da associação a ser excluída.
      * @return true se a exclusão foi bem-sucedida, false caso contrário.
+     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
      */
-    public boolean excluirQuestaoAlternativaPorIdQa(int idQa) {
+    public boolean excluirQuestaoAlternativaPorIdQa(int idQa) throws SQLException { // <-- Adicionado throws SQLException
         boolean excluido = false;
         Connection conexao = null;
         PreparedStatement pstmt = null;
 
         if (idQa <= 0) {
             System.err.println("Tentativa de excluir QuestaoAlternativa com ID_QA inválido.");
-            return false;
+            throw new IllegalArgumentException("ID de associação inválido para exclusão.");
         }
 
         try {
@@ -312,12 +292,10 @@ public class QuestaoAlternativaDAO {
                 excluido = true;
                 System.out.println("Associação Questão-Alternativa excluída com sucesso! ID_QA: " + idQa);
             } else {
-                 System.out.println("Nenhuma associação Questão-Alternativa encontrada com ID_QA: " + idQa + " para exclusão.");
+                System.out.println("Nenhuma associação Questão-Alternativa encontrada com ID_QA: " + idQa + " para exclusão.");
             }
-        } catch (SQLException e) {
-            System.err.println("Erro SQL ao excluir associação Questão-Alternativa por ID_QA: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
+
+        } finally { // O try-catch foi removido daqui
             closeResources(conexao, pstmt, null);
         }
         return excluido;
@@ -329,8 +307,9 @@ public class QuestaoAlternativaDAO {
      *
      * @param idQuestao O ID da questão.
      * @return O número de associações excluídas.
+     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
      */
-    public int excluirAssociacoesPorQuestao(int idQuestao) {
+    public int excluirAssociacoesPorQuestao(int idQuestao) throws SQLException { // <-- Adicionado throws SQLException
         int linhasAfetadas = 0;
         Connection conexao = null;
         PreparedStatement pstmt = null;
@@ -341,10 +320,7 @@ public class QuestaoAlternativaDAO {
             pstmt.setInt(1, idQuestao);
             linhasAfetadas = pstmt.executeUpdate();
             System.out.println(linhasAfetadas + " associação(ões) excluída(s) para a questão ID: " + idQuestao);
-        } catch (SQLException e) {
-            System.err.println("Erro SQL ao excluir associações por questão: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
+        } finally { // O try-catch foi removido daqui
             closeResources(conexao, pstmt, null);
         }
         return linhasAfetadas;
@@ -370,16 +346,19 @@ public class QuestaoAlternativaDAO {
             if (rs != null) rs.close();
         } catch (SQLException e) {
             System.err.println("Erro ao fechar ResultSet: " + e.getMessage());
+            e.printStackTrace();
         }
         try {
             if (stmt != null) stmt.close();
         } catch (SQLException e) {
             System.err.println("Erro ao fechar PreparedStatement: " + e.getMessage());
+            e.printStackTrace();
         }
         try {
             if (conn != null && !conn.isClosed()) conn.close();
         } catch (SQLException e) {
             System.err.println("Erro ao fechar Connection: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

@@ -79,9 +79,12 @@ public class QuestaoService {
             Alternativa alternativaCorreta = null;
 
             for (QuestaoAlternativa qa : qas) {
-                // Para cada associação, busca o objeto Alternativa completo (o texto)
+                // Para cada associação, busca o objeto Alternativa completo (o texto).
+                // O construtor da Alternativa com (id, texto) assume 'correta=false'.
                 Alternativa alt = alternativaDAO.buscarAlternativaPorId(qa.getIdAlternativa());
                 if (alt != null) {
+                    // Atualiza a flag 'correta' da alternativa com a informação da associação.
+                    alt.setCorreta(qa.isCorreta()); // Importante para que a alternativa saiba se é a correta.
                     alternativasDaQuestao.add(alt);
                     if (qa.isCorreta()) {
                         alternativaCorreta = alt; // Encontrou a alternativa correta
@@ -130,5 +133,40 @@ public class QuestaoService {
         int idQuestaoAleatoria = todasQuestoesBasicas.get(0).getIdQuestao();
         
         return buscarQuestaoCompletaPorId(idQuestaoAleatoria);
+    }
+
+    /**
+     * Adiciona uma nova questão ao banco de dados, incluindo suas alternativas.
+     * Este método coordena o salvamento da Questao, Alternativas e suas associações.
+     * @param questao A Questao completa a ser adicionada.
+     * @throws Exception Se ocorrer um erro durante o processo de persistência (propagado dos DAOs).
+     */
+    public void adicionarQuestao(Questao questao) throws Exception { // <-- ESTE MÉTODO É O QUE ESTAVA FALTANDO!
+        // 1. Salva a Questao (enunciado, dificuldade, matéria, etc.) e obtém o ID gerado.
+        // O QuestaoDAO.adicionarQuestao deve retornar o ID gerado pelo banco.
+        int idQuestaoGerado = questaoDAO.adicionarQuestao(questao);
+        questao.setIdQuestao(idQuestaoGerado); // Atualiza o ID da questão no objeto
+
+        // 2. Salva cada Alternativa e cria a associação QuestaoAlternativa
+        // Certifique-se de que a lista de alternativas da Questao NÃO é nula.
+        if (questao.getAlternativas() != null) {
+            for (Alternativa alt : questao.getAlternativas()) {
+                // Salva a Alternativa e obtém o ID gerado.
+                int idAlternativaGerado = alternativaDAO.adicionarAlternativa(alt);
+                alt.setIdAlternativa(idAlternativaGerado); // Atualiza o ID da alternativa no objeto
+
+                // 3. Cria e salva a associação QuestaoAlternativa (ligando questão, alternativa e se é correta).
+                QuestaoAlternativa qa = new QuestaoAlternativa(
+                    0, // O ID da associação (idQa) será gerado pelo banco, então pode ser 0 aqui para um novo registro.
+                    questao.getIdQuestao(),
+                    alt.getIdAlternativa(),
+                    alt.isCorreta() // Usa o novo atributo 'correta' da Alternativa
+                );
+                qaDAO.adicionarQuestaoAlternativa(qa);
+            }
+        } else {
+            // Lançar uma exceção ou logar um erro se a questão não tiver alternativas.
+            throw new IllegalArgumentException("A questão não possui alternativas para serem salvas.");
+        }
     }
 }
