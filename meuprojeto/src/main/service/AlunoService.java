@@ -6,7 +6,8 @@ import model.Aluno;
 import java.sql.SQLException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64; // Para encoder/decoder de Base64 (hash)
+import java.util.Base64;
+import java.util.List; // Importar a lista para o novo método
 
 public class AlunoService {
 
@@ -19,15 +20,6 @@ public class AlunoService {
     /**
      * Cadastra um novo aluno no sistema.
      * Realiza validações e faz o hash da senha antes de persistir.
-     *
-     * @param nome O nome completo do aluno.
-     * @param loginAluno O login/nome de usuário do aluno.
-     * @param senha Texto puro da senha do aluno.
-     * @param anoLetivo O ano letivo do aluno.
-     * @return O objeto Aluno cadastrado com o ID gerado, ou null em caso de falha.
-     * @throws IllegalArgumentException Se houver erros de validação dos dados.
-     * @throws SQLException Se ocorrer um erro no banco de dados.
-     * @throws NoSuchAlgorithmException Se o algoritmo de hash não for encontrado (erro interno).
      */
     public Aluno cadastrarAluno(String nome, String loginAluno, String senha, int anoLetivo) throws IllegalArgumentException, SQLException, NoSuchAlgorithmException {
         // 1. Validação de campos obrigatórios
@@ -40,38 +32,70 @@ public class AlunoService {
         if (senha == null || senha.isEmpty()) {
             throw new IllegalArgumentException("A senha é obrigatória.");
         }
-        // anoLetivo pode ser validado como > 0 ou dentro de um range, se necessário.
 
-        // 2. Validação de unicidade do login (nome de usuário)
+        // 2. Validação de unicidade do login
         if (alunoDAO.buscarAlunoPorLogin(loginAluno) != null) {
             throw new IllegalArgumentException("O login '" + loginAluno + "' já está em uso. Por favor, escolha outro.");
         }
 
-        // 3. Hash da senha (CRUCIAL para segurança!)
+        // 3. Hash da senha
         String senhaHash = hashSenha(senha);
 
         // 4. Criar objeto Aluno com o hash da senha
         Aluno novoAluno = new Aluno(nome, loginAluno, senhaHash, anoLetivo);
 
         // 5. Adicionar ao banco de dados via DAO
-        int idGerado = alunoDAO.inserirAluno(novoAluno); // O DAO agora lança SQLException
+        int idGerado = alunoDAO.inserirAluno(novoAluno);
         if (idGerado > 0) {
-            novoAluno.setIdAluno(idGerado); // Atualiza o ID do objeto
+            novoAluno.setIdAluno(idGerado);
             return novoAluno;
         } else {
-            // Isso pode indicar que o DAO não retornou o ID ou que houve falha sem exceção explícita
             throw new SQLException("Falha ao cadastrar aluno: não foi possível obter o ID gerado.");
         }
     }
+    
+    // =======================================================================
+    // ✅ MÉTODOS ADICIONADOS PARA SUPORTE AO LOGIN E HISTÓRICO
+    // =======================================================================
+
+    /**
+     * Busca um aluno pelo seu login.
+     * Essencial para o processo de login no Navegador.
+     *
+     * @param login O login do aluno a ser buscado.
+     * @return O objeto Aluno se encontrado, caso contrário null.
+     * @throws SQLException Se ocorrer um erro no banco de dados.
+     */
+    public Aluno buscarPorLogin(String login) throws SQLException {
+        return alunoDAO.buscarAlunoPorLogin(login);
+    }
+
+    /**
+     * Busca um aluno pelo seu ID.
+     * Essencial para a TelaHistAdmin exibir o nome do aluno.
+     *
+     * @param id O ID do aluno a ser buscado.
+     * @return O objeto Aluno se encontrado, caso contrário null.
+     * @throws SQLException Se ocorrer um erro no banco de dados.
+     */
+    public Aluno buscarPorId(int id) throws SQLException {
+        return alunoDAO.buscarAlunoPorId(id);
+    }
+    
+    /**
+     * Busca todos os alunos cadastrados no sistema.
+     * Útil para funcionalidades de admin.
+     * @return Uma lista de todos os alunos.
+     * @throws SQLException Se ocorrer um erro no banco de dados.
+     */
+    public List<Aluno> buscarTodos() throws SQLException {
+        return alunoDAO.listarTodosAlunos();
+    }
+    
+    // =======================================================================
 
     /**
      * Realiza o hash de uma senha usando SHA-256 e Base64.
-     * !!! ATENÇÃO: Esta é uma implementação SIMPLES para fins de exemplo.
-     * !!! Para produção, use bibliotecas robustas como BCrypt (Spring Security) ou Argon2.
-     *
-     * @param senhaTextoPuro A senha em texto puro.
-     * @return A senha hash em formato Base64.
-     * @throws NoSuchAlgorithmException Se o algoritmo SHA-256 não for encontrado (erro interno).
      */
     private String hashSenha(String senhaTextoPuro) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");

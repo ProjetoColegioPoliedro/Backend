@@ -1,18 +1,16 @@
+// Crie este arquivo em: model/HistoricoJogo.java
 package model;
 
-import java.time.LocalDate; 
+import java.time.LocalDate;
 
 public class HistoricoJogo {
-    private int idHistorico; // Corresponde a id_historico (PK)
-    private LocalDate dataPartida; // Corresponde a data_partida (DATE)
-    private int acertos; // Corresponde a acertos
-    private int erros; // Corresponde a erros
-    private String checkpointAlcancado; // Corresponde a checkpoint_alcancado
-    private int pontuacaoTotal; // Corresponde a pontuacao_total
-    private int idAluno; // Corresponde a id_aluno (FK)
-
-    public HistoricoJogo() {
-    }
+    private int idHistorico;
+    private LocalDate dataPartida;
+    private int acertos;
+    private int erros;
+    private String checkpointAlcancado;
+    private int pontuacaoTotal;
+    private int idAluno;
 
     public HistoricoJogo(int idHistorico, LocalDate dataPartida, int acertos, int erros, String checkpointAlcancado, int pontuacaoTotal, int idAluno) {
         this.idHistorico = idHistorico;
@@ -32,7 +30,7 @@ public class HistoricoJogo {
         this.pontuacaoTotal = pontuacaoTotal;
         this.idAluno = idAluno;
     }
-
+    
     // Getters e Setters
     public int getIdHistorico() { return idHistorico; }
     public void setIdHistorico(int idHistorico) { this.idHistorico = idHistorico; }
@@ -48,9 +46,4 @@ public class HistoricoJogo {
     public void setPontuacaoTotal(int pontuacaoTotal) { this.pontuacaoTotal = pontuacaoTotal; }
     public int getIdAluno() { return idAluno; }
     public void setIdAluno(int idAluno) { this.idAluno = idAluno; }
-
-    @Override
-    public String toString() {
-        return "HistoricoJogo [idHistorico=" + idHistorico + ", dataPartida=" + dataPartida + ", pontuacaoTotal=" + pontuacaoTotal + "]";
-    }
 }
