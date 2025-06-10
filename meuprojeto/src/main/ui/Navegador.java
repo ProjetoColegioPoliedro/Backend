@@ -192,7 +192,9 @@ public class Navegador {
 
     private void processarResposta(boolean acertou) {
         String proximaAcaoTextoBotao;
-        if (indiceQuestaoAtual + 1 >= MAX_QUESTOES) {
+        if (indiceQuestaoAtual == MAX_QUESTOES - 2) {
+            proximaAcaoTextoBotao = "Questão final";
+        } else if (indiceQuestaoAtual + 1 >= MAX_QUESTOES) { 
             proximaAcaoTextoBotao = "Fim de Jogo!";
         } else {
             proximaAcaoTextoBotao = "Próxima Questão";
@@ -267,10 +269,12 @@ public class Navegador {
 
         JOptionPane.showMessageDialog(null, "Fim de Jogo!\nSua pontuação: " + pontuacaoAtual + " de " + MAX_QUESTOES, "Partida Finalizada", JOptionPane.INFORMATION_MESSAGE);
 
-        if (this.ultimaTelaMenu != null) {
+         if (pontuacaoAtual == 13) {
+            showTelaVencedor(ultimaTelaMenu);
+        } else if (this.ultimaTelaMenu != null) {
             this.ultimaTelaMenu.run();
         } else {
-            showTelaInicial();
+            showTelaInicial(); 
         }
     }
 
@@ -288,5 +292,10 @@ public class Navegador {
     private void showTelaRespostaIncorreta(Questao questao, Runnable proximaAcao, String buttonText) {
         TelaRespostaIncorreta telaRespInc = new TelaRespostaIncorreta(questao, proximaAcao, buttonText);
         telaRespInc.setVisible(true);
+    }
+
+    private void showTelaVencedor(Runnable ultimaTelaMenu){
+        TelaVencedor telaVenc = new TelaVencedor(ultimaTelaMenu, () -> showTelaTemaPerguntas(this.ultimaTelaMenu));
+        telaVenc.setVisible(true); 
     }
 }
