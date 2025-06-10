@@ -3,135 +3,48 @@ package ui;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-public class TelaCadastro extends JFrame{
-    public TelaCadastro(Runnable telaAreaRes){
-        // Cores adicionais
-        var cinza = new Color(217, 217, 217);
-        var rosa = new Color(238, 33, 82);
-        var roxo = new Color(20, 14, 40);
+import java.sql.SQLException;
+import service.AlunoService; // Importar o serviço de aluno
+import model.Aluno;        // Importar o modelo de aluno
 
-        // Criação da tela
+public class TelaCadastro extends JFrame {
+
+    private AlunoService alunoService; // Atributo para o serviço de aluno
+    private JTextField digiteNome; // NOVO: Para o nome completo (se diferente do login)
+    private JTextField digiteLogin; // O antigo 'digiteUsuario'
+    private JPasswordField digiteSenha;
+    private JTextField digiteAnoLetivo; // NOVO: Para o ano letivo
+
+    // Cores adicionais
+    private final Color CINZA = new Color(217, 217, 217);
+    private final Color ROSA = new Color(238, 33, 82);
+    private final Color ROXO = new Color(20, 14, 40);
+    private final Color PRETO = Color.BLACK; // Para texto digitado
+    private final Color CINZA_TEXTO_PADRAO = Color.GRAY; // Para placeholders
+
+    // Construtor ajustado para receber o Runnable e o AlunoService
+    public TelaCadastro(Runnable telaAreaRes, AlunoService alunoService) {
+        this.alunoService = alunoService; // Inicializa o serviço
+
+        // Configurações básicas da tela JFrame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(710, 800);
-        setLocationRelativeTo(null);
+        setSize(710, 800); // Tamanho inicial
+        setLocationRelativeTo(null); // Centraliza a janela
+        setExtendedState(Frame.MAXIMIZED_BOTH); // Maximiza a janela (apenas uma vez)
 
-        var painelInicial = new JPanel(null, true);
-        painelInicial.setSize(800, 800);
-        painelInicial.setBackground(roxo);
-        add(painelInicial);
+        // Painel de fundo
+        JPanel painelInicial = new JPanel(null, true);
+        painelInicial.setBackground(ROXO);
+        setContentPane(painelInicial); // Usar setContentPane é preferível a add(painelInicial)
 
-        var painelMenor = new JPanel(null);
+        // Painel menor branco centralizado
+        JPanel painelMenor = new JPanel(null);
         painelMenor.setBackground(Color.WHITE);
-        painelMenor.setBounds(100, 100, 500, 550);
-        painelInicial.add(painelMenor, BorderLayout.CENTER);
+        painelMenor.setBounds(0, 0, 500, 600); // Tamanho fixo, será centralizado
+        painelInicial.add(painelMenor);
 
-        // Usuário, e-mail e senha
-        var digiteUsuario = new JTextField();
-        digiteUsuario.setColumns(30);
-        digiteUsuario.setBackground(cinza);
-        digiteUsuario.setForeground(rosa);
-        digiteUsuario.setBounds(90, 200, 320, 40);
-        painelMenor.add(digiteUsuario);
-        digiteUsuario.setFont(new Font("New Cordial", Font.ITALIC, 10));
-
-        var usuario = new JLabel("Usuário");
-        usuario.setFont(new Font("Roboto", Font.BOLD, 12));
-        usuario.setBounds(90, 180, 200, 20);
-        painelMenor.add(usuario);
-
-        var digiteEmail = new JTextField();
-        digiteEmail.setColumns(30);
-        digiteEmail.setBackground(cinza);
-        digiteEmail.setForeground(rosa);
-        digiteEmail.setBounds(90, 270, 320, 40);
-        painelMenor.add(digiteEmail);
-        digiteEmail.setFont(new Font("New Cordial", Font.ITALIC, 10));
-
-        var email = new JLabel("E-mail");
-        email.setFont(new Font("Roboto", Font.BOLD, 12));
-        email.setBounds(90, 250, 200, 20); // ajuste a altura
-        painelMenor.add(email);
-
-        var digiteSenha = new JPasswordField();
-        digiteSenha.setColumns(30);
-        digiteSenha.setBackground(cinza);
-        digiteSenha.setForeground(rosa);
-        digiteSenha.setBounds(90, 340, 320, 40);
-        painelMenor.add(digiteSenha);
-        digiteSenha.setFont(new Font("Roboto", Font.ITALIC, 10));
-
-        var senha = new JLabel("Senha");
-        senha.setFont(new Font("Roboto Thin", Font.BOLD, 12));
-        senha.setBounds(90, 320, 200, 20);
-        painelMenor.add(senha);
-
-
-        // Botôes de cancelamento e cadastro.
-        var cancelar = new JButton("Cancelar");
-        painelMenor.add(cancelar);
-        cancelar.setBounds(90, 420, 110, 30);
-        cancelar.setBackground(rosa);
-        cancelar.setFont(new Font("Roboto", Font.BOLD, 13));
-        cancelar.setForeground(Color.WHITE);
-        cancelar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                telaAreaRes.run();
-                dispose();
-            }
-        });
-
-        var cadastro = new JButton("Cadastre-se");
-        painelMenor.add(cadastro);
-        cadastro.setBounds(300, 420, 110, 30);
-        cadastro.setBackground(rosa);
-        cadastro.setFont(new Font("Roboto", Font.BOLD, 13));
-        cadastro.setForeground(Color.WHITE);
-
-        // Evento do botão
-        cadastro.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent evento){
-                if ((digiteEmail.getText().trim().isEmpty()) || (digiteSenha.getPassword().length == 0)){
-                    JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos!", "ERRO - CAMPO VAZIO", JOptionPane.WARNING_MESSAGE);
-                }
-                else {
-                    JOptionPane.showMessageDialog(null, "Cadastro realizado com sucesso!", "Confimação de cadastro", JOptionPane.INFORMATION_MESSAGE);
-                }
-            }
-        });
-
-        // Cadastro
-        var cadastrar = new JLabel("Cadastrar");
-        painelMenor.add(cadastrar);
-        cadastrar.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 20));
-        cadastrar.setBounds(90, 100, 200, 100);
-
-        // Logo - Poliedro
-        var icone = new ImageIcon("C:\\Users\\Admin\\QUIZFORTUNA\\assets\\image.png");
-        var poliedro = icone.getImage().getScaledInstance(140, 70, Image.SCALE_SMOOTH);
-        var imagemPoliedro = new JLabel(new ImageIcon(poliedro));
-        painelMenor.add(imagemPoliedro);
-        imagemPoliedro.setBounds(170, 40, 150, 80);
-
-        // var icon = new ImageIcon("settings.png");
-        // var image = icon.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
-        // var config = new JLabel(new ImageIcon(image));
-        // painelInicial.add(config);
-        // config.setBounds(1460, 20, 60, 60);
-        // config.addMouseListener(new MouseAdapter() {
-        //     @Override
-        //     public void mouseClicked(MouseEvent e){
-        //         var tC = new TelaConfiguracoes();
-        //         tC.setVisible(true);
-        //         dispose();
-        //     }
-        // });
-
-
-        // Dimensionamento de tela
-        setExtendedState(Frame.MAXIMIZED_BOTH);
-
-        addComponentListener(new ComponentAdapter() {
+        // Adiciona um listener para centralizar o painel menor quando a janela for redimensionada
+        painelInicial.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent evento) {
                 int frameWidth = getWidth();
@@ -141,21 +54,225 @@ public class TelaCadastro extends JFrame{
                 int x = (frameWidth - painelMenorWidth) / 2;
                 int y = (frameHeight - painelMenorHeight) / 2;
                 painelMenor.setLocation(x, y);
-
-                // int margemDireita = 30;
-                // int margemSuperior = 20;
-                // config.setBounds(
-                // frameWidth - 60 - margemDireita,
-                // margemSuperior,
-                // 60, 60);
             }
         });
 
-        // Mensagem
-        var msgm = new JLabel("*Apenas o professor pode realizar o cadastro");
+        // --- CAMPOS DE ENTRADA ---
+        // Label "Cadastrar"
+        JLabel cadastrarLabel = new JLabel("Cadastrar");
+        cadastrarLabel.setFont(new Font("Montserrat", Font.BOLD, 20));
+        cadastrarLabel.setBounds(90, 50, 200, 50); // Posição ajustada
+        painelMenor.add(cadastrarLabel);
+
+        // Logo - Poliedro (Caminho relativo)
+        ImageIcon icone = new ImageIcon("assets/image.png"); // <--- Caminho corrigido!
+        Image poliedro = icone.getImage().getScaledInstance(140, 70, Image.SCALE_SMOOTH);
+        JLabel imagemPoliedro = new JLabel(new ImageIcon(poliedro));
+        imagemPoliedro.setBounds(170, 0, 150, 80); // Posição ajustada
+        painelMenor.add(imagemPoliedro);
+
+
+        // Campo Nome
+        JLabel nomeLabel = new JLabel("Nome Completo");
+        nomeLabel.setFont(new Font("Montserrat", Font.BOLD, 12));
+        nomeLabel.setBounds(90, 120, 200, 20);
+        painelMenor.add(nomeLabel);
+        digiteNome = criarCampoTexto(painelMenor, "Digite o nome completo", 90, 140, 320, 40);
+
+        // Campo Login (era 'digiteUsuario')
+        JLabel loginLabel = new JLabel("Login de Aluno");
+        loginLabel.setFont(new Font("Montserrat", Font.BOLD, 12));
+        loginLabel.setBounds(90, 190, 200, 20);
+        painelMenor.add(loginLabel);
+        digiteLogin = criarCampoTexto(painelMenor, "Digite seu login de aluno", 90, 210, 320, 40);
+
+        // Campo Senha
+        JLabel senhaLabel = new JLabel("Senha");
+        senhaLabel.setFont(new Font("Montserrat", Font.BOLD, 12));
+        senhaLabel.setBounds(90, 260, 200, 20);
+        painelMenor.add(senhaLabel);
+        digiteSenha = criarCampoSenha(painelMenor, "Digite sua senha", 90, 280, 320, 40);
+
+        // Campo Ano Letivo
+        JLabel anoLetivoLabel = new JLabel("Ano Letivo");
+        anoLetivoLabel.setFont(new Font("Montserrat", Font.BOLD, 12));
+        anoLetivoLabel.setBounds(90, 330, 200, 20);
+        painelMenor.add(anoLetivoLabel);
+        digiteAnoLetivo = criarCampoTexto(painelMenor, "Ex: 2023", 90, 350, 320, 40);
+
+
+        // Botão Cancelar
+        JButton cancelar = criarBotao(painelMenor, "Cancelar", 90, 430, 110, 30, ROSA, Color.WHITE, e -> { // Lambda com ActionEvent
+            telaAreaRes.run();
+            dispose();
+        });
+
+        // Botão Cadastre-se
+        JButton cadastro = criarBotao(painelMenor, "Cadastre-se", 300, 430, 110, 30, ROSA, Color.WHITE, e -> { // Lambda com ActionEvent
+            cadastrarAluno(telaAreaRes); // Chama o novo método de cadastro
+        });
+
+        // Mensagem de rodapé (reposicionada)
+        JLabel msgm = new JLabel("*Apenas o professor pode realizar o cadastro");
+        msgm.setFont(new Font("Montserrat", Font.BOLD, 12));
+        msgm.setForeground(ROSA);
+        msgm.setBounds(90, 470, 320, 20); // Posição ajustada
         painelMenor.add(msgm);
-        msgm.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 12));
-        msgm.setForeground(rosa);
-        msgm.setBounds(90, 350, 300, 100);
+    }
+
+    // --- Métodos Auxiliares para Criação de Componentes (melhorado) ---
+
+    // Cria JTextField com placeholder
+    private JTextField criarCampoTexto(JPanel parentPanel, String placeholder, int x, int y, int width, int height) {
+        JTextField campo = new JTextField(placeholder);
+        campo.setBounds(x, y, width, height);
+        campo.setBackground(CINZA);
+        campo.setForeground(CINZA_TEXTO_PADRAO);
+        campo.setFont(new Font("Montserrat", Font.PLAIN, 14));
+        parentPanel.add(campo);
+        adicionarPlaceholderListener(campo, placeholder);
+        return campo;
+    }
+
+    // Cria JPasswordField com placeholder
+    private JPasswordField criarCampoSenha(JPanel parentPanel, String placeholder, int x, int y, int width, int height) {
+        JPasswordField campo = new JPasswordField(placeholder);
+        campo.setBounds(x, y, width, height);
+        campo.setBackground(CINZA);
+        campo.setForeground(CINZA_TEXTO_PADRAO);
+        campo.setFont(new Font("Montserrat", Font.PLAIN, 14));
+        parentPanel.add(campo);
+        adicionarPlaceholderListener(campo, placeholder); // Usa o placeholder listener para senha
+        return campo;
+    }
+
+    // Cria JButton
+    private JButton criarBotao(JPanel parentPanel, String texto, int x, int y, int width, int height, Color bgColor, Color fgColor, ActionListener action) {
+        JButton botao = new JButton(texto);
+        botao.setBounds(x, y, width, height);
+        botao.setBackground(bgColor);
+        botao.setForeground(fgColor);
+        botao.setFont(new Font("Montserrat", Font.BOLD, 13));
+        botao.addActionListener(action);
+        parentPanel.add(botao);
+        return botao;
+    }
+
+    // Adiciona o comportamento de placeholder para JTextFields
+    private void adicionarPlaceholderListener(JTextField campo, String placeholder) {
+        campo.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (campo.getText().equals(placeholder) && campo.getForeground().equals(CINZA_TEXTO_PADRAO)) {
+                    campo.setText("");
+                    campo.setForeground(PRETO);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (campo.getText().isEmpty()) {
+                    campo.setText(placeholder);
+                    campo.setForeground(CINZA_TEXTO_PADRAO);
+                }
+            }
+        });
+    }
+
+    // Adiciona o comportamento de placeholder para JPasswordFields
+    private void adicionarPlaceholderListener(JPasswordField campo, String placeholder) {
+        campo.setEchoChar((char) 0); // Torna o placeholder visível
+        campo.setForeground(CINZA_TEXTO_PADRAO);
+        campo.setText(placeholder); // Setando o texto diretamente
+
+        campo.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                String currentText = new String(campo.getPassword()); // Pega o texto atual
+                if (currentText.equals(placeholder)) {
+                    campo.setText("");
+                    campo.setEchoChar('*'); // Volta para o caractere de senha
+                    campo.setForeground(PRETO);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                String currentText = new String(campo.getPassword()); // Pega o texto atual
+                if (currentText.isEmpty()) {
+                    campo.setText(placeholder);
+                    campo.setEchoChar((char) 0); // Torna o placeholder visível
+                    campo.setForeground(CINZA_TEXTO_PADRAO);
+                }
+            }
+        });
+    }
+
+    // --- Lógica de Cadastro de Aluno ---
+    private void cadastrarAluno(Runnable telaAreaRes) {
+        String nome = digiteNome.getText().trim();
+        String login = digiteLogin.getText().trim();
+        String senha = new String(digiteSenha.getPassword());
+        String anoLetivoStr = digiteAnoLetivo.getText().trim();
+
+        // 1. Validação de campos na UI
+        if (nome.isEmpty() || login.isEmpty() || senha.isEmpty() || anoLetivoStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos obrigatórios!", "ERRO - CAMPO VAZIO", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int anoLetivo;
+        try {
+            anoLetivo = Integer.parseInt(anoLetivoStr);
+            if (anoLetivo <= 0) {
+                 JOptionPane.showMessageDialog(this, "Ano letivo inválido. Por favor, digite um número positivo.", "Erro de Validação", JOptionPane.WARNING_MESSAGE);
+                 return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Ano letivo inválido. Por favor, digite um número.", "Erro de Validação", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            // Tenta cadastrar o aluno usando o serviço
+            // O AlunoService vai lidar com a unicidade do login e o hash da senha
+            Aluno novoAluno = alunoService.cadastrarAluno(nome, login, senha, anoLetivo);
+
+            if (novoAluno != null) {
+                JOptionPane.showMessageDialog(this, "Cadastro de aluno realizado com sucesso!", "Confirmação de cadastro", JOptionPane.INFORMATION_MESSAGE);
+                limparCampos(); // Limpa os campos após o sucesso
+                telaAreaRes.run(); // Volta para a tela anterior
+                dispose();
+            } else {
+                // Isso só deve acontecer se o serviço não lançar exceção mas retornar null
+                JOptionPane.showMessageDialog(this, "Falha ao cadastrar aluno.", "Erro de Cadastro", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (IllegalArgumentException ex) {
+            // Erros de validação (campos obrigatórios, login já existente, formato de email)
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Erro de Validação", JOptionPane.WARNING_MESSAGE);
+        } catch (SQLException ex) {
+            // Erros de banco de dados
+            System.err.println("Erro SQL ao cadastrar aluno: " + ex.getMessage());
+            ex.printStackTrace(); // Imprime a pilha de erros para depuração
+            JOptionPane.showMessageDialog(this, "Erro de banco de dados ao cadastrar aluno: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            // Outros erros inesperados (ex: NoSuchAlgorithmException no hash da senha)
+            System.err.println("Erro inesperado ao cadastrar: " + ex.getMessage());
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Ocorreu um erro inesperado ao cadastrar: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // Método para limpar os campos após um cadastro bem-sucedido
+    private void limparCampos() {
+        digiteNome.setText("Digite o nome completo");
+        digiteNome.setForeground(CINZA_TEXTO_PADRAO);
+        digiteLogin.setText("Digite seu login de aluno");
+        digiteLogin.setForeground(CINZA_TEXTO_PADRAO);
+        digiteSenha.setText("Digite sua senha");
+        digiteSenha.setForeground(CINZA_TEXTO_PADRAO);
+        digiteSenha.setEchoChar((char) 0); // Torna o placeholder visível
+        digiteAnoLetivo.setText("Ex: 2023");
+        digiteAnoLetivo.setForeground(CINZA_TEXTO_PADRAO);
     }
 }
