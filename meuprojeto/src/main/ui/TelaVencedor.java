@@ -14,12 +14,10 @@ public class TelaVencedor extends JFrame{
         setSize(2000, 2000); // Tamanho inicial
         setExtendedState(Frame.MAXIMIZED_BOTH); // Maximiza a janela
         setLocationRelativeTo(null); // Centraliza a janela na tela
-
         var corFundo = new JPanel(null, true);
         corFundo.setBackground(roxo);
         setContentPane(corFundo);
-
-        // "Resposta correta"
+        // Label para a mensagem "Vencedor!"
         var vencedor = new JLabel("VENCEDOR! 👑");
         vencedor.setBounds(580, 40, 500, 120);
         vencedor.setFont(new Font("Montserrat", Font.BOLD, 60));
@@ -36,26 +34,20 @@ public class TelaVencedor extends JFrame{
         jogarNovamente.setForeground(Color.BLACK);
         jogarNovamente.setBounds(620, 520, 350, 60);
         corFundo.add(jogarNovamente);
-        jogarNovamente.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e){
-                telaTemaPerguntas.run(); // Executa a ação para abrir a tela de tema de perguntas
-                dispose(); // Fecha a tela de solução
-            }
-        });
-        
+        jogarNovamente.addActionListener(e -> {
+                telaTemaPerguntas.run(); 
+                dispose(); 
+            });
+
         var voltaMenu = new JButton("Voltar ao menu");
         voltaMenu.setFont(new Font("Montserrat", Font.BOLD, 37));
         voltaMenu.setBackground(rosa);
         voltaMenu.setForeground(Color.BLACK);
         voltaMenu.setBounds(620, 620, 350, 60);
         corFundo.add(voltaMenu);
-        voltaMenu.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e){
-                telaMenu.run(); // Executa a ação para abrir o menu
-                dispose(); // Fecha a tela de solução
-            }
+        voltaMenu.addActionListener(e -> {
+                telaMenu.run(); 
+                dispose(); 
         });
     } 
 }
