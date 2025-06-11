@@ -9,7 +9,6 @@ public class TelaConsultaRanking extends JFrame{
         var roxo = new Color(20, 14, 40);
         var rosa = new Color(238, 33, 82);
 
-        // Criação da tela
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(710, 800);
         setLocationRelativeTo(null);

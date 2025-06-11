@@ -106,7 +106,10 @@ public class Navegador {
     }
 
     private void showTelaTemaPerguntas(Runnable voltarParaMenu) {
-        TelaTemaPerguntas telaTemaP = new TelaTemaPerguntas(voltarParaMenu, () -> iniciarNovaPartida(voltarParaMenu));
+        TelaTemaPerguntas telaTemaP = new TelaTemaPerguntas(
+            voltarParaMenu,
+            temasSelecionados -> iniciarNovaPartida(voltarParaMenu, temasSelecionados)
+        );
         telaTemaP.setVisible(true);
     }
 
@@ -155,17 +158,17 @@ public class Navegador {
         telaCad.setVisible(true);
     }
 
-    private void iniciarNovaPartida(Runnable voltarParaMenu) {
+    private void iniciarNovaPartida(Runnable voltarParaMenu, List<String> temas) {
         try {
-            this.questoesDaPartidaAtual = questaoService.buscarQuestoesAleatorias(MAX_QUESTOES);
+            this.questoesDaPartidaAtual = questaoService.buscarQuestoesPorTemas(temas, MAX_QUESTOES);
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro de banco de dados ao carregar questões: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
             voltarParaMenu.run();
             return;
         }
 
-        if (questoesDaPartidaAtual == null || questoesDaPartidaAtual.size() < MAX_QUESTOES) {
-            JOptionPane.showMessageDialog(null, "Não foi possível carregar questões suficientes para a partida.", "Erro", JOptionPane.ERROR_MESSAGE);
+        if (questoesDaPartidaAtual == null || questoesDaPartidaAtual.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Não foi possível carregar questões para as matérias selecionadas.", "Sem Questões", JOptionPane.WARNING_MESSAGE);
             voltarParaMenu.run();
             return;
         }
@@ -179,22 +182,24 @@ public class Navegador {
         }
 
         this.telaDePartidaUnica = new TelaPartida(
-            questoesDaPartidaAtual.get(indiceQuestaoAtual),
-            this::processarProximaQuestao,
-            () -> processarResposta(true),
-            () -> processarResposta(false),
-            () -> showTelaConfiguracoes(() -> telaDePartidaUnica.setVisible(true)),
-            this::finalizarPartida
+            questoesDaPartidaAtual.get(indiceQuestaoAtual),    // 1. A questão a ser exibida
+            this::processarProximaQuestao,                     // 2. Ação para o botão "Pular"
+            () -> processarResposta(true),                     // 3. Ação para quando a resposta for CORRETA
+            () -> processarResposta(false),                    // 4. Ação para quando a resposta for INCORRETA
+            () -> showTelaConfiguracoes(() -> telaDePartidaUnica.setVisible(true)), // 5. Ação para o botão de "Configurações"
+            this::finalizarPartida                             // 6. Ação para o botão "Parar Jogo"
         );
 
         telaDePartidaUnica.setVisible(true);
     }
 
     private void processarResposta(boolean acertou) {
+        int totalQuestoesNaPartida = this.questoesDaPartidaAtual.size();
         String proximaAcaoTextoBotao;
-        if (indiceQuestaoAtual == MAX_QUESTOES - 2) {
+
+        if (indiceQuestaoAtual == totalQuestoesNaPartida - 2) {
             proximaAcaoTextoBotao = "Questão final";
-        } else if (indiceQuestaoAtual + 1 >= MAX_QUESTOES) { 
+        } else if (indiceQuestaoAtual + 1 >= totalQuestoesNaPartida) {
             proximaAcaoTextoBotao = "Fim de Jogo!";
         } else {
             proximaAcaoTextoBotao = "Próxima Questão";
@@ -205,9 +210,7 @@ public class Navegador {
             showTelaRespostaCorreta(this::processarProximaQuestao, proximaAcaoTextoBotao);
         } else {
             Runnable acaoJogarNovamente = () -> {
-                // Salva o histórico ANTES de sair da partida
                 salvarHistoricoDaPartidaAtual();
-
                 if (telaDePartidaUnica != null) {
                     telaDePartidaUnica.dispose();
                     telaDePartidaUnica = null;
@@ -230,8 +233,9 @@ public class Navegador {
     }
 
     private void processarProximaQuestao() {
+        int totalQuestoesNaPartida = this.questoesDaPartidaAtual.size();
         this.indiceQuestaoAtual++;
-        if (indiceQuestaoAtual >= MAX_QUESTOES) {
+        if (indiceQuestaoAtual >= totalQuestoesNaPartida) {
             finalizarPartida();
         } else {
             Questao proximaQuestao = questoesDaPartidaAtual.get(indiceQuestaoAtual);
@@ -245,7 +249,7 @@ public class Navegador {
                 HistoricoJogo novoHistorico = new HistoricoJogo(
                     LocalDate.now(),
                     this.pontuacaoAtual,
-                    MAX_QUESTOES - this.pontuacaoAtual,
+                    this.questoesDaPartidaAtual.size() - this.pontuacaoAtual,
                     "Fim de Jogo",
                     this.pontuacaoAtual,
                     this.idAlunoLogado
@@ -267,14 +271,14 @@ public class Navegador {
 
         salvarHistoricoDaPartidaAtual();
 
-        JOptionPane.showMessageDialog(null, "Fim de Jogo!\nSua pontuação: " + pontuacaoAtual + " de " + MAX_QUESTOES, "Partida Finalizada", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, "Fim de Jogo!\nSua pontuação: " + pontuacaoAtual + " de " + this.questoesDaPartidaAtual.size(), "Partida Finalizada", JOptionPane.INFORMATION_MESSAGE);
 
-         if (pontuacaoAtual == 13) {
+        if (pontuacaoAtual == this.questoesDaPartidaAtual.size() && !this.questoesDaPartidaAtual.isEmpty()) { // Venceu o jogo
             showTelaVencedor(ultimaTelaMenu);
         } else if (this.ultimaTelaMenu != null) {
             this.ultimaTelaMenu.run();
         } else {
-            showTelaInicial(); 
+            showTelaInicial();
         }
     }
 
@@ -294,8 +298,8 @@ public class Navegador {
         telaRespInc.setVisible(true);
     }
 
-    private void showTelaVencedor(Runnable ultimaTelaMenu){
+    private void showTelaVencedor(Runnable ultimaTelaMenu) {
         TelaVencedor telaVenc = new TelaVencedor(ultimaTelaMenu, () -> showTelaTemaPerguntas(this.ultimaTelaMenu));
-        telaVenc.setVisible(true); 
+        telaVenc.setVisible(true);
     }
 }

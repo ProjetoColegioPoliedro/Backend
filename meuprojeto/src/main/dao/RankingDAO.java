@@ -1,15 +1,14 @@
 package dao;
 
-import model.Ranking; // Importa a classe Ranking do seu pacote model
-import connectionFactory.ConnectionFactory; // Importa sua classe de conexão
-
+import model.Ranking; 
+import connectionFactory.ConnectionFactory; 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp; // Import para java.sql.Timestamp
-import java.time.LocalDateTime; // Import para java.time.LocalDateTime
+import java.sql.Timestamp; 
+import java.time.LocalDateTime; 
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,17 +32,6 @@ public class RankingDAO {
     // Esta é uma alternativa se id_aluno for UNIQUE na tabela ranking.
     // private static final String ATUALIZAR_PONTUACAO_POR_ALUNO_SQL = "UPDATE ranking SET pontuacao = ?, ultima_atualizacao = ? WHERE id_aluno = ?;";
 
-
-    /**
-     * Insere um novo registro de ranking.
-     * Se a intenção é ter apenas um registro de ranking por aluno (atualizável),
-     * a coluna id_aluno na tabela 'ranking' deve ter uma constraint UNIQUE.
-     * Nesse caso, uma lógica de "inserir ou atualizar" seria mais apropriada
-     * ou separar a atualização da pontuação em outro método.
-     *
-     * @param ranking O objeto Ranking a ser inserido.
-     * @return O ID do registro de ranking inserido, ou -1 em caso de falha.
-     */
     public int inserirRanking(Ranking ranking) {
         int idGerado = -1;
         Connection conexao = null;
@@ -77,7 +65,6 @@ public class RankingDAO {
             }
 
         } catch (SQLException e) {
-            // Se id_aluno for UNIQUE na tabela ranking, esta exceção pode ser lançada
             if (e.getSQLState().startsWith("23")) { 
                  System.err.println("Erro SQL: Aluno com ID " + ranking.getIdAluno() + " já pode ter um registro no ranking (se id_aluno for UNIQUE). " + e.getMessage());
             } else {
@@ -90,12 +77,6 @@ public class RankingDAO {
         return idGerado;
     }
 
-    /**
-     * Atualiza um registro de ranking existente.
-     *
-     * @param ranking O objeto Ranking com os dados atualizados (deve ter idRanking preenchido).
-     * @return true se a atualização foi bem-sucedida, false caso contrário.
-     */
     public boolean atualizarRanking(Ranking ranking) {
         boolean atualizado = false;
         Connection conexao = null;
@@ -132,12 +113,6 @@ public class RankingDAO {
         return atualizado;
     }
     
-    /**
-     * Busca um registro de ranking pelo seu ID (id_ranking).
-     *
-     * @param idRanking O ID do registro de ranking.
-     * @return Um objeto Ranking se encontrado, caso contrário null.
-     */
     public Ranking buscarRankingPorId(int idRanking) {
         Ranking ranking = null;
         Connection conexao = null;
@@ -161,13 +136,6 @@ public class RankingDAO {
         }
         return ranking;
     }
-
-    /**
-     * Busca o registro de ranking mais relevante (maior pontuação, depois mais recente) para um aluno específico.
-     *
-     * @param idAluno O ID do aluno.
-     * @return Um objeto Ranking se encontrado, caso contrário null.
-     */
     public Ranking buscarRankingPorAluno(int idAluno) {
         Ranking ranking = null;
         Connection conexao = null;
@@ -191,13 +159,6 @@ public class RankingDAO {
         }
         return ranking;
     }
-
-    /**
-     * Lista os top N registros de ranking (leaderboard).
-     *
-     * @param limite O número de registros do topo a serem retornados.
-     * @return Uma lista de objetos Ranking.
-     */
     public List<Ranking> listarTopNRankings(int limite) {
         List<Ranking> rankings = new ArrayList<>();
         Connection conexao = null;
@@ -226,13 +187,6 @@ public class RankingDAO {
         }
         return rankings;
     }
-
-    /**
-     * Exclui um registro de ranking pelo seu ID.
-     *
-     * @param idRanking O ID do registro de ranking a ser excluído.
-     * @return true se a exclusão foi bem-sucedida, false caso contrário.
-     */
     public boolean excluirRanking(int idRanking) {
         boolean excluido = false;
         Connection conexao = null;
@@ -263,10 +217,6 @@ public class RankingDAO {
         }
         return excluido;
     }
-
-    /**
-     * Mapeia uma linha do ResultSet para um objeto Ranking.
-     */
     private Ranking mapResultSetToRanking(ResultSet rs) throws SQLException {
         int idRanking = rs.getInt("id_ranking");
         int idAluno = rs.getInt("id_aluno");
@@ -274,10 +224,6 @@ public class RankingDAO {
         LocalDateTime ultimaAtualizacao = rs.getTimestamp("ultima_atualizacao").toLocalDateTime();
         return new Ranking(idRanking, idAluno, pontuacao, ultimaAtualizacao);
     }
-
-    /**
-     * Método utilitário para fechar os recursos JDBC.
-     */
     private void closeResources(Connection conn, PreparedStatement stmt, ResultSet rs) {
         try {
             if (rs != null) rs.close();

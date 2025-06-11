@@ -7,11 +7,6 @@ import java.util.Collections;
 
 public class Questao {
 
-    /**
-     * Verifica se o texto de uma alternativa fornecida corresponde ao da alternativa correta.
-     * @param textoAlternativa O texto da alternativa selecionada pelo usuário.
-     * @return true se for a alternativa correta, false caso contrário.
-     */
     public boolean isAlternativaCorreta(String textoAlternativa) {
         if (alternativaCorreta == null || textoAlternativa == null) {
             return false;
@@ -26,8 +21,8 @@ public class Questao {
     private int idNivel;
     private int idMateria;
    
-    private List<Alternativa> alternativas; // Lista de todas as alternativas para esta questão
-    private Alternativa alternativaCorreta; // A alternativa correta
+    private List<Alternativa> alternativas; 
+    private Alternativa alternativaCorreta; 
 
     public Questao() {
     }
@@ -71,20 +66,10 @@ public class Questao {
     public Alternativa getAlternativaCorreta() { return alternativaCorreta; }
     public void setAlternativaCorreta(Alternativa alternativaCorreta) { this.alternativaCorreta = alternativaCorreta; }
 
-    /**
-     * Retorna o texto da alternativa correta.
-     * @return O texto da alternativa correta, ou null se não definida.
-     */
     public String getTextoAlternativaCorreta() {
         return alternativaCorreta != null ? alternativaCorreta.getTexto() : null;
     }
 
-    /**
-     * Retorna uma lista dos textos das alternativas para exibição (útil para a UI).
-     * Pode embaralhar a ordem se desejar.
-     * @param embaralhar Se true, embaralha a ordem das alternativas.
-     * @return Uma lista de Strings com o texto de cada alternativa.
-     */
     public List<String> getTextosAlternativas(boolean embaralhar) {
         List<String> textos = new ArrayList<>();
         if (alternativas != null) {

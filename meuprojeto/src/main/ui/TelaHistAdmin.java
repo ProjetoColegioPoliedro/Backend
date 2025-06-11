@@ -17,9 +17,7 @@ import java.util.List;
 
 public class TelaHistAdmin extends JFrame {
 
-    // ✅ NOVO CONSTRUTOR: Recebe ambos os serviços
     public TelaHistAdmin(Runnable telaMenuAdmin, Runnable configs, HistoricoService historicoService, AlunoService alunoService) {
-        // --- CONFIGURAÇÕES DA JANELA E CORES ---
         var rosa = new Color(238, 33, 82);
         var roxo = new Color(20, 14, 40);
         var roxoClaro = new Color(30, 24, 60);
@@ -33,12 +31,11 @@ public class TelaHistAdmin extends JFrame {
         corFundo.setBackground(roxo);
         setContentPane(corFundo);
 
-        // --- PAINEL DO CABEÇALHO ---
         JPanel painelCabecalho = new JPanel(null);
         painelCabecalho.setBackground(roxo);
         painelCabecalho.setPreferredSize(new Dimension(0, 100));
         corFundo.add(painelCabecalho, BorderLayout.NORTH);
-
+        
         var histJogo = new JLabel("Histórico Geral");
         histJogo.setHorizontalAlignment(SwingConstants.CENTER);
         histJogo.setBounds(0, 20, 1536, 70); // Centralizado na largura da tela
@@ -46,7 +43,6 @@ public class TelaHistAdmin extends JFrame {
         histJogo.setForeground(Color.WHITE);
         painelCabecalho.add(histJogo);
 
-        // ... (Seu código para os botões de voltar e configurações pode ser colado aqui) ...
         var icone = new ImageIcon("assets\\seta.png");
         var imagem = icone.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
         var seta = new JLabel(new ImageIcon(imagem));
@@ -75,8 +71,6 @@ public class TelaHistAdmin extends JFrame {
             }
         });
 
-
-        // --- PAINEL DE CONTEÚDO COM ROLAGEM ---
         JPanel painelConteudoHistorico = new JPanel();
         painelConteudoHistorico.setLayout(new BoxLayout(painelConteudoHistorico, BoxLayout.Y_AXIS));
         painelConteudoHistorico.setBackground(roxo);
@@ -88,9 +82,7 @@ public class TelaHistAdmin extends JFrame {
         rolagemDeTela.setBorder(null);
         corFundo.add(rolagemDeTela, BorderLayout.CENTER);
 
-        // --- LÓGICA PARA BUSCAR E EXIBIR OS DADOS DE TODOS ---
         try {
-            // ✅ Chama o método para buscar TODOS os históricos
             List<HistoricoJogo> historicos = historicoService.buscarTodos();
 
             if (historicos.isEmpty()) {
@@ -103,9 +95,6 @@ public class TelaHistAdmin extends JFrame {
                 DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
                 for (HistoricoJogo hist : historicos) {
-                    // --- Para cada histórico, busca o nome do aluno correspondente ---
-                    // NOTA: Para um sistema grande, o ideal seria fazer uma consulta SQL com JOIN.
-                    // Mas para este projeto, buscar um por um é mais simples e funciona bem.
                     String nomeAluno = "Aluno não encontrado";
                     try {
                         Aluno aluno = alunoService.buscarPorId(hist.getIdAluno());
@@ -115,8 +104,7 @@ public class TelaHistAdmin extends JFrame {
                     } catch (Exception e) {
                         System.err.println("Erro ao buscar nome do aluno com ID: " + hist.getIdAluno());
                     }
-                    // --- Fim da busca pelo nome ---
-
+            
                     JPanel painelDoHistorico = new JPanel(new BorderLayout(20, 5));
                     painelDoHistorico.setBackground(roxoClaro);
                     painelDoHistorico.setBorder(BorderFactory.createCompoundBorder(
@@ -148,7 +136,6 @@ public class TelaHistAdmin extends JFrame {
                     painelConteudoHistorico.add(Box.createRigidArea(new Dimension(0, 15)));
                 }
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
             JLabel erroLabel = new JLabel("Erro ao carregar o histórico do banco de dados.");

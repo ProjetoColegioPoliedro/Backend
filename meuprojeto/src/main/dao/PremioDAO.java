@@ -1,8 +1,7 @@
 package dao;
 
-import model.Premio; // Importa a classe Premio do seu pacote model
-import connectionFactory.ConnectionFactory; // Importa sua classe de conexão
-
+import model.Premio; 
+import connectionFactory.ConnectionFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,7 +13,6 @@ import java.util.List;
 public class PremioDAO {
 
     // SQL para inserir um novo prêmio
-    // Assumindo que id_premio é auto-incrementável no banco
     private static final String INSERIR_PREMIO_SQL = "INSERT INTO premio (descricao, faixas_acertos, valor_simbolico) VALUES (?, ?, ?);";
     // SQL para selecionar um prêmio pelo ID
     private static final String SELECIONAR_PREMIO_POR_ID_SQL = "SELECT id_premio, descricao, faixas_acertos, valor_simbolico FROM premio WHERE id_premio = ?;";
@@ -27,12 +25,6 @@ public class PremioDAO {
     // SQL para atualizar os dados de um prêmio
     private static final String ATUALIZAR_PREMIO_SQL = "UPDATE premio SET descricao = ?, faixas_acertos = ?, valor_simbolico = ? WHERE id_premio = ?;";
 
-    /**
-     * Insere um novo prêmio no banco de dados.
-     *
-     * @param premio O objeto Premio a ser inserido.
-     * @return O ID do prêmio inserido, ou -1 em caso de falha.
-     */
     public int inserirPremio(Premio premio) {
         int idGerado = -1;
         Connection conexao = null;
@@ -67,7 +59,7 @@ public class PremioDAO {
             }
 
         } catch (SQLException e) {
-            if (e.getSQLState().startsWith("23")) { // Violação de constraint (ex: UNIQUE na descrição)
+            if (e.getSQLState().startsWith("23")) { 
                  System.err.println("Erro SQL: Prêmio com a descrição '" + premio.getDescricao() + "' já pode existir. " + e.getMessage());
             } else {
                 System.err.println("Erro SQL ao inserir prêmio: " + e.getMessage());
@@ -79,12 +71,6 @@ public class PremioDAO {
         return idGerado;
     }
 
-    /**
-     * Busca um prêmio pelo seu ID.
-     *
-     * @param idPremio O ID do prêmio a ser buscado.
-     * @return Um objeto Premio se encontrado, caso contrário null.
-     */
     public Premio buscarPremioPorId(int idPremio) {
         Premio premio = null;
         Connection conexao = null;
@@ -109,12 +95,6 @@ public class PremioDAO {
         return premio;
     }
 
-    /**
-     * Busca um prêmio pela sua descrição.
-     *
-     * @param descricao A descrição do prêmio a ser buscado.
-     * @return Um objeto Premio se encontrado, caso contrário null.
-     */
     public Premio buscarPremioPorDescricao(String descricao) {
         Premio premio = null;
         Connection conexao = null;
@@ -143,12 +123,6 @@ public class PremioDAO {
         }
         return premio;
     }
-
-    /**
-     * Lista todos os prêmios cadastrados.
-     *
-     * @return Uma lista de objetos Premio.
-     */
     public List<Premio> listarTodosPremios() {
         List<Premio> premios = new ArrayList<>();
         Connection conexao = null;
@@ -171,13 +145,6 @@ public class PremioDAO {
         }
         return premios;
     }
-
-    /**
-     * Atualiza os dados de um prêmio existente.
-     *
-     * @param premio O objeto Premio com os dados atualizados.
-     * @return true se a atualização foi bem-sucedida, false caso contrário.
-     */
     public boolean atualizarPremio(Premio premio) {
         boolean atualizado = false;
         Connection conexao = null;
@@ -189,7 +156,6 @@ public class PremioDAO {
             System.err.println("Tentativa de atualizar Premio nulo, com ID inválido, ou descrição/faixas de acertos vazias.");
             return false;
         }
-
         try {
             conexao = ConnectionFactory.getConnection();
             pstmt = conexao.prepareStatement(ATUALIZAR_PREMIO_SQL);
@@ -219,13 +185,6 @@ public class PremioDAO {
         }
         return atualizado;
     }
-
-    /**
-     * Exclui um prêmio do banco de dados pelo seu ID.
-     *
-     * @param idPremio O ID do prêmio a ser excluído.
-     * @return true se a exclusão foi bem-sucedida, false caso contrário.
-     */
     public boolean excluirPremio(int idPremio) {
         boolean excluido = false;
         Connection conexao = null;
@@ -249,7 +208,6 @@ public class PremioDAO {
                  System.out.println("Nenhum prêmio encontrado com o ID: " + idPremio + " para exclusão.");
             }
         } catch (SQLException e) {
-            // Tratar erro de FK constraint violation se o prêmio estiver sendo usado
             if (e.getSQLState().startsWith("23")) { 
                  System.err.println("Erro SQL: Não foi possível excluir o Prêmio ID " + idPremio + ". Ele pode estar associado a outros registros. " + e.getMessage());
             } else {
@@ -261,10 +219,6 @@ public class PremioDAO {
         }
         return excluido;
     }
-
-    /**
-     * Mapeia uma linha do ResultSet para um objeto Premio.
-     */
     private Premio mapResultSetToPremio(ResultSet rs) throws SQLException {
         int idPremio = rs.getInt("id_premio");
         String descricao = rs.getString("descricao");
@@ -272,10 +226,6 @@ public class PremioDAO {
         double valorSimbolico = rs.getDouble("valor_simbolico");
         return new Premio(idPremio, descricao, faixasAcertos, valorSimbolico);
     }
-
-    /**
-     * Método utilitário para fechar os recursos JDBC.
-     */
     private void closeResources(Connection conn, PreparedStatement stmt, ResultSet rs) {
         try {
             if (rs != null) rs.close();

@@ -1,7 +1,7 @@
 package dao;
 
-import model.Materia; // Importa a classe Materia do seu pacote model
-import connectionFactory.ConnectionFactory; // Importa sua classe de conexão
+import model.Materia; 
+import connectionFactory.ConnectionFactory; 
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,7 +14,6 @@ import java.util.List;
 public class MateriaDAO {
 
     // SQL para inserir uma nova matéria
-    // Assumindo que id_materia é auto-incrementável no banco
     private static final String INSERIR_MATERIA_SQL = "INSERT INTO materia (nome) VALUES (?);";
     // SQL para selecionar uma matéria pelo ID
     private static final String SELECIONAR_MATERIA_POR_ID_SQL = "SELECT id_materia, nome FROM materia WHERE id_materia = ?;";
@@ -27,12 +26,6 @@ public class MateriaDAO {
     // SQL para atualizar os dados de uma matéria
     private static final String ATUALIZAR_MATERIA_SQL = "UPDATE materia SET nome = ? WHERE id_materia = ?;";
 
-    /**
-     * Insere uma nova matéria no banco de dados.
-     *
-     * @param materia O objeto Materia a ser inserido.
-     * @return O ID da matéria inserida, ou -1 em caso de falha.
-     */
     public int inserirMateria(Materia materia) {
         int idGerado = -1;
         Connection conexao = null;
@@ -64,8 +57,7 @@ public class MateriaDAO {
             }
 
         } catch (SQLException e) {
-            // Tratar erro de chave duplicada (nome da matéria já existe)
-            if (e.getSQLState().startsWith("23")) { // Códigos de erro SQL para violação de constraint
+            if (e.getSQLState().startsWith("23")) { 
                  System.err.println("Erro SQL: Matéria com o nome '" + materia.getNome() + "' já existe. " + e.getMessage());
             } else {
                 System.err.println("Erro SQL ao inserir matéria: " + e.getMessage());
@@ -77,12 +69,6 @@ public class MateriaDAO {
         return idGerado;
     }
 
-    /**
-     * Busca uma matéria pelo seu ID.
-     *
-     * @param idMateria O ID da matéria a ser buscada.
-     * @return Um objeto Materia se encontrado, caso contrário null.
-     */
     public Materia buscarMateriaPorId(int idMateria) {
         Materia materia = null;
         Connection conexao = null;
@@ -107,12 +93,6 @@ public class MateriaDAO {
         return materia;
     }
 
-    /**
-     * Busca uma matéria pelo seu nome.
-     *
-     * @param nome O nome da matéria a ser buscada.
-     * @return Um objeto Materia se encontrado, caso contrário null.
-     */
     public Materia buscarMateriaPorNome(String nome) {
         Materia materia = null;
         Connection conexao = null;
@@ -142,11 +122,6 @@ public class MateriaDAO {
         return materia;
     }
 
-    /**
-     * Lista todas as matérias cadastradas no banco de dados.
-     *
-     * @return Uma lista de objetos Materia, ordenada pelo nome.
-     */
     public List<Materia> listarTodasMaterias() {
         List<Materia> materias = new ArrayList<>();
         Connection conexao = null;
@@ -170,12 +145,6 @@ public class MateriaDAO {
         return materias;
     }
 
-    /**
-     * Atualiza os dados de uma matéria existente no banco de dados.
-     *
-     * @param materia O objeto Materia com os dados atualizados.
-     * @return true se a atualização foi bem-sucedida, false caso contrário.
-     */
     public boolean atualizarMateria(Materia materia) {
         boolean atualizado = false;
         Connection conexao = null;
@@ -214,12 +183,6 @@ public class MateriaDAO {
         return atualizado;
     }
 
-    /**
-     * Exclui uma matéria do banco de dados pelo seu ID.
-     *
-     * @param idMateria O ID da matéria a ser excluída.
-     * @return true se a exclusão foi bem-sucedida, false caso contrário.
-     */
     public boolean excluirMateria(int idMateria) {
         boolean excluido = false;
         Connection conexao = null;
@@ -256,21 +219,12 @@ public class MateriaDAO {
         return excluido;
     }
 
-    /**
-     * Mapeia uma linha do ResultSet para um objeto Materia.
-     * @param rs O ResultSet contendo os dados da matéria.
-     * @return Um objeto Materia.
-     * @throws SQLException Se ocorrer um erro ao acessar os dados do ResultSet.
-     */
     private Materia mapResultSetToMateria(ResultSet rs) throws SQLException {
         int idMateria = rs.getInt("id_materia");
         String nome = rs.getString("nome");
         return new Materia(idMateria, nome);
     }
 
-    /**
-     * Método utilitário para fechar os recursos JDBC.
-     */
     private void closeResources(Connection conn, PreparedStatement stmt, ResultSet rs) {
         try {
             if (rs != null) rs.close();

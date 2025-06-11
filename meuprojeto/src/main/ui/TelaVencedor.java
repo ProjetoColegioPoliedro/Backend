@@ -10,7 +10,6 @@ public class TelaVencedor extends JFrame{
         var rosa = new Color(238, 33, 82);
         var verde = new Color(0, 228, 11);
 
-        // Configurações básicas da tela JFrame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(2000, 2000); // Tamanho inicial
         setExtendedState(Frame.MAXIMIZED_BOTH); // Maximiza a janela
@@ -20,19 +19,17 @@ public class TelaVencedor extends JFrame{
         corFundo.setBackground(roxo);
         setContentPane(corFundo);
 
-        // Label para a mensagem "Resposta correta"
+        // "Resposta correta"
         var vencedor = new JLabel("VENCEDOR! 👑");
         vencedor.setBounds(580, 40, 500, 120);
         vencedor.setFont(new Font("Montserrat", Font.BOLD, 60));
         vencedor.setForeground(Color.WHITE);
         corFundo.add(vencedor);
-
         var premioFinal = new JLabel("Gênio detectado: 100% de acertos!");
         premioFinal.setBounds(360, 150, 1000, 120);
         premioFinal.setFont(new Font("Montserrat", Font.BOLD, 50));
         premioFinal.setForeground(verde);
         corFundo.add(premioFinal);
-
         var jogarNovamente = new JButton("Jogar novamente");
         jogarNovamente.setFont(new Font("Montserrat", Font.BOLD, 37));
         jogarNovamente.setBackground(rosa);

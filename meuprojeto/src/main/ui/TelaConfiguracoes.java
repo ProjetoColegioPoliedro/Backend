@@ -34,50 +34,6 @@ public class TelaConfiguracoes extends JFrame{
 		configuracoes.setForeground(Color.WHITE);
 		painelMenor.add(configuracoes);
 		
-//		var txtMusica = new JLabel("Música");
-//		txtMusica.setBounds(150, 310, 500, 70);
-//		txtMusica.setFont(new Font("Montserrat", Font.ITALIC, 35));
-//		txtMusica.setForeground(Color.WHITE);
-//		painelMenor.add(txtMusica);
-		
-//		var musica = new JToggleButton();
-//		painelMenor.add(musica);
-//		musica.setSelected(true);
-//		musica.setOpaque(true);
-//		musica.setBounds(280, 335, 60, 30);
-//		musica.addItemListener(new ItemListener() {
-//			@Override
-//			public void itemStateChanged(ItemEvent e) {
-//				if(musica.isSelected()){
-//					musica.setBackground(Color.GREEN);
-//				} else{
-//					musica.setBackground(rosa);
-//				}
-//			}
-//		});
-		
-//		var txtEfeitoSom = new JLabel("Efeito sonoro");
-//		txtEfeitoSom.setBounds(150, 360, 500, 70);
-//		txtEfeitoSom.setFont(new Font("Montserrat", Font.ITALIC, 35));
-//		txtEfeitoSom.setForeground(Color.WHITE);
-//		painelMenor.add(txtEfeitoSom);
-//
-//		var efeitoSonoro = new JToggleButton();
-//		painelMenor.add(efeitoSonoro);
-//		efeitoSonoro.setSelected(true);
-//		efeitoSonoro.setOpaque(true);
-//		efeitoSonoro.setBounds(375, 383, 60, 30);
-//		efeitoSonoro.addItemListener(new ItemListener() {
-//			@Override
-//			public void itemStateChanged(ItemEvent e) {
-//				if(efeitoSonoro.isSelected()){
-//					efeitoSonoro.setBackground(Color.GREEN);
-//				} else{
-//					efeitoSonoro.setBackground(rosa);
-//				}
-//			}
-//		});
-		
 		addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent evento) {
@@ -89,8 +45,7 @@ public class TelaConfiguracoes extends JFrame{
 				int y = (frameHeight - painelMenorHeight) / 2;
 				painelMenor.setLocation(x, y);
 			}
-		});
-		
+		});	
 		// Botões
 		var sair = new JButton("Sair");
 		sair.setFont(new Font("Montserrat", Font.BOLD, 20));
@@ -129,19 +84,6 @@ public class TelaConfiguracoes extends JFrame{
 				dispose();
 			}
 		});
-		
-		// var aMaior = new JLabel("A+");
-		// aMaior.setBounds(20, 20, 500, 70);
-		// aMaior.setFont(new Font("Montserrat", Font.ITALIC, 60));
-		// aMaior.setForeground(Color.WHITE);
-		// corFundo.add(aMaior);
-		
-		// var aMenor = new JLabel("A-");
-		// aMenor.setBounds(20, 80, 500, 70);
-		// aMenor.setFont(new Font("Montserrat", Font.ITALIC, 40));
-		// aMenor.setForeground(Color.WHITE);
-		// corFundo.add(aMenor);
-		
 	}
 }
 

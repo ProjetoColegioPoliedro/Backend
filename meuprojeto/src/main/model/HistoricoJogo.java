@@ -1,4 +1,3 @@
-// Crie este arquivo em: model/HistoricoJogo.java
 package model;
 
 import java.time.LocalDate;

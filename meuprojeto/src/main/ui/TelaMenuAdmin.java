@@ -26,14 +26,12 @@ public class TelaMenuAdmin extends JFrame{
 		ladoEsquerdo.setSize(600, 1000);
 		add(ladoEsquerdo);
 		ladoEsquerdo.setBackground(amarelo);
-		
 		// Adicionando imagens
 		var logoMilhao = new ImageIcon("assets\\logoPrincipal.png");
 		var iconeTelaInicial = logoMilhao.getImage().getScaledInstance(600, 600, Image.SCALE_SMOOTH);
 		var showMilhao = new JLabel(new ImageIcon(iconeTelaInicial));
 		showMilhao.setBounds(-10, -40, 600, 600);
 		ladoEsquerdo.add(showMilhao);
-		
 		var icone = new ImageIcon("assets\\settings.png");
 		var imagem = icone.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
 		var config = new JLabel(new ImageIcon(imagem));
@@ -42,18 +40,16 @@ public class TelaMenuAdmin extends JFrame{
 		config.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e){
-				configs.run(); // abre tela de configuração
+				configs.run();
 				dispose();
 			}
 		});
-		
 		
 		var segundoIcone = new ImageIcon("assets\\poliedroFundoBranco.png");
 		var poliedro = segundoIcone.getImage().getScaledInstance(170, 170, Image.SCALE_SMOOTH);
 		var imagemPoliedro = new JLabel(new ImageIcon(poliedro));
 		ladoEsquerdo.add(imagemPoliedro);
 		imagemPoliedro.setBounds(400, 600, 170, 170);
-		
 		// botões
 		var jogar = new JButton("Jogar");
 		ladoDireito.add(jogar);
@@ -67,7 +63,6 @@ public class TelaMenuAdmin extends JFrame{
 				dispose();
 			}
 		});
-		
 		var histJogo = new JButton("Histórico de jogo");
 		ladoDireito.add(histJogo);
 		histJogo.setFont(new Font("Montserrat", Font.BOLD, 25));
@@ -80,7 +75,6 @@ public class TelaMenuAdmin extends JFrame{
 				dispose();
 			}
 		});
-		
 		var areaRestrita = new JButton("Configurações especiais");
 		ladoDireito.add(areaRestrita);
 		areaRestrita.setFont(new Font("Montserrat", Font.BOLD, 25));

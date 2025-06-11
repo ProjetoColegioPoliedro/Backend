@@ -27,36 +27,28 @@ public class Professor { // Ou Administrador
 
     // Getters e Setters 
     public int getIdProfessor() {
-        return idProfessor;
-    }
+        return idProfessor;}
 
     public void setIdProfessor(int idProfessor) {
-        this.idProfessor = idProfessor;
-    }
+        this.idProfessor = idProfessor;}
 
     public String getNome() {
-        return nome;
-    }
+        return nome;}
 
     public void setNome(String nome) {
-        this.nome = nome;
-    }
+        this.nome = nome;}
 
     public String getLoginProfessor() {
-        return loginProfessor;
-    }
+        return loginProfessor;}
 
     public void setLoginProfessor(String loginProfessor) {
-        this.loginProfessor = loginProfessor;
-    }
+        this.loginProfessor = loginProfessor;}
 
     public String getSenha() {
-        return senha;
-    }
+        return senha;}
 
     public void setSenha(String senha) {
-        this.senha = senha;
-    }
+        this.senha = senha;}
 
     @Override
     public String toString() {

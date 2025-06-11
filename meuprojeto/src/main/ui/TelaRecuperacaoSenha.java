@@ -100,7 +100,6 @@ public class TelaRecuperacaoSenha extends JFrame{
 		     }
 		 });
 		
-		
 		// Dimensionamento
 		addComponentListener(new ComponentAdapter() {
 			@Override
@@ -112,17 +111,7 @@ public class TelaRecuperacaoSenha extends JFrame{
 				int x = (frameWidth - painelMenorWidth) / 2;
 				int y = (frameHeight - painelMenorHeight) / 2;
 				painelMenor.setLocation(x, y);
-				
-				// int margemDireita = 30;
-				// int margemSuperior = 20;
-				// config.setBounds(
-				// frameWidth - 60 - margemDireita,
-				// margemSuperior,
-				// 60, 60);
 			}
-		});
-		
-	
-		
+		});		
 	}
 }

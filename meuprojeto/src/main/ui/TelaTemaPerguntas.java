@@ -3,9 +3,14 @@ package ui;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+import java.util.ArrayList; 
+import java.util.List;      
+import java.util.function.Consumer; 
 
-public class TelaTemaPerguntas extends JFrame{
-    public TelaTemaPerguntas(Runnable voltaUltimaTela, Runnable partida){
+public class TelaTemaPerguntas extends JFrame {
+
+    
+    public TelaTemaPerguntas(Runnable voltaUltimaTela, Consumer<List<String>> partida) {
 
         var rosa = new Color(238, 33, 82);
         var roxo = new Color(20, 14, 40);
@@ -35,7 +40,7 @@ public class TelaTemaPerguntas extends JFrame{
         temaPerguntas.setForeground(Color.BLACK);
         painelMenor.add(temaPerguntas);
 
-        // Caixa de seleção 
+        // Caixa de seleção
         var portugues = new JCheckBox();
         painelMenor.add(portugues);
         portugues.setBounds(250, 105, 50, 50);
@@ -43,13 +48,11 @@ public class TelaTemaPerguntas extends JFrame{
         portugues.setSelected(true);
         portugues.setIcon(xIcon);
         portugues.setSelectedIcon(check);
-
         var txtPort = new JLabel("Português");
         painelMenor.add(txtPort);
         txtPort.setFont(new Font("Montserrat", Font.ITALIC, 40));
         txtPort.setForeground(Color.BLACK);
         txtPort.setBounds(65, 95, 300, 60);
-
         var matematica = new JCheckBox();
         painelMenor.add(matematica);
         matematica.setBounds(273, 202, 50, 50);
@@ -57,13 +60,11 @@ public class TelaTemaPerguntas extends JFrame{
         matematica.setSelected(true);
         matematica.setIcon(xIcon);
         matematica.setSelectedIcon(check);
-
         var txtMat = new JLabel("Matemática");
         painelMenor.add(txtMat);
         txtMat.setFont(new Font("Montserrat", Font.ITALIC, 40));
         txtMat.setForeground(Color.BLACK);
         txtMat.setBounds(65, 190, 300, 60);
-
         var ingles = new JCheckBox("Inglês");
         painelMenor.add(ingles);
         ingles.setBounds(174, 295, 50, 50);
@@ -71,13 +72,11 @@ public class TelaTemaPerguntas extends JFrame{
         ingles.setSelected(true);
         ingles.setIcon(xIcon);
         ingles.setSelectedIcon(check);
-
         var txtIng = new JLabel("Inglês");
         painelMenor.add(txtIng);
         txtIng.setFont(new Font("Montserrat", Font.ITALIC, 40));
         txtIng.setForeground(Color.BLACK);
         txtIng.setBounds(65, 285, 300, 60);
-
         var cNatureza = new JCheckBox();
         painelMenor.add(cNatureza);
         cNatureza.setBounds(445, 390, 50, 50);
@@ -85,13 +84,11 @@ public class TelaTemaPerguntas extends JFrame{
         cNatureza.setSelected(true);
         cNatureza.setIcon(xIcon);
         cNatureza.setSelectedIcon(check);
-
         var txtCNa = new JLabel("Ciências da Natureza");
         painelMenor.add(txtCNa);
         txtCNa.setFont(new Font("Montserrat", Font.ITALIC, 40));
         txtCNa.setForeground(Color.BLACK);
         txtCNa.setBounds(65, 380, 400, 60);
-
         var cHumanas = new JCheckBox();
         painelMenor.add(cHumanas);
         cHumanas.setBounds(400, 485, 50, 50);
@@ -99,34 +96,33 @@ public class TelaTemaPerguntas extends JFrame{
         cHumanas.setSelected(true);
         cHumanas.setIcon(xIcon);
         cHumanas.setSelectedIcon(check);
-
         var txtChu = new JLabel("Ciências Humanas");
         painelMenor.add(txtChu);
         txtChu.setFont(new Font("Montserrat", Font.ITALIC, 40));
         txtChu.setForeground(Color.BLACK);
         txtChu.setBounds(65, 475, 400, 60);
-
-//        var icone = new ImageIcon("C:/Users/Admin/Downloads/Refatoracao/src/main/assets/settings.png");
-//        var image = icone.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
-//        var config = new JLabel(new ImageIcon(image));
-//        fundoTela.add(config);
-//        config.setBounds(1460, 20, 60, 60);
-//        config.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseClicked(MouseEvent e){
-//                configs.run();
-//            }
-//        });
-
         var iPartida = new JButton("Iniciar partida");
         iPartida.setFont(new Font("Montserrat", Font.BOLD, 20));
         iPartida.setForeground(Color.BLACK);
         iPartida.setBackground(rosa);
         painelMenor.add(iPartida);
         iPartida.setBounds(1170, 560, 200, 60);
+
+       
         iPartida.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                partida.run();
+            public void actionPerformed(ActionEvent e) {
+                //Cria uma lista para guardar os temas selecionados
+                List<String> temasSelecionados = new ArrayList<>();
+                if (portugues.isSelected()) temasSelecionados.add("Português");
+                if (matematica.isSelected()) temasSelecionados.add("Matemática");
+                if (ingles.isSelected()) temasSelecionados.add("Inglês");
+                if (cNatureza.isSelected()) temasSelecionados.add("Ciências da Natureza");
+                if (cHumanas.isSelected()) temasSelecionados.add("Ciências Humanas");
+                if (temasSelecionados.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Por favor, selecione ao menos uma matéria para iniciar.", "Nenhuma Matéria Selecionada", JOptionPane.WARNING_MESSAGE);
+                    return; 
+                }
+                partida.accept(temasSelecionados);
                 dispose();
             }
         });
@@ -144,6 +140,4 @@ public class TelaTemaPerguntas extends JFrame{
             }
         });
     }
-
-
 }

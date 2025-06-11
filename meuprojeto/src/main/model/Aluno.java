@@ -7,9 +7,7 @@ public class Aluno {
     private String senha; // Corresponde a senha
     private int anoLetivo; // Corresponde a ano_letivo
 
-    // Construtor padrão
-    public Aluno() {
-    }
+    public Aluno() {}
 
     // Construtor completo
     public Aluno(int idAluno, String nome, String loginAluno, String senha, int anoLetivo) {
@@ -29,44 +27,34 @@ public class Aluno {
 
     // Getters e Setters 
     public int getIdAluno() {
-        return idAluno;
-    }
+        return idAluno;}
 
     public void setIdAluno(int idAluno) {
-        this.idAluno = idAluno;
-    }
+        this.idAluno = idAluno;}
 
     public String getNome() {
-        return nome;
-    }
+        return nome;}
 
     public void setNome(String nome) {
-        this.nome = nome;
-    }
+        this.nome = nome;}
 
     public String getLoginAluno() {
-        return loginAluno;
-    }
+        return loginAluno;}
 
     public void setLoginAluno(String loginAluno) {
-        this.loginAluno = loginAluno;
-    }
+        this.loginAluno = loginAluno;}
 
     public String getSenha() {
-        return senha;
-    }
+        return senha;}
 
     public void setSenha(String senha) {
-        this.senha = senha;
-    }
+        this.senha = senha;}
 
     public int getAnoLetivo() {
-        return anoLetivo;
-    }
+        return anoLetivo;}
 
     public void setAnoLetivo(int anoLetivo) {
-        this.anoLetivo = anoLetivo;
-    }
+        this.anoLetivo = anoLetivo;}
 
     @Override
     public String toString() {

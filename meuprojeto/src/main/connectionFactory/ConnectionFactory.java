@@ -11,23 +11,17 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public class ConnectionFactory {
-    private static String host; // Tornar static para uso no método static
-    private static String port; // Tornar static para uso no método static
-    private static String db;   // Tornar static para uso no método static
-    private static String user; // Tornar static para uso no método static
-    private static String password; // Tornar static para uso no método static
-    private static String sslMode; // Tornar static para uso no método static
-    private static String serverTimezone; // Tornar static para uso no método static
+    private static String host; 
+    private static String port; 
+    private static String db;   
+    private static String user; 
+    private static String password; 
+    private static String sslMode; 
+    private static String serverTimezone; 
 
-    // Um flag para garantir que as propriedades sejam carregadas apenas uma vez
     private static boolean propertiesLoaded = false;
 
-    // Construtor privado para evitar instâncias desnecessárias se tudo for static
-    private ConnectionFactory() {
-        // Nada aqui, pois o carregamento das propriedades será feito no método static
-    }
-
-    // NOVO MÉTODO PARA CARREGAR PROPRIEDADES (CHAMADO APENAS UMA VEZ)
+    private ConnectionFactory() {}
     private static void loadProperties() throws IOException {
         if (!propertiesLoaded) {
             Properties props = new Properties();
@@ -42,18 +36,15 @@ public class ConnectionFactory {
             password = props.getProperty("db.password");
             sslMode = props.getProperty("db.sslMode", "REQUIRED");
             serverTimezone = props.getProperty("db.serverTimezone", "UTC");
-            propertiesLoaded = true; // Marca que as propriedades foram carregadas
+            propertiesLoaded = true; 
         }
     }
-
-   
     public static Connection getConnection() throws SQLException {
         try {
-            loadProperties(); // Garante que as propriedades sejam carregadas
+            loadProperties(); 
         } catch (IOException e) {
             throw new SQLException("Não foi possível carregar as configurações do banco de dados.", e);
         }
-
         String url = String.format("jdbc:mysql://%s:%s/%s?sslMode=%s&serverTimezone=%s",
                 host,
                 port,
@@ -68,9 +59,6 @@ public class ConnectionFactory {
         }
         return DriverManager.getConnection(url, user, password);
     }
-
-    // Os métodos fecharConexao() permanecem os mesmos, mas podem ser chamados com ConnectionFactory.fecharConexao(...)
-
     public static void fecharConexao(Connection conn) {
         if (conn != null) {
             try {
@@ -82,7 +70,6 @@ public class ConnectionFactory {
             }
         }
     }
-
     public static void fecharConexao(Connection conn, PreparedStatement stmt) {
         if (stmt != null) {
             try {
@@ -93,7 +80,6 @@ public class ConnectionFactory {
         }
         fecharConexao(conn);
     }
-
     public static void fecharConexao(Connection conn, PreparedStatement stmt, ResultSet rs) {
         if (rs != null) {
             try {
@@ -104,7 +90,6 @@ public class ConnectionFactory {
         }
         fecharConexao(conn, stmt);
     }
-
     public static void main(String[] args) {
         Connection conexao = null;
         Scanner userInputScanner = null;
@@ -113,7 +98,7 @@ public class ConnectionFactory {
             System.out.println("Tentando carregar configurações de config.properties...");
             
             System.out.println("Configurações carregadas. Tentando obter conexão...");
-            conexao = ConnectionFactory.getConnection(); // Chama o método static
+            conexao = ConnectionFactory.getConnection(); 
 
             if (conexao != null && !conexao.isClosed()) {
                 System.out.println("SUCESSO: Conectado ao banco de dados!");
@@ -130,11 +115,11 @@ public class ConnectionFactory {
             } else {
                 System.out.println("FALHA: Não conectou (conexão nula ou já fechada).");
             }
-        } catch (SQLException e) { // Captura SQLException diretamente agora
+        } catch (SQLException e) { 
             System.err.println("ERRO AO CONECTAR: Falha ao obter conexão com o banco de dados.");
             System.err.println("Detalhes da SQLException: " + e.getMessage());
             e.printStackTrace();
-        } catch (Exception e) { // Captura outras exceções genéricas
+        } catch (Exception e) { 
             System.err.println("ERRO INESPERADO: Ocorreu um erro não previsto.");
             System.err.println("Detalhes: " + e.getMessage());
             e.printStackTrace();

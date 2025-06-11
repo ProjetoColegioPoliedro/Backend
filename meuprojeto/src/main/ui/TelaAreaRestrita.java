@@ -5,7 +5,6 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class TelaAreaRestrita extends JFrame {
-    // Construtor com 5 parâmetros Runnable, sem 'telaEditaQuest'
     public TelaAreaRestrita(Runnable telaMenuAdmin, Runnable configs,
                             Runnable telaAdicionaquest, Runnable telaConsRank, Runnable telaCadastro) {
         var cinza = new Color(217, 217, 217);
@@ -45,11 +44,9 @@ public class TelaAreaRestrita extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e){
                 configs.run(); // Executa o Runnable de configurações
-                dispose(); // Fecha a tela atual
+                dispose(); 
             }
         });
-
-        // Ajuste das dimensões do painel branco para centralização ao redimensionar a janela
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent evento) {
@@ -61,8 +58,7 @@ public class TelaAreaRestrita extends JFrame {
                 int y = (frameHeight - painelBrancoHeight) / 2;
                 painelBranco.setLocation(x, y);
             }
-        });
-        
+        });       
         var addPergunta = new JButton("Adicionar pergunta");
         painelBranco.add(addPergunta);
         addPergunta.setBounds(125, 120, 250, 70); 
@@ -74,9 +70,7 @@ public class TelaAreaRestrita extends JFrame {
                 telaAdicionaquest.run(); 
                 dispose();
             }
-        });
-
-        
+        });       
         var conRank = new JButton("Consultar ranking");
         painelBranco.add(conRank);
         conRank.setFont(new Font("Montserrat", Font.BOLD, 18));
@@ -88,9 +82,7 @@ public class TelaAreaRestrita extends JFrame {
                 telaConsRank.run(); 
                 dispose();
             }
-        });
-
-        
+        });       
         var cadAluno = new JButton("Cadastrar aluno");
         painelBranco.add(cadAluno);
         cadAluno.setFont(new Font("Montserrat", Font.BOLD, 18));
@@ -103,7 +95,6 @@ public class TelaAreaRestrita extends JFrame {
                 dispose();
             }
         });
-
         var voltar = new JButton("Voltar");
         painelBranco.add(voltar);
         voltar.setFont(new Font("Montserrat", Font.PLAIN, 18));

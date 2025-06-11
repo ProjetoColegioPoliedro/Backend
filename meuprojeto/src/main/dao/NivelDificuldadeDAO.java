@@ -1,7 +1,7 @@
 package dao;
 
-import model.NivelDificuldade; // Importa a classe NivelDificuldade do seu pacote model
-import connectionFactory.ConnectionFactory; // Importa sua classe de conexão
+import model.NivelDificuldade; 
+import connectionFactory.ConnectionFactory; 
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,7 +14,6 @@ import java.util.List;
 public class NivelDificuldadeDAO {
 
     // SQL para inserir um novo nível de dificuldade
-    // Assumindo que id_nivel é auto-incrementável no banco
     private static final String INSERIR_NIVEL_SQL = "INSERT INTO nivel_dificuldade (descricao) VALUES (?);";
     // SQL para selecionar um nível pelo ID
     private static final String SELECIONAR_NIVEL_POR_ID_SQL = "SELECT id_nivel, descricao FROM nivel_dificuldade WHERE id_nivel = ?;";
@@ -27,12 +26,6 @@ public class NivelDificuldadeDAO {
     // SQL para atualizar os dados de um nível
     private static final String ATUALIZAR_NIVEL_SQL = "UPDATE nivel_dificuldade SET descricao = ? WHERE id_nivel = ?;";
 
-    /**
-     * Insere um novo nível de dificuldade no banco de dados.
-     *
-     * @param nivel O objeto NivelDificuldade a ser inserido.
-     * @return O ID do nível inserido, ou -1 em caso de falha.
-     */
     public int inserirNivelDificuldade(NivelDificuldade nivel) {
         int idGerado = -1;
         Connection conexao = null;
@@ -64,7 +57,7 @@ public class NivelDificuldadeDAO {
             }
 
         } catch (SQLException e) {
-            if (e.getSQLState().startsWith("23")) { // Códigos de erro SQL para violação de constraint (ex: UNIQUE)
+            if (e.getSQLState().startsWith("23")) {
                  System.err.println("Erro SQL: Nível de dificuldade com a descrição '" + nivel.getDescricao() + "' já existe. " + e.getMessage());
             } else {
                 System.err.println("Erro SQL ao inserir nível de dificuldade: " + e.getMessage());
@@ -76,12 +69,6 @@ public class NivelDificuldadeDAO {
         return idGerado;
     }
 
-    /**
-     * Busca um nível de dificuldade pelo seu ID.
-     *
-     * @param idNivel O ID do nível a ser buscado.
-     * @return Um objeto NivelDificuldade se encontrado, caso contrário null.
-     */
     public NivelDificuldade buscarNivelDificuldadePorId(int idNivel) {
         NivelDificuldade nivel = null;
         Connection conexao = null;
@@ -106,12 +93,6 @@ public class NivelDificuldadeDAO {
         return nivel;
     }
 
-    /**
-     * Busca um nível de dificuldade pela sua descrição.
-     *
-     * @param descricao A descrição do nível a ser buscado.
-     * @return Um objeto NivelDificuldade se encontrado, caso contrário null.
-     */
     public NivelDificuldade buscarNivelDificuldadePorDescricao(String descricao) {
         NivelDificuldade nivel = null;
         Connection conexao = null;
@@ -141,11 +122,6 @@ public class NivelDificuldadeDAO {
         return nivel;
     }
 
-    /**
-     * Lista todos os níveis de dificuldade cadastrados.
-     *
-     * @return Uma lista de objetos NivelDificuldade.
-     */
     public List<NivelDificuldade> listarTodosNiveisDificuldade() {
         List<NivelDificuldade> niveis = new ArrayList<>();
         Connection conexao = null;
@@ -169,12 +145,6 @@ public class NivelDificuldadeDAO {
         return niveis;
     }
 
-    /**
-     * Atualiza os dados de um nível de dificuldade existente.
-     *
-     * @param nivel O objeto NivelDificuldade com os dados atualizados.
-     * @return true se a atualização foi bem-sucedida, false caso contrário.
-     */
     public boolean atualizarNivelDificuldade(NivelDificuldade nivel) {
         boolean atualizado = false;
         Connection conexao = null;
@@ -213,12 +183,6 @@ public class NivelDificuldadeDAO {
         return atualizado;
     }
 
-    /**
-     * Exclui um nível de dificuldade do banco de dados pelo seu ID.
-     *
-     * @param idNivel O ID do nível a ser excluído.
-     * @return true se a exclusão foi bem-sucedida, false caso contrário.
-     */
     public boolean excluirNivelDificuldade(int idNivel) {
         boolean excluido = false;
         Connection conexao = null;
@@ -254,18 +218,12 @@ public class NivelDificuldadeDAO {
         return excluido;
     }
 
-    /**
-     * Mapeia uma linha do ResultSet para um objeto NivelDificuldade.
-     */
     private NivelDificuldade mapResultSetToNivelDificuldade(ResultSet rs) throws SQLException {
         int idNivel = rs.getInt("id_nivel");
         String descricao = rs.getString("descricao");
         return new NivelDificuldade(idNivel, descricao);
     }
 
-    /**
-     * Método utilitário para fechar os recursos JDBC.
-     */
     private void closeResources(Connection conn, PreparedStatement stmt, ResultSet rs) {
         try {
             if (rs != null) rs.close();

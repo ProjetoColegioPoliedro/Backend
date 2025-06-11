@@ -1,21 +1,19 @@
 package dao;
-import model.HistoricoJogo; // Importa a classe HistoricoJogo do seu pacote model
-import connectionFactory.ConnectionFactory; // Importa sua classe de conexão
-
+import model.HistoricoJogo; 
+import connectionFactory.ConnectionFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Date; // Import para java.sql.Date
-import java.time.LocalDate; // Import para java.time.LocalDate
+import java.sql.Date; 
+import java.time.LocalDate; 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HistoricoJogoDAO {
 
     // SQL para inserir um novo histórico de jogo
-    // Assumindo que id_historico é auto-incrementável no banco
     private static final String INSERIR_HISTORICO_SQL = "INSERT INTO historico_jogo (data_partida, acertos, erros, checkpoint_alcancado, pontuacao_total, id_aluno) VALUES (?, ?, ?, ?, ?, ?);";
     // SQL para selecionar um histórico pelo ID
     private static final String SELECIONAR_HISTORICO_POR_ID_SQL = "SELECT id_historico, data_partida, acertos, erros, checkpoint_alcancado, pontuacao_total, id_aluno FROM historico_jogo WHERE id_historico = ?;";
@@ -28,12 +26,6 @@ public class HistoricoJogoDAO {
     // SQL para atualizar os dados de um histórico
     private static final String ATUALIZAR_HISTORICO_SQL = "UPDATE historico_jogo SET data_partida = ?, acertos = ?, erros = ?, checkpoint_alcancado = ?, pontuacao_total = ?, id_aluno = ? WHERE id_historico = ?;";
 
-    /**
-     * Insere um novo registro de histórico de jogo no banco de dados.
-     *
-     * @param historico O objeto HistoricoJogo a ser inserido.
-     * @return O ID do histórico inserido, ou -1 em caso de falha.
-     */
     public int inserirHistoricoJogo(HistoricoJogo historico) {
         int idGerado = -1;
         Connection conexao = null;
@@ -49,7 +41,7 @@ public class HistoricoJogoDAO {
             conexao = ConnectionFactory.getConnection();
             pstmt = conexao.prepareStatement(INSERIR_HISTORICO_SQL, Statement.RETURN_GENERATED_KEYS);
 
-            pstmt.setDate(1, Date.valueOf(historico.getDataPartida())); // Converte LocalDate para java.sql.Date
+            pstmt.setDate(1, Date.valueOf(historico.getDataPartida()));
             pstmt.setInt(2, historico.getAcertos());
             pstmt.setInt(3, historico.getErros());
             pstmt.setString(4, historico.getCheckpointAlcancado());
@@ -78,12 +70,6 @@ public class HistoricoJogoDAO {
         return idGerado;
     }
 
-    /**
-     * Busca um histórico de jogo pelo seu ID.
-     *
-     * @param idHistorico O ID do histórico a ser buscado.
-     * @return Um objeto HistoricoJogo se encontrado, caso contrário null.
-     */
     public HistoricoJogo buscarHistoricoJogoPorId(int idHistorico) {
         HistoricoJogo historico = null;
         Connection conexao = null;
@@ -108,11 +94,6 @@ public class HistoricoJogoDAO {
         return historico;
     }
 
-    /**
-     * Lista todos os históricos de jogos cadastrados.
-     *
-     * @return Uma lista de objetos HistoricoJogo.
-     */
     public List<HistoricoJogo> listarTodosHistoricosJogo() {
         List<HistoricoJogo> historicos = new ArrayList<>();
         Connection conexao = null;
@@ -136,12 +117,6 @@ public class HistoricoJogoDAO {
         return historicos;
     }
 
-    /**
-     * Lista todos os históricos de jogos de um aluno específico.
-     *
-     * @param idAluno O ID do aluno.
-     * @return Uma lista de objetos HistoricoJogo para o aluno especificado.
-     */
     public List<HistoricoJogo> listarHistoricosJogoPorAluno(int idAluno) {
         List<HistoricoJogo> historicos = new ArrayList<>();
         Connection conexao = null;
@@ -166,13 +141,6 @@ public class HistoricoJogoDAO {
         return historicos;
     }
 
-
-    /**
-     * Atualiza os dados de um histórico de jogo existente.
-     *
-     * @param historico O objeto HistoricoJogo com os dados atualizados.
-     * @return true se a atualização foi bem-sucedida, false caso contrário.
-     */
     public boolean atualizarHistoricoJogo(HistoricoJogo historico) {
         boolean atualizado = false;
         Connection conexao = null;
@@ -211,13 +179,6 @@ public class HistoricoJogoDAO {
         }
         return atualizado;
     }
-
-    /**
-     * Exclui um histórico de jogo do banco de dados pelo seu ID.
-     *
-     * @param idHistorico O ID do histórico a ser excluído.
-     * @return true se a exclusão foi bem-sucedida, false caso contrário.
-     */
     public boolean excluirHistoricoJogo(int idHistorico) {
         boolean excluido = false;
         Connection conexao = null;
@@ -250,12 +211,6 @@ public class HistoricoJogoDAO {
         return excluido;
     }
 
-    /**
-     * Mapeia uma linha do ResultSet para um objeto HistoricoJogo.
-     * @param rs O ResultSet contendo os dados do histórico.
-     * @return Um objeto HistoricoJogo.
-     * @throws SQLException Se ocorrer um erro ao acessar os dados do ResultSet.
-     */
     private HistoricoJogo mapResultSetToHistoricoJogo(ResultSet rs) throws SQLException {
         int idHistorico = rs.getInt("id_historico");
         LocalDate dataPartida = rs.getDate("data_partida").toLocalDate(); // Converte java.sql.Date para LocalDate
@@ -267,9 +222,6 @@ public class HistoricoJogoDAO {
         return new HistoricoJogo(idHistorico, dataPartida, acertos, erros, checkpointAlcancado, pontuacaoTotal, idAluno);
     }
 
-    /**
-     * Método utilitário para fechar os recursos JDBC.
-     */
     private void closeResources(Connection conn, PreparedStatement stmt, ResultSet rs) {
         try {
             if (rs != null) rs.close();

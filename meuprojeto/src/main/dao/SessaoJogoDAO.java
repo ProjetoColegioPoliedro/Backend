@@ -1,16 +1,15 @@
 package dao;
 
-import model.SessaoJogo; // Importa a classe SessaoJogo do seu pacote model
-import connectionFactory.ConnectionFactory; // Importa sua classe de conexão
-
+import model.SessaoJogo; 
+import connectionFactory.ConnectionFactory; 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp; // Import para java.sql.Timestamp
-import java.sql.Types;     // Import para java.sql.Types para lidar com NULLs
-import java.time.LocalDateTime; // Import para java.time.LocalDateTime
+import java.sql.Timestamp; 
+import java.sql.Types;    
+import java.time.LocalDateTime; 
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,13 +26,6 @@ public class SessaoJogoDAO {
     // SQL para atualizar os dados de uma sessão (ex: para registrar data_fim e pontuacao_total)
     private static final String ATUALIZAR_SESSAO_SQL = "UPDATE sessao_jogo SET data_inicio = ?, data_fim = ?, modo_pratica = ?, pontuacao_total = ?, id_aluno = ? WHERE id_sessao = ?;";
 
-    /**
-     * Insere uma nova sessão de jogo no banco de dados.
-     * dataFim pode ser null se a sessão ainda estiver ativa.
-     *
-     * @param sessao O objeto SessaoJogo a ser inserido.
-     * @return O ID da sessão inserida, ou -1 em caso de falha.
-     */
     public int inserirSessaoJogo(SessaoJogo sessao) {
         int idGerado = -1;
         Connection conexao = null;
@@ -80,13 +72,6 @@ public class SessaoJogoDAO {
         }
         return idGerado;
     }
-
-    /**
-     * Atualiza uma sessão de jogo existente, útil para registrar data_fim e pontuacao_total.
-     *
-     * @param sessao O objeto SessaoJogo com os dados atualizados (deve ter idSessao preenchido).
-     * @return true se a atualização foi bem-sucedida, false caso contrário.
-     */
     public boolean atualizarSessaoJogo(SessaoJogo sessao) {
         boolean atualizado = false;
         Connection conexao = null;
@@ -128,13 +113,6 @@ public class SessaoJogoDAO {
         }
         return atualizado;
     }
-    
-    /**
-     * Busca uma sessão de jogo pelo seu ID.
-     *
-     * @param idSessao O ID da sessão.
-     * @return Um objeto SessaoJogo se encontrado, caso contrário null.
-     */
     public SessaoJogo buscarSessaoJogoPorId(int idSessao) {
         SessaoJogo sessao = null;
         Connection conexao = null;
@@ -156,15 +134,7 @@ public class SessaoJogoDAO {
         } finally {
             closeResources(conexao, pstmt, rs);
         }
-        return sessao;
-    }
-
-    /**
-     * Lista todas as sessões de jogo de um aluno específico.
-     *
-     * @param idAluno O ID do aluno.
-     * @return Uma lista de objetos SessaoJogo.
-     */
+        return sessao;}
     public List<SessaoJogo> listarSessoesJogoPorAluno(int idAluno) {
         List<SessaoJogo> sessoes = new ArrayList<>();
         Connection conexao = null;
@@ -184,17 +154,10 @@ public class SessaoJogoDAO {
             System.err.println("Erro SQL ao listar sessões de jogo por aluno: " + e.getMessage());
             e.printStackTrace();
         } finally {
-            closeResources(conexao, pstmt, rs);
-        }
+            closeResources(conexao, pstmt, rs);}
         return sessoes;
     }
 
-    /**
-     * Exclui uma sessão de jogo pelo seu ID.
-     *
-     * @param idSessao O ID da sessão a ser excluída.
-     * @return true se a exclusão foi bem-sucedida, false caso contrário.
-     */
     public boolean excluirSessaoJogo(int idSessao) {
         boolean excluido = false;
         Connection conexao = null;
@@ -226,9 +189,6 @@ public class SessaoJogoDAO {
         return excluido;
     }
 
-    /**
-     * Mapeia uma linha do ResultSet para um objeto SessaoJogo.
-     */
     private SessaoJogo mapResultSetToSessaoJogo(ResultSet rs) throws SQLException {
         int idSessao = rs.getInt("id_sessao");
         LocalDateTime dataInicio = rs.getTimestamp("data_inicio").toLocalDateTime();
@@ -242,10 +202,6 @@ public class SessaoJogoDAO {
         
         return new SessaoJogo(idSessao, dataInicio, dataFim, modoPratica, pontuacaoTotal, idAluno);
     }
-
-    /**
-     * Método utilitário para fechar os recursos JDBC.
-     */
     private void closeResources(Connection conn, PreparedStatement stmt, ResultSet rs) {
         try {
             if (rs != null) rs.close();

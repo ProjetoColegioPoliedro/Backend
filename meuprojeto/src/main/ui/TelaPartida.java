@@ -90,6 +90,11 @@ public class TelaPartida extends JFrame {
         carregarQuestaoNaTela(this.questaoAtual);
     }
 
+    public TelaPartida(Questao questao, Runnable acaoAoPular, Runnable respostaCorretaAction,
+            Runnable respostaIncorretaAction, Runnable configsAction, Object pararJogoAction) {
+        //TODO Auto-generated constructor stub
+    }
+
     // Método auxiliar para configurar e adicionar JLabels de resposta
     private void configuraLabelResposta(JLabel label, JPanel parentPanel, int x, int y, Color borderColor, Runnable respostaCorretaAction, Runnable respostaIncorretaAction) {
         label.setBounds(x, y, 1000, 80);

@@ -4,8 +4,7 @@ public class Materia {
     private int idMateria; // Corresponde a id_materia (PK)
     private String nome; // Corresponde a nome
 
-    public Materia() {
-    }
+    public Materia() {}
 
     public Materia(int idMateria, String nome) {
         this.idMateria = idMateria;

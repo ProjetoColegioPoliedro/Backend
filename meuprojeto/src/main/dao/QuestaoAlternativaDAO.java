@@ -26,16 +26,7 @@ public class QuestaoAlternativaDAO {
     private static final String ATUALIZAR_QA_SQL = "UPDATE questao_alternativa SET id_questao = ?, id_alternativa = ?, correta = ? WHERE id_qa = ?;";
     private static final String DESMARCAR_CORRETAS_POR_QUESTAO_SQL = "UPDATE questao_alternativa SET correta = FALSE WHERE id_questao = ?;";
 
-
-    /**
-     * Adiciona uma nova associação entre Questão e Alternativa.
-     * Renomeado de 'inserirQuestaoAlternativa' para 'adicionarQuestaoAlternativa' e adicionado throws SQLException.
-     *
-     * @param qa O objeto QuestaoAlternativa a ser inserido.
-     * @return O ID da associação inserida (id_qa), ou -1 em caso de falha.
-     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
-     */
-    public int adicionarQuestaoAlternativa(QuestaoAlternativa qa) throws SQLException { // <-- Nome e throws ajustados
+    public int adicionarQuestaoAlternativa(QuestaoAlternativa qa) throws SQLException { 
         int idGerado = -1;
         Connection conexao = null;
         PreparedStatement pstmt = null;
@@ -48,12 +39,9 @@ public class QuestaoAlternativaDAO {
 
         try {
             conexao = ConnectionFactory.getConnection();
-            
-            // Se esta associação está marcando a alternativa como correta, e só pode haver uma correta por questão,
-            // desmarcamos as outras ANTES de inserir/atualizar esta.
-            // É importante fazer isso *antes* de inserir a nova para evitar ter múltiplas corretas momentaneamente.
+
             if (qa.isCorreta()) {
-                desmarcarCorretasParaQuestao(conexao, qa.getIdQuestao()); // Passa a conexão interna
+                desmarcarCorretasParaQuestao(conexao, qa.getIdQuestao());
             }
 
             pstmt = conexao.prepareStatement(INSERIR_QA_SQL, Statement.RETURN_GENERATED_KEYS);
@@ -75,21 +63,13 @@ public class QuestaoAlternativaDAO {
                 System.err.println("Nenhuma linha afetada ao inserir associação Questão-Alternativa.");
             }
 
-        } finally { // O try-catch foi removido daqui
+        } finally { 
             closeResources(conexao, pstmt, rs);
         }
         return idGerado;
     }
 
-    /**
-     * Desmarca todas as alternativas como corretas para uma determinada questão.
-     * Este método é private e aceita uma Connection, sendo usado internamente para transações.
-     *
-     * @param conexao A conexão JDBC a ser usada (não será fechada por este método).
-     * @param idQuestao O ID da questão.
-     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
-     */
-    private void desmarcarCorretasParaQuestao(Connection conexao, int idQuestao) throws SQLException { // <-- Alterado para private e exige Connection
+    private void desmarcarCorretasParaQuestao(Connection conexao, int idQuestao) throws SQLException { 
         PreparedStatement pstmtInterno = null;
         try {
             pstmtInterno = conexao.prepareStatement(DESMARCAR_CORRETAS_POR_QUESTAO_SQL);
@@ -99,7 +79,6 @@ public class QuestaoAlternativaDAO {
                 System.out.println(linhasAfetadas + " alternativa(s) desmarcada(s) como correta(s) para a questão ID: " + idQuestao + " (transação).");
             }
         } finally {
-            // NÃO FECHAR A CONEXÃO AQUI! Ela veio de fora.
             try {
                 if (pstmtInterno != null) pstmtInterno.close();
             } catch (SQLException ex) {
@@ -109,13 +88,6 @@ public class QuestaoAlternativaDAO {
         }
     }
 
-
-    /**
-     * Busca uma associação QuestaoAlternativa pelo seu ID (id_qa).
-     *
-     * @param idQa O ID da associação.
-     * @return Um objeto QuestaoAlternativa se encontrado, caso contrário null.
-     */
     public QuestaoAlternativa buscarPorIdQa(int idQa) {
         QuestaoAlternativa qa = null;
         Connection conexao = null;
@@ -139,13 +111,6 @@ public class QuestaoAlternativaDAO {
         }
         return qa;
     }
-
-    /**
-     * Lista todas as associações de alternativas para uma questão específica.
-     *
-     * @param idQuestao O ID da questão.
-     * @return Uma lista de objetos QuestaoAlternativa.
-     */
     public List<QuestaoAlternativa> buscarAlternativasPorQuestao(int idQuestao) {
         List<QuestaoAlternativa> listaQa = new ArrayList<>();
         Connection conexao = null;
@@ -169,14 +134,6 @@ public class QuestaoAlternativaDAO {
         }
         return listaQa;
     }
-
-    /**
-     * Busca a(s) associação(ões) que marca(m) a(s) alternativa(s) correta(s) para uma questão.
-     * Se o design garantir apenas uma correta, esta lista terá no máximo um elemento.
-     *
-     * @param idQuestao O ID da questão.
-     * @return Uma lista de QuestaoAlternativa marcadas como corretas.
-     */
     public List<QuestaoAlternativa> buscarCorretasPorQuestao(int idQuestao) {
         List<QuestaoAlternativa> corretas = new ArrayList<>();
         Connection conexao = null;
@@ -200,14 +157,6 @@ public class QuestaoAlternativaDAO {
         }
         return corretas;
     }
-    
-    /**
-     * Busca a associação que marca a alternativa correta para uma questão.
-     * Assume que há apenas uma alternativa correta por questão.
-     *
-     * @param idQuestao O ID da questão.
-     * @return O objeto QuestaoAlternativa da alternativa correta, ou null se não houver ou se houver múltiplas (nesse caso, use buscarCorretasPorQuestao).
-     */
     public QuestaoAlternativa buscarUnicaCorretaPorQuestao(int idQuestao) {
         List<QuestaoAlternativa> corretas = buscarCorretasPorQuestao(idQuestao);
         if (corretas.size() == 1) {
@@ -220,14 +169,7 @@ public class QuestaoAlternativaDAO {
         return null; 
     }
 
-    /**
-     * Atualiza uma associação Questao-Alternativa existente.
-     *
-     * @param qa O objeto QuestaoAlternativa com os dados atualizados.
-     * @return true se a atualização foi bem-sucedida, false caso contrário.
-     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
-     */
-    public boolean atualizarQuestaoAlternativa(QuestaoAlternativa qa) throws SQLException { // <-- Adicionado throws SQLException
+    public boolean atualizarQuestaoAlternativa(QuestaoAlternativa qa) throws SQLException { 
         boolean atualizado = false;
         Connection conexao = null;
         PreparedStatement pstmt = null;
@@ -240,11 +182,9 @@ public class QuestaoAlternativaDAO {
         try {
             conexao = ConnectionFactory.getConnection();
             
-            // Se estiver marcando esta como correta, e só pode haver uma, desmarque as outras primeiro
             if (qa.isCorreta()) {
-                desmarcarCorretasParaQuestao(conexao, qa.getIdQuestao()); // Usa o método privado auxiliar
+                desmarcarCorretasParaQuestao(conexao, qa.getIdQuestao()); 
             }
-
             pstmt = conexao.prepareStatement(ATUALIZAR_QA_SQL);
             pstmt.setInt(1, qa.getIdQuestao());
             pstmt.setInt(2, qa.getIdAlternativa());
@@ -259,20 +199,13 @@ public class QuestaoAlternativaDAO {
                 System.out.println("Nenhuma associação Questão-Alternativa encontrada com ID_QA: " + qa.getIdQa() + " para atualização.");
             }
 
-        } finally { // O try-catch foi removido daqui
+        } finally { 
             closeResources(conexao, pstmt, null);
         }
         return atualizado;
     }
 
-    /**
-     * Exclui uma associação Questao-Alternativa pelo seu ID (id_qa).
-     *
-     * @param idQa O ID da associação a ser excluída.
-     * @return true se a exclusão foi bem-sucedida, false caso contrário.
-     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
-     */
-    public boolean excluirQuestaoAlternativaPorIdQa(int idQa) throws SQLException { // <-- Adicionado throws SQLException
+    public boolean excluirQuestaoAlternativaPorIdQa(int idQa) throws SQLException {
         boolean excluido = false;
         Connection conexao = null;
         PreparedStatement pstmt = null;
@@ -295,21 +228,12 @@ public class QuestaoAlternativaDAO {
                 System.out.println("Nenhuma associação Questão-Alternativa encontrada com ID_QA: " + idQa + " para exclusão.");
             }
 
-        } finally { // O try-catch foi removido daqui
+        } finally { 
             closeResources(conexao, pstmt, null);
         }
         return excluido;
     }
-
-    /**
-     * Exclui todas as associações de alternativas para uma questão específica.
-     * Útil ao excluir uma questão.
-     *
-     * @param idQuestao O ID da questão.
-     * @return O número de associações excluídas.
-     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
-     */
-    public int excluirAssociacoesPorQuestao(int idQuestao) throws SQLException { // <-- Adicionado throws SQLException
+    public int excluirAssociacoesPorQuestao(int idQuestao) throws SQLException { 
         int linhasAfetadas = 0;
         Connection conexao = null;
         PreparedStatement pstmt = null;
@@ -320,16 +244,12 @@ public class QuestaoAlternativaDAO {
             pstmt.setInt(1, idQuestao);
             linhasAfetadas = pstmt.executeUpdate();
             System.out.println(linhasAfetadas + " associação(ões) excluída(s) para a questão ID: " + idQuestao);
-        } finally { // O try-catch foi removido daqui
+        } finally { 
             closeResources(conexao, pstmt, null);
         }
         return linhasAfetadas;
     }
 
-
-    /**
-     * Mapeia uma linha do ResultSet para um objeto QuestaoAlternativa.
-     */
     private QuestaoAlternativa mapResultSetToQuestaoAlternativa(ResultSet rs) throws SQLException {
         int idQa = rs.getInt("id_qa");
         int idQuestao = rs.getInt("id_questao");

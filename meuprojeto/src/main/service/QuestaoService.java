@@ -1,4 +1,4 @@
-package service; 
+package service;
 
 import dao.QuestaoDAO;
 import dao.AlternativaDAO;
@@ -7,10 +7,10 @@ import model.Questao;
 import model.Alternativa;
 import model.QuestaoAlternativa;
 
-import java.sql.SQLException; // Importado para tratamento de exceções
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Collections; 
+import java.util.Collections;
 
 public class QuestaoService {
 
@@ -27,66 +27,102 @@ public class QuestaoService {
     }
 
     /**
+     * [NOVO MÉTODO]
+     * Busca uma lista de questões com base em uma lista de temas selecionados pelo jogador.
+     * @param nomesDosTemas A lista de nomes das matérias (ex: ["Matemática", "Português"]).
+     * @param quantidadeDesejada O número máximo de questões para a partida.
+     * @return Uma lista de objetos Questao completos e filtrados.
+     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
+     */
+    public List<Questao> buscarQuestoesPorTemas(List<String> nomesDosTemas, int quantidadeDesejada) throws SQLException {
+        List<Questao> questoesCandidatas = new ArrayList<>();
+        System.out.println("DEBUG (QuestaoService): Buscando questões para os temas: " + nomesDosTemas);
+
+        if (nomesDosTemas == null || nomesDosTemas.isEmpty()) {
+            return questoesCandidatas; // Retorna lista vazia se nenhum tema for fornecido
+        }
+
+        // Mapeia o nome do tema para o ID da matéria no banco de dados.
+        // ATENÇÃO: Verifique se estes IDs (1, 2, 3...) correspondem aos IDs na sua tabela de Matérias!
+        for (String nomeTema : nomesDosTemas) {
+            int idMateria = -1;
+            switch (nomeTema) {
+                case "Português":           idMateria = 1; break;
+                case "Matemática":          idMateria = 2; break;
+                case "Inglês":              idMateria = 3; break;
+                case "Ciências da Natureza":idMateria = 4; break;
+                case "Ciências Humanas":    idMateria = 5; break;
+            }
+
+            if (idMateria != -1) {
+                // Busca todas as questões daquela matéria e adiciona à lista de candidatas
+                List<Questao> questoesDaMateria = questaoDAO.listarQuestoesPorMateria(idMateria);
+                questoesCandidatas.addAll(questoesDaMateria);
+            }
+        }
+
+        // Embaralha todas as questões encontradas para garantir aleatoriedade
+        Collections.shuffle(questoesCandidatas);
+
+        // Seleciona o número desejado de questões e popula com suas alternativas
+        List<Questao> questoesCompletasParaPartida = new ArrayList<>();
+        int numeroDeQuestoesParaPegar = Math.min(quantidadeDesejada, questoesCandidatas.size());
+
+        for (int i = 0; i < numeroDeQuestoesParaPegar; i++) {
+            Questao questaoBasica = questoesCandidatas.get(i);
+            // Reutiliza seu método para buscar os detalhes (alternativas) de cada questão
+            Questao questaoCompleta = buscarQuestaoCompletaPorId(questaoBasica.getIdQuestao());
+            if (questaoCompleta != null) {
+                questoesCompletasParaPartida.add(questaoCompleta);
+            }
+        }
+
+        System.out.println("DEBUG (QuestaoService): Total de questões COMPLETAS para a partida: " + questoesCompletasParaPartida.size());
+        return questoesCompletasParaPartida;
+    }
+
+
+    /**
+     * [MÉTODO ANTIGO - MANTIDO]
      * Busca uma lista de questões aleatórias para formar uma partida completa,
      * baseada em níveis de dificuldade (5 fácil, 4 médio, 4 difícil).
-     *
-     * @param quantidadePartida O número total de questões desejadas para a partida (será o MAX_QUESTOES do Navegador).
-     * A lógica interna ainda pega 5-4-4, mas o parâmetro é para compatibilidade e futura expansão.
+     * @param quantidadePartida O número total de questões desejadas para a partida.
      * @return Uma lista de objetos Questao completos e aleatórios.
-     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados durante a busca.
+     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
      */
     public List<Questao> buscarQuestoesAleatorias(int quantidadePartida) throws SQLException {
-        List<Questao> questoesBasicasColetadas = new ArrayList<>(); // Coleta as questões básicas de todos os níveis
-
+        List<Questao> questoesBasicasColetadas = new ArrayList<>();
         System.out.println("DEBUG (QuestaoService): Iniciando busca de questões aleatórias para partida.");
-        
+
         // 1. Busca e adiciona 5 questões de NÍVEL 1
-        System.out.println("DEBUG (QuestaoService): Buscando questões de nível 1...");
         List<Questao> questoesNivel1 = questaoDAO.listarQuestoesPorNivel(1);
         Collections.shuffle(questoesNivel1);
         int qtdNivel1 = Math.min(5, questoesNivel1.size());
         questoesBasicasColetadas.addAll(questoesNivel1.subList(0, qtdNivel1));
-        System.out.println("DEBUG (QuestaoService): Adicionadas " + qtdNivel1 + " questões básicas de nível 1.");
 
         // 2. Busca e adiciona 4 questões de NÍVEL 2
-        System.out.println("DEBUG (QuestaoService): Buscando questões de nível 2...");
         List<Questao> questoesNivel2 = questaoDAO.listarQuestoesPorNivel(2);
         Collections.shuffle(questoesNivel2);
         int qtdNivel2 = Math.min(4, questoesNivel2.size());
         questoesBasicasColetadas.addAll(questoesNivel2.subList(0, qtdNivel2));
-        System.out.println("DEBUG (QuestaoService): Adicionadas " + qtdNivel2 + " questões básicas de nível 2.");
 
         // 3. Busca e adiciona 4 questões de NÍVEL 3
-        System.out.println("DEBUG (QuestaoService): Buscando questões de nível 3...");
         List<Questao> questoesNivel3 = questaoDAO.listarQuestoesPorNivel(3);
         Collections.shuffle(questoesNivel3);
         int qtdNivel3 = Math.min(4, questoesNivel3.size());
         questoesBasicasColetadas.addAll(questoesNivel3.subList(0, qtdNivel3));
-        System.out.println("DEBUG (QuestaoService): Adicionadas " + qtdNivel3 + " questões básicas de nível 3.");
 
-        System.out.println("DEBUG (QuestaoService): Total de questões básicas encontradas: " + questoesBasicasColetadas.size());
-
-        // --- NOVO: POPULAR AS ALTERNATIVAS PARA CADA QUESTÃO BÁSICA ---
         List<Questao> questoesCompletasParaPartida = new ArrayList<>();
         if (questoesBasicasColetadas.isEmpty()) {
-            System.out.println("DEBUG (QuestaoService): Nenhuma questão básica encontrada para completar.");
-            return questoesCompletasParaPartida; // Retorna lista vazia
+            return questoesCompletasParaPartida;
         }
 
         for (Questao qBasica : questoesBasicasColetadas) {
-            // Chama buscarQuestaoCompletaPorId para cada questão básica
             Questao questaoCompleta = buscarQuestaoCompletaPorId(qBasica.getIdQuestao());
             if (questaoCompleta != null) {
                 questoesCompletasParaPartida.add(questaoCompleta);
-            } else {
-                System.out.println("DEBUG (QuestaoService): Aviso: Questão ID " + qBasica.getIdQuestao() + " não pôde ser completada (alternativas não encontradas).");
             }
         }
-        
-
-        
-
-        System.out.println("DEBUG (QuestaoService): Total de questões COMPLETAS para a partida: " + questoesCompletasParaPartida.size());
         return questoesCompletasParaPartida;
     }
 
@@ -98,38 +134,27 @@ public class QuestaoService {
      * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
      */
     public Questao buscarQuestaoCompletaPorId(int idQuestao) throws SQLException {
-        System.out.println("DEBUG (QuestaoService): Buscando detalhes para Questão ID: " + idQuestao);
-        Questao questao = questaoDAO.buscarQuestaoPorId(idQuestao); // Pode lançar SQLException
-        
+        Questao questao = questaoDAO.buscarQuestaoPorId(idQuestao);
+
         if (questao != null) {
-            System.out.println("DEBUG (QuestaoService): Questão ID " + idQuestao + " encontrada. Enunciado: " + questao.getEnunciado());
-            List<QuestaoAlternativa> qas = qaDAO.buscarAlternativasPorQuestao(idQuestao); // Pode lançar SQLException
-            System.out.println("DEBUG (QuestaoService):    Associações QA encontradas para ID " + idQuestao + ": " + (qas != null ? qas.size() : 0));
-            
+            List<QuestaoAlternativa> qas = qaDAO.buscarAlternativasPorQuestao(idQuestao);
             List<Alternativa> alternativasDaQuestao = new ArrayList<>();
             Alternativa alternativaCorreta = null;
 
-            if (qas != null) { // Garante que qas não é nulo antes de iterar
+            if (qas != null) {
                 for (QuestaoAlternativa qa : qas) {
-                    Alternativa alt = alternativaDAO.buscarAlternativaPorId(qa.getIdAlternativa()); // Pode lançar SQLException
+                    Alternativa alt = alternativaDAO.buscarAlternativaPorId(qa.getIdAlternativa());
                     if (alt != null) {
-                        System.out.println("DEBUG (QuestaoService):        Alternativa ID " + alt.getIdAlternativa() + " Texto: '" + alt.getTexto() + "' (Correta na QA: " + qa.isCorreta() + ")");
-                        alt.setCorreta(qa.isCorreta()); // Atualiza a flag 'correta' da alternativa
+                        alt.setCorreta(qa.isCorreta());
                         alternativasDaQuestao.add(alt);
                         if (qa.isCorreta()) {
                             alternativaCorreta = alt;
                         }
-                    } else {
-                        System.out.println("DEBUG (QuestaoService):        Alternativa ID " + qa.getIdAlternativa() + " não encontrada no AlternativaDAO!");
                     }
                 }
             }
-            
             questao.setAlternativas(alternativasDaQuestao);
             questao.setAlternativaCorreta(alternativaCorreta);
-            System.out.println("DEBUG (QuestaoService):    Total de alternativas populadas para Questão ID " + idQuestao + ": " + alternativasDaQuestao.size());
-        } else {
-            System.out.println("DEBUG (QuestaoService): Questão ID " + idQuestao + " NÃO encontrada no QuestaoDAO.");
         }
         return questao;
     }
@@ -152,20 +177,19 @@ public class QuestaoService {
         }
         return questoesCompletas;
     }
-    
+
     /**
      * Retorna uma única questão aleatória de todas as questões disponíveis.
      * @return Uma Questao aleatória e completa, ou null se não houver questões.
      * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
      */
-    public Questao buscarQuestaoAleatoria() throws SQLException { // Este método pode ser removido se não for mais usado diretamente.
+    public Questao buscarQuestaoAleatoria() throws SQLException {
         List<Questao> todasQuestoesBasicas = questaoDAO.listarTodasQuestoes();
         if (todasQuestoesBasicas.isEmpty()) {
             return null;
         }
         Collections.shuffle(todasQuestoesBasicas);
         int idQuestaoAleatoria = todasQuestoesBasicas.get(0).getIdQuestao();
-        
         return buscarQuestaoCompletaPorId(idQuestaoAleatoria);
     }
 
@@ -175,18 +199,16 @@ public class QuestaoService {
      * @throws Exception Se ocorrer um erro durante o processo de persistência (propagado dos DAOs).
      */
     public void adicionarQuestao(Questao questao) throws Exception {
-        // 1. Salva a Questao (enunciado, dificuldade, matéria, etc.) e obtém o ID gerado.
         int idQuestaoGerado = questaoDAO.adicionarQuestao(questao);
         questao.setIdQuestao(idQuestaoGerado);
 
-        // 2. Salva cada Alternativa e cria a associação QuestaoAlternativa
         if (questao.getAlternativas() != null) {
             for (Alternativa alt : questao.getAlternativas()) {
                 int idAlternativaGerado = alternativaDAO.adicionarAlternativa(alt);
                 alt.setIdAlternativa(idAlternativaGerado);
 
                 QuestaoAlternativa qa = new QuestaoAlternativa(
-                    0, 
+                    0,
                     questao.getIdQuestao(),
                     alt.getIdAlternativa(),
                     alt.isCorreta()

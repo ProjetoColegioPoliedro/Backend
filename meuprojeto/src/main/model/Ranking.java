@@ -6,7 +6,7 @@ public class Ranking {
     private int idRanking; // Corresponde a id_ranking (PK)
     private int idAluno; // Corresponde a id_aluno (FK)
     private int pontuacao; // Corresponde a pontuacao
-    private LocalDateTime ultimaAtualizacao; // Corresponde a ultima_atualizacao (TIMESTAMP)
+    private LocalDateTime ultimaAtualizacao; 
 
     public Ranking() {
     }

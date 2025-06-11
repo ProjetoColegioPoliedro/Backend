@@ -1,8 +1,7 @@
 package dao;
 
-import model.Professor; // Importa a classe Professor do seu pacote model
-import connectionFactory.ConnectionFactory; // Importa sua classe de conexão
-
+import model.Professor; 
+import connectionFactory.ConnectionFactory; 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,9 +27,6 @@ public class ProfessorDAO {
     // SQL para atualizar os dados de um professor (TABELA CORRIGIDA)
     private static final String ATUALIZAR_PROFESSOR_SQL = "UPDATE professor_administrador SET nome = ?, login_professor = ?, senha = ? WHERE id_professor = ?;";
 
-    /**
-     * Insere um novo professor no banco de dados.
-     */
     public int inserirProfessor(Professor professor) {
         int idGerado = -1;
         Connection conexao = null;
@@ -50,7 +46,7 @@ public class ProfessorDAO {
 
             pstmt.setString(1, professor.getNome());
             pstmt.setString(2, professor.getLoginProfessor());
-            pstmt.setString(3, professor.getSenha()); // ATENÇÃO: Armazenar senhas em texto plano é inseguro. Use hashing.
+            pstmt.setString(3, professor.getSenha()); 
 
             int linhasAfetadas = pstmt.executeUpdate();
 
@@ -64,9 +60,8 @@ public class ProfessorDAO {
             } else {
                 System.err.println("Nenhuma linha afetada ao inserir professor.");
             }
-
         } catch (SQLException e) {
-            if (e.getSQLState().startsWith("23")) { // Violação de constraint (ex: UNIQUE no login_professor)
+            if (e.getSQLState().startsWith("23")) { 
                 System.err.println("Erro SQL: Professor com o login '" + professor.getLoginProfessor() + "' já existe. " + e.getMessage());
             } else {
                 System.err.println("Erro SQL ao inserir professor: " + e.getMessage());
@@ -77,10 +72,6 @@ public class ProfessorDAO {
         }
         return idGerado;
     }
-
-    /**
-     * Busca um professor pelo seu ID.
-     */
     public Professor buscarProfessorPorId(int idProfessor) {
         Professor professor = null;
         Connection conexao = null;
@@ -105,20 +96,15 @@ public class ProfessorDAO {
         return professor;
     }
 
-    /**
-     * Busca um professor pelo seu login.
-     */
     public Professor buscarProfessorPorLogin(String login) {
         Professor professor = null;
         Connection conexao = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-
         if (login == null || login.trim().isEmpty()) {
             System.err.println("Tentativa de buscar Professor com login nulo ou vazio.");
             return null;
         }
-
         try {
             conexao = ConnectionFactory.getConnection();
             pstmt = conexao.prepareStatement(SELECIONAR_PROFESSOR_POR_LOGIN_SQL);
@@ -136,21 +122,15 @@ public class ProfessorDAO {
         }
         return professor;
     }
-
-    /**
-     * Autentica um professor pelo login e senha.
-     */
     public Professor buscarProfessorPorLoginESenha(String login, String senha) {
         Professor professor = null;
         Connection conexao = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-
         if (login == null || login.trim().isEmpty() || senha == null || senha.isEmpty()) {
             System.err.println("Tentativa de buscar Professor com login/senha nulos ou vazios.");
             return null;
         }
-
         try {
             conexao = ConnectionFactory.getConnection();
             pstmt = conexao.prepareStatement(SELECIONAR_PROFESSOR_POR_LOGIN_E_SENHA_SQL);
@@ -169,10 +149,6 @@ public class ProfessorDAO {
         }
         return professor;
     }
-
-    /**
-     * Lista todos os professores cadastrados no banco de dados.
-     */
     public List<Professor> listarTodosProfessores() {
         List<Professor> professores = new ArrayList<>();
         Connection conexao = null;
@@ -195,10 +171,6 @@ public class ProfessorDAO {
         }
         return professores;
     }
-
-    /**
-     * Atualiza os dados de um professor existente no banco de dados.
-     */
     public boolean atualizarProfessor(Professor professor) {
         boolean atualizado = false;
         Connection conexao = null;
@@ -211,7 +183,6 @@ public class ProfessorDAO {
             System.err.println("Tentativa de atualizar Professor nulo, com ID inválido ou campos obrigatórios vazios.");
             return false;
         }
-
         try {
             conexao = ConnectionFactory.getConnection();
             pstmt = conexao.prepareStatement(ATUALIZAR_PROFESSOR_SQL);
@@ -241,10 +212,6 @@ public class ProfessorDAO {
         }
         return atualizado;
     }
-
-    /**
-     * Exclui um professor do banco de dados pelo seu ID.
-     */
     public boolean excluirProfessor(int idProfessor) {
         boolean excluido = false;
         Connection conexao = null;
@@ -279,10 +246,6 @@ public class ProfessorDAO {
         }
         return excluido;
     }
-
-    /**
-     * Mapeia uma linha do ResultSet para um objeto Professor.
-     */
     private Professor mapResultSetToProfessor(ResultSet rs) throws SQLException {
         int idProfessor = rs.getInt("id_professor");
         String nome = rs.getString("nome");
@@ -290,10 +253,6 @@ public class ProfessorDAO {
         String senha = rs.getString("senha"); // Lembre-se da segurança de senhas
         return new Professor(idProfessor, nome, loginProfessor, senha);
     }
-
-    /**
-     * Método utilitário para fechar os recursos JDBC.
-     */
     private void closeResources(Connection conn, PreparedStatement stmt, ResultSet rs) {
         try {
             if (rs != null) rs.close();

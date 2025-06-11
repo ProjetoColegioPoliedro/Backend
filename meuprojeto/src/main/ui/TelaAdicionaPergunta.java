@@ -291,36 +291,27 @@ public class TelaAdicionaPergunta extends JFrame {
 
     private void adicionarCirculosEIcones(JPanel panel) {
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 0, 10, 0); // Espaçamento (top, left, bottom, right)
-        gbc.fill = GridBagConstraints.NONE; // Não preenche
-        gbc.anchor = GridBagConstraints.CENTER; // Centraliza dentro da célula
-
-        // Círculos e letras para as respostas (coluna 0)
+        gbc.insets = new Insets(10, 0, 10, 0); 
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.CENTER; 
         ImageIcon circuloIcon = new ImageIcon("assets\\circuloAlternativa.png");
         Image c = circuloIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-
         gbc.gridx = 0; gbc.gridy = 2; adicionarCirculoComLetra(panel, c, "A", gbc);
         gbc.gridy = 3; adicionarCirculoComLetra(panel, c, "B", gbc);
         gbc.gridy = 4; adicionarCirculoComLetra(panel, c, "C", gbc);
         gbc.gridy = 5; adicionarCirculoComLetra(panel, c, "D", gbc);
     }
-
-    // Refatorado para adicionar com GridBagConstraints
     private void adicionarCirculoComLetra(JPanel panel, Image img, String letra, GridBagConstraints gbc) {
         JLabel circuloLabel = new JLabel(new ImageIcon(img));
         
         JLabel letraLabel = new JLabel(letra);
-        letraLabel.setBounds(11, 0, 50, 50); // Posição relativa ao circuloLabel (dentro dele)
+        letraLabel.setBounds(11, 0, 50, 50); 
         letraLabel.setFont(new Font("Montserrat", Font.BOLD, 40));
         letraLabel.setForeground(BRANCO);
         circuloLabel.add(letraLabel);
-
-        // Ajusta as insets para o círculo
-        gbc.insets = new Insets(10, 10, 10, 5); // Espaçamento menor à direita
+        gbc.insets = new Insets(10, 10, 10, 5); 
         panel.add(circuloLabel, gbc);
     }
-
-    // --- Lógica para Salvar a Nova Pergunta ---
     private void salvarNovaPergunta(Runnable telaAreaRes) {
         String enunciado = campoPerg.getText().trim();
         String respA = campoRespA.getText().trim();
@@ -332,22 +323,16 @@ public class TelaAdicionaPergunta extends JFrame {
         String dificuldadeSelecionada = (String) nivelDif.getSelectedItem();
         String materiaSelecionada = (String) materias.getSelectedItem();
 
-        // 1. Validação dos campos
         if (enunciado.isEmpty() || respA.isEmpty() || respB.isEmpty() || respC.isEmpty() || respD.isEmpty() || explicacaoErro.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Todos os campos (pergunta, respostas e explicação) devem ser preenchidos.", "Erro de Validação", JOptionPane.WARNING_MESSAGE);
             return;
         }
-
         if (campoCorretoSelecionado == null) {
             JOptionPane.showMessageDialog(this, "Por favor, selecione a alternativa correta (clique na borda da resposta).", "Erro de Validação", JOptionPane.WARNING_MESSAGE);
             return;
         }
-
-        // --- Mapeamento de String para ID (Dificuldade e Matéria) ---
         int idNivelMapped = mapDificuldadeToId(dificuldadeSelecionada);
         int idMateriaMapped = mapMateriaToId(materiaSelecionada);
-
-        // 2. Coletar alternativas e identificar a correta
         List<Alternativa> alternativas = new ArrayList<>();
         Alternativa altCorretaParaSalvar = null;
 
@@ -371,13 +356,10 @@ public class TelaAdicionaPergunta extends JFrame {
             alternativas.add(alt);
             if (campoRespD == campoCorretoSelecionado) altCorretaParaSalvar = alt;
         }
-
         if (altCorretaParaSalvar == null) {
              JOptionPane.showMessageDialog(this, "Erro interno: Não foi possível identificar a alternativa correta selecionada.", "Erro", JOptionPane.ERROR_MESSAGE);
              return;
         }
-
-        // 3. Criar o objeto Questao
         Questao novaQuestao = new Questao(
             enunciado,              // String enunciado
             explicacaoErro,         // String explicacaoErro
@@ -385,10 +367,8 @@ public class TelaAdicionaPergunta extends JFrame {
             idNivelMapped,          // int idNivel
             idMateriaMapped         // int idMateria
         );
-        
         novaQuestao.setAlternativas(alternativas);
         novaQuestao.setAlternativaCorreta(altCorretaParaSalvar);
-
         try {
             questaoService.adicionarQuestao(novaQuestao);
             JOptionPane.showMessageDialog(this, "Pergunta adicionada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
@@ -400,7 +380,6 @@ public class TelaAdicionaPergunta extends JFrame {
         }
     }
 
-    // --- Métodos de Limpeza ---
     private void limparCampos() {
         campoPerg.setText("Digite a pergunta aqui...");
         campoPerg.setForeground(CINZA_TEXTO_PADRAO);
@@ -414,28 +393,23 @@ public class TelaAdicionaPergunta extends JFrame {
         campoRespD.setForeground(CINZA_TEXTO_PADRAO);
         campoExplicacaoErro.setText("Detalhes sobre a resolução da questão ou explicação do erro...");
         campoExplicacaoErro.setForeground(CINZA_TEXTO_PADRAO);
-
-        // Usar CIANO que é uma constante de classe
         campoRespA.setBorder(BorderFactory.createLineBorder(CIANO, 7));
         campoRespB.setBorder(BorderFactory.createLineBorder(CIANO, 7));
         campoRespC.setBorder(BorderFactory.createLineBorder(CIANO, 7));
         campoRespD.setBorder(BorderFactory.createLineBorder(CIANO, 7));
-
         campoCorretoSelecionado = null;
         nivelDif.setSelectedIndex(0);
         materias.setSelectedIndex(0);
     }
     
-    // --- Mapeamento de String para ID (Dificuldade e Matéria) ---
     private int mapDificuldadeToId(String dificuldadeNome) {
         switch (dificuldadeNome) {
             case "Fácil": return 1;
             case "Médio": return 2;
             case "Difícil": return 3;
-            default: return 0; // Ou lance uma exceção para dificuldade inválida
+            default: return 0; 
         }
     }
-
     private int mapMateriaToId(String materiaNome) {
         switch (materiaNome) {
             case "Português": return 1;
@@ -443,7 +417,7 @@ public class TelaAdicionaPergunta extends JFrame {
             case "Inglês": return 3;
             case "Ciências Humanas": return 4;
             case "Ciências da Natureza": return 5;
-            default: return 0; // Ou lance uma exceção para matéria inválida
+            default: return 0; 
         }
     }
 }
