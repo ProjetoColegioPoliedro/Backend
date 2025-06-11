@@ -26,7 +26,7 @@ public class Navegador {
     private int indiceQuestaoAtual;
     private int pontuacaoAtual;
     private TelaPartida telaDePartidaUnica; // Mantém uma única instância da TelaPartida
-    private final int MAX_QUESTOES = 13; // Número máximo de questões por partida
+    private final int MAX_QUESTOES = 13; // Usado como um teto máximo de busca
     private LocalDateTime inicioDaSessao;
 
     public Navegador() {
@@ -48,8 +48,9 @@ public class Navegador {
 
     private void showTelaLogin() {
         final TelaLogin[] telaLoginHolder = new TelaLogin[1];
+        
+        
         telaLoginHolder[0] = new TelaLogin(
-            this::showTelaInicial,
             this::showTelaRecuperacaoSenha,
             () -> showTelaConfiguracoes(this::showTelaLogin),
             (login, senha) -> {
@@ -182,12 +183,12 @@ public class Navegador {
         }
 
         this.telaDePartidaUnica = new TelaPartida(
-            questoesDaPartidaAtual.get(indiceQuestaoAtual),    // 1. A questão a ser exibida
-            this::processarProximaQuestao,                     // 2. Ação para o botão "Pular"
-            () -> processarResposta(true),                     // 3. Ação para quando a resposta for CORRETA
-            () -> processarResposta(false),                    // 4. Ação para quando a resposta for INCORRETA
-            () -> showTelaConfiguracoes(() -> telaDePartidaUnica.setVisible(true)), // 5. Ação para o botão de "Configurações"
-            this::finalizarPartida                             // 6. Ação para o botão "Parar Jogo"
+            questoesDaPartidaAtual.get(indiceQuestaoAtual),
+            this::processarProximaQuestao,
+            () -> processarResposta(true),
+            () -> processarResposta(false),
+            () -> showTelaConfiguracoes(() -> telaDePartidaUnica.setVisible(true)),
+            this::finalizarPartida
         );
 
         telaDePartidaUnica.setVisible(true);
@@ -282,7 +283,7 @@ public class Navegador {
         }
     }
 
-    // Outros métodos de feedback
+    
     private void showTelaRespostaCorreta(Runnable proximaAcao, String buttonText) {
         TelaRespostaCorreta telaRespCor = new TelaRespostaCorreta(proximaAcao, buttonText);
         telaRespCor.setVisible(true);

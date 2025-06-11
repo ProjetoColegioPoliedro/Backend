@@ -4,16 +4,16 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.sql.SQLException;
-import service.AlunoService; // Importar o serviço de aluno
-import model.Aluno;        // Importar o modelo de aluno
+import service.AlunoService; 
+import model.Aluno;       
 
 public class TelaCadastro extends JFrame {
 
-    private AlunoService alunoService; // Atributo para o serviço de aluno
-    private JTextField digiteNome; // NOVO: Para o nome completo (se diferente do login)
-    private JTextField digiteLogin; // O antigo 'digiteUsuario'
+    private AlunoService alunoService; 
+    private JTextField digiteNome; 
+    private JTextField digiteLogin; 
     private JPasswordField digiteSenha;
-    private JTextField digiteAnoLetivo; // NOVO: Para o ano letivo
+    private JTextField digiteAnoLetivo; 
 
     // Cores adicionais
     private final Color CINZA = new Color(217, 217, 217);
@@ -120,7 +120,7 @@ public class TelaCadastro extends JFrame {
         painelMenor.add(msgm);
     }
 
-    // --- Métodos Auxiliares para Criação de Componentes (melhorado) ---
+    // --- Métodos Auxiliares para Criação de Componentes ---
 
     // Cria JTextField com placeholder
     private JTextField criarCampoTexto(JPanel parentPanel, String placeholder, int x, int y, int width, int height) {

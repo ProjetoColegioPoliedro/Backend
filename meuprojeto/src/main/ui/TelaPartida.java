@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import model.Questao;
-import model.Alternativa; // Importe a classe Alternativa
+import model.Alternativa;
 
 public class TelaPartida extends JFrame {
     private JLabel caixaPerg;
@@ -15,7 +15,7 @@ public class TelaPartida extends JFrame {
     private List<JLabel> labelsRespostas;
     private Questao questaoAtual;
     private boolean ajuda5050Usada = false;
-    private JButton eliminDuas; // Para poder desabilitar
+    private JButton eliminDuas; 
 
     // Construtor com todos os Runnables necessários
     public TelaPartida(Questao questao, Runnable acaoAoPular, Runnable respostaCorretaAction, Runnable respostaIncorretaAction, Runnable configsAction, Runnable pararJogoAction) {

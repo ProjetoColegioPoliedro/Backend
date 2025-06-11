@@ -15,7 +15,7 @@ import java.util.List;
 public class TelaHistorico extends JFrame {
 
     public TelaHistorico(Runnable telaMenuEst, Runnable configs, int idAluno, HistoricoService historicoService) {
-        // Cores e configurações da janela... (código omitido para brevidade, mantenha o seu)
+        
         var rosa = new Color(238, 33, 82);
         var roxo = new Color(20, 14, 40);
         var roxoClaro = new Color(30, 24, 60);
@@ -39,8 +39,21 @@ public class TelaHistorico extends JFrame {
         histJogo.setFont(new Font("Montserrat", Font.BOLD, 45));
         histJogo.setForeground(Color.WHITE);
         painelCabecalho.add(histJogo);
+
+        var icone = new ImageIcon("assets\\seta.png");
+        var imagem = icone.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+        var seta = new JLabel(new ImageIcon(imagem));
+        seta.setBounds(20, 20, 60, 60);
+        seta.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        painelCabecalho.add(seta);
+        seta.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e){
+                telaMenuEst.run();
+                dispose();
+            }
+        });
         
-        // ... (Seu código para botões de voltar e config aqui)
 
         JPanel painelConteudoHistorico = new JPanel();
         painelConteudoHistorico.setLayout(new BoxLayout(painelConteudoHistorico, BoxLayout.Y_AXIS));
@@ -88,7 +101,7 @@ public class TelaHistorico extends JFrame {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            // Tratar erro
+            
         }
     }
 }

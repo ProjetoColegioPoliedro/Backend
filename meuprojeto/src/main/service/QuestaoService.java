@@ -26,14 +26,6 @@ public class QuestaoService {
         this.qaDAO = new QuestaoAlternativaDAO();
     }
 
-    /**
-     * [NOVO MÉTODO]
-     * Busca uma lista de questões com base em uma lista de temas selecionados pelo jogador.
-     * @param nomesDosTemas A lista de nomes das matérias (ex: ["Matemática", "Português"]).
-     * @param quantidadeDesejada O número máximo de questões para a partida.
-     * @return Uma lista de objetos Questao completos e filtrados.
-     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
-     */
     public List<Questao> buscarQuestoesPorTemas(List<String> nomesDosTemas, int quantidadeDesejada) throws SQLException {
         List<Questao> questoesCandidatas = new ArrayList<>();
         System.out.println("DEBUG (QuestaoService): Buscando questões para os temas: " + nomesDosTemas);
@@ -82,14 +74,6 @@ public class QuestaoService {
     }
 
 
-    /**
-     * [MÉTODO ANTIGO - MANTIDO]
-     * Busca uma lista de questões aleatórias para formar uma partida completa,
-     * baseada em níveis de dificuldade (5 fácil, 4 médio, 4 difícil).
-     * @param quantidadePartida O número total de questões desejadas para a partida.
-     * @return Uma lista de objetos Questao completos e aleatórios.
-     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
-     */
     public List<Questao> buscarQuestoesAleatorias(int quantidadePartida) throws SQLException {
         List<Questao> questoesBasicasColetadas = new ArrayList<>();
         System.out.println("DEBUG (QuestaoService): Iniciando busca de questões aleatórias para partida.");
@@ -126,13 +110,7 @@ public class QuestaoService {
         return questoesCompletasParaPartida;
     }
 
-    /**
-     * Busca uma questão completa pelo seu ID, incluindo todas as suas alternativas
-     * e qual delas é a correta.
-     * @param idQuestao O ID da questão a ser buscada.
-     * @return Um objeto Questao completo, ou null se não encontrada.
-     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
-     */
+   
     public Questao buscarQuestaoCompletaPorId(int idQuestao) throws SQLException {
         Questao questao = questaoDAO.buscarQuestaoPorId(idQuestao);
 
@@ -159,12 +137,7 @@ public class QuestaoService {
         return questao;
     }
 
-    /**
-     * Busca uma lista de questões completas (com alternativas) por matéria.
-     * @param idMateria O ID da matéria.
-     * @return Uma lista de objetos Questao completos.
-     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
-     */
+   
     public List<Questao> buscarQuestoesCompletasPorMateria(int idMateria) throws SQLException {
         List<Questao> questoesBasicas = questaoDAO.listarQuestoesPorMateria(idMateria);
         List<Questao> questoesCompletas = new ArrayList<>();
@@ -178,11 +151,7 @@ public class QuestaoService {
         return questoesCompletas;
     }
 
-    /**
-     * Retorna uma única questão aleatória de todas as questões disponíveis.
-     * @return Uma Questao aleatória e completa, ou null se não houver questões.
-     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
-     */
+   
     public Questao buscarQuestaoAleatoria() throws SQLException {
         List<Questao> todasQuestoesBasicas = questaoDAO.listarTodasQuestoes();
         if (todasQuestoesBasicas.isEmpty()) {
@@ -193,11 +162,7 @@ public class QuestaoService {
         return buscarQuestaoCompletaPorId(idQuestaoAleatoria);
     }
 
-    /**
-     * Adiciona uma nova questão ao banco de dados, incluindo suas alternativas.
-     * @param questao A Questao completa a ser adicionada.
-     * @throws Exception Se ocorrer um erro durante o processo de persistência (propagado dos DAOs).
-     */
+   
     public void adicionarQuestao(Questao questao) throws Exception {
         int idQuestaoGerado = questaoDAO.adicionarQuestao(questao);
         questao.setIdQuestao(idQuestaoGerado);

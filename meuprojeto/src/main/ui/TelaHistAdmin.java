@@ -1,4 +1,3 @@
-// Substitua todo o arquivo ui/TelaHistAdmin.java
 package ui;
 
 import model.Aluno;
@@ -57,19 +56,6 @@ public class TelaHistAdmin extends JFrame {
             }
         });
 
-        var iconeConfig = new ImageIcon("assets\\settings.png");
-        var image = iconeConfig.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
-        var config = new JLabel(new ImageIcon(image));
-        config.setBounds(1460, 20, 60, 60);
-        config.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        painelCabecalho.add(config);
-        config.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e){
-                configs.run();
-                dispose();
-            }
-        });
 
         JPanel painelConteudoHistorico = new JPanel();
         painelConteudoHistorico.setLayout(new BoxLayout(painelConteudoHistorico, BoxLayout.Y_AXIS));
